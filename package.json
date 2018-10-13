@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "start:dev": "NODE_ENV=development DEBUG=APP_NAME:* nodemon ./bin/www"
+    "start:dev": "NODE_ENV=development DEBUG=APP_NAME:* nodemon ./bin/www",
+    "db:create:migration": "sequelize migration:generate --name ",
+    "db:migrate": "sequelize db:migrate",
+    "db:rollback": "sequelize db:migrate:undo"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -13,7 +16,10 @@
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
-    "pug": "2.0.0-beta11"
+    "pg-promise": "^8.5.0",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^4.39.0",
+    "sequelize-cli": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
