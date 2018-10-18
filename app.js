@@ -4,13 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+if (process.env.NODE_ENV === 'development') {
+    require("dotenv").config();
+}
+
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const testsRouter = require('./routes/tests');
-
-if (process.env.NODE_ENV === 'development') {
-  require("dotenv").config();
-}
 
 const app = express();
 
