@@ -6,5 +6,4 @@ router.get('/', function(req, res, next) {
   res.render('lobby', { title: 'Hearts Game' });
 });
 
-
 module.exports = router;
