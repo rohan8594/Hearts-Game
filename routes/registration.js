@@ -22,7 +22,6 @@ router.post('/', (req, res) => {
     const errors = validateFields(req, password);
 
     if (errors) {
-        console.log(errors);
         res.render('registration', {errors: errors});
     } else {
         bcrypt.hash(password, 10)

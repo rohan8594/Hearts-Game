@@ -13,6 +13,9 @@ body
     div(class= 'center-box')
         h1(class= 'vertical-padding', class= 'align-center') Registration
         form(action='/registration', method='post')
+            if errors
+                each error in errors
+                    p(class= 'align-center', style= 'color: red')= error.msg
             div
                 label(class='align-right', class= 'vertical-padding', for='username_input') Username:
                 input(class='align-left' type='Username', name='username_input')
