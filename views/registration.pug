@@ -1,14 +1,28 @@
-
 doctype html 
-html(lang='en') 
+html(lang='en')
 
 
 include partials/head.pug
-link(rel="stylesheet" href="stylesheets/style.css")
+//link(rel="stylesheet" href="stylesheets/style.css")
 
 
 
 head
 
 body
-    h1(class = 'center-form', style = 'color:red') this is the registration page!
+    div(class= 'center-box')
+        h1(class= 'vertical-padding', class= 'align-center') Registration
+        div
+            label(class='align-right', class= 'vertical-padding', for='username-input') Username:
+            input(class='align-left')( type='Username', name='username-input')
+
+        div
+            label(class='align-right', class= 'vertical-padding', for='password-input') Password:
+            input(class='align-left', type='Password', name='password-input')
+
+        div
+            label(class='align-right', class= 'vertical-padding', for='password-verify') Verify Password:
+            input(class='align-left', type='Password', name='password-verify')
+
+        div(class= 'vertical-padding', class= 'align-center')
+            button.btn.btn-primary(type='submit') Submit
