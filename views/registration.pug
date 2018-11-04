@@ -1,4 +1,4 @@
-doctype html 
+doctype html
 html(lang='en')
 
 
@@ -12,17 +12,18 @@ head
 body
     div(class= 'center-box')
         h1(class= 'vertical-padding', class= 'align-center') Registration
-        div
-            label(class='align-right', class= 'vertical-padding', for='username-input') Username:
-            input(class='align-left')( type='Username', name='username-input')
+        form(action='/registration', method='post')
+            div
+                label(class='align-right', class= 'vertical-padding', for='username_input') Username:
+                input(class='align-left' type='Username', name='username_input')
 
-        div
-            label(class='align-right', class= 'vertical-padding', for='password-input') Password:
-            input(class='align-left', type='Password', name='password-input')
+            div
+                label(class='align-right', class= 'vertical-padding', for='password_input') Password:
+                input(class='align-left', type='Password', name='password_input')
 
-        div
-            label(class='align-right', class= 'vertical-padding', for='password-verify') Verify Password:
-            input(class='align-left', type='Password', name='password-verify')
+            div
+                label(class='align-right', class= 'vertical-padding', for='password_verify') Verify Password:
+                input(class='align-left', type='Password', name='password_verify')
 
-        div(class= 'vertical-padding', class= 'align-center')
-            button.btn.btn-primary(type='submit') Submit
+            div(class= 'vertical-padding', class= 'align-center')
+                button.btn.btn-primary(type='submit') Submit

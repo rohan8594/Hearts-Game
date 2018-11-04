@@ -11,10 +11,12 @@
     "postinstall": "sequelize db:migrate"
   },
   "dependencies": {
+    "bcrypt": "^3.0.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^6.1.0",
     "express": "~4.16.0",
+    "express-validator": "^5.3.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
     "pg-promise": "^8.5.0",
