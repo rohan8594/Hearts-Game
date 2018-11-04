@@ -1,8 +1,51 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #086305;
+  color: whitesmoke;
 }
 
 a {
   color: #00B7FF;
+  color:#00ccff;
+  color:#086305;
+  color:whitesmoke;
+
 }
+
+.align-center{
+  text-align: center;
+}
+
+.align-left{
+  text-align: left;
+  width: 40%;
+}
+
+.align-right{
+  text-align: right;
+  padding-right: 10px;
+  width: 40%;
+}
+
+.vertical-padding{
+  padding-top: 25px;
+}
+
+.center-box{
+  width: 50vh;
+  height: 50vh;
+  margin-left: 25%;
+  margin-right: 25%;
+
+
+  background-color: #e9eb89;
+  color: rgb(0, 0, 0);
+
+}
+
+.button-division{
+  color:black;
+  background-color:#00ccff
+}
+
