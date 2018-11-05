@@ -1,6 +1,18 @@
-doctype html 
-html(lang='en') 
-head
+extends layout
 
-body 
-    h1 login test
+block content
+    h1= title
+    p Welcome to #{title}
+    div
+        form(action='login', method='post')
+            if errors
+                each error in errors
+                    p(class= 'align-center', style= 'color: red')= error.msg
+            div
+                input(type='Username', name='username', placeholder='Username')
+
+            div
+                input(type='Password', name='password', placeholder='Password')
+
+            div
+                button(type='submit') Submit
