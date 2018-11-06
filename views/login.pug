@@ -10,6 +10,9 @@ body
     div(class= 'center-box')
         h1(class= 'vertical-padding align-center') Login
         form(action='login', method='post')
+            if errors
+                each error in errors
+                    p(class= 'align-center', style= 'color: red')= error.msg
             div
                 label(class='align-right vertical-padding') Username:
                 input(class='align-left' type='Username', name='username')
