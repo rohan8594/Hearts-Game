@@ -3,30 +3,24 @@ html(lang='en')
 
 
 include partials/head.pug
-//link(rel="stylesheet" href="stylesheets/style.css")
-
-
 
 head
 
 body
     div(class= 'center-box')
-        h1(class= 'vertical-padding', class= 'align-center') Registration
+        h1(class= 'vertical-padding align-center') Registration
         form(action='/registration', method='post')
-            if errors
-                each error in errors
-                    p(class= 'align-center', style= 'color: red')= error.msg
             div
-                label(class='align-right', class= 'vertical-padding', for='username_input') Username:
-                input(class='align-left' type='Username', name='username_input')
+                label(class='align-right vertical-padding') Username:
+                input(class='align-left')( type='Username', name='username_input')
 
             div
-                label(class='align-right', class= 'vertical-padding', for='password_input') Password:
+                label(class='align-right vertical-padding') Password:
                 input(class='align-left', type='Password', name='password_input')
 
             div
-                label(class='align-right', class= 'vertical-padding', for='password_verify') Verify Password:
+                label(class='align-right vertical-padding') Verify Password:
                 input(class='align-left', type='Password', name='password_verify')
 
-            div(class= 'vertical-padding', class= 'align-center')
+            div(class= 'vertical-padding align-center')
                 button.btn.btn-primary(type='submit') Submit
