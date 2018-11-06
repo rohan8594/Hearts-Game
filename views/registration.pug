@@ -1,28 +1,26 @@
-doctype html 
+doctype html
 html(lang='en')
 
 
 include partials/head.pug
-//link(rel="stylesheet" href="stylesheets/style.css")
-
-
 
 head
 
 body
     div(class= 'center-box')
         h1(class= 'vertical-padding align-center') Registration
-        div
-            label(class='align-right vertical-padding') Username:
-            input(class='align-left')( type='Username', name='username-input')
+        form(action='/registration', method='post')
+            div
+                label(class='align-right vertical-padding') Username:
+                input(class='align-left')( type='Username', name='username_input')
 
-        div
-            label(class='align-right vertical-padding') Password:
-            input(class='align-left', type='Password', name='password-input')
+            div
+                label(class='align-right vertical-padding') Password:
+                input(class='align-left', type='Password', name='password_input')
 
-        div
-            label(class='align-right vertical-padding') Verify Password:
-            input(class='align-left', type='Password', name='password-verify')
+            div
+                label(class='align-right vertical-padding') Verify Password:
+                input(class='align-left', type='Password', name='password_verify')
 
-        div(class= 'vertical-padding align-center')
-            button.btn.btn-primary(type='submit') Submit
+            div(class= 'vertical-padding align-center')
+                button.btn.btn-primary(type='submit') Submit

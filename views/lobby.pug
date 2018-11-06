@@ -1,4 +1,6 @@
-doctype html 
-html(lang='en') 
+extends layout
 
-h1 lobby test
+block content
+    h1= title
+    p Welcome to #{title}
+    p User authenticated!!! Username: #{user.username}

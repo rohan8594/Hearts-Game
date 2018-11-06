@@ -3,22 +3,20 @@ html(lang='en')
 
 
 include partials/head.pug
-//link(rel="stylesheet" href="stylesheets/style.css")
-
-
 
 head
 
 body
     div(class= 'center-box')
         h1(class= 'vertical-padding align-center') Login
-        div
-            label(class='align-right vertical-padding') Username:
-            input(class='align-left')( type='Username', name='username')
+        form(action='login', method='post')
+            div
+                label(class='align-right vertical-padding') Username:
+                input(class='align-left')( type='Username', name='username')
 
-        div
-            label(class='align-right vertical-padding') Password:
-            input(class='align-left', type='Password', name='password')
+            div
+                label(class='align-right vertical-padding') Password:
+                input(class='align-left', type='Password', name='password')
 
-        div(class= 'vertical-padding align-center')
-            button.btn.btn-primary(type='submit') Submit
+            div(class= 'vertical-padding align-center')
+                button.btn.btn-primary(type='submit') Submit
