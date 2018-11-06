@@ -35,8 +35,8 @@ a {
 .center-box{
   width: 50vh;
   height: 50vh;
-  margin-left: 25%;
-  margin-right: 25%;
+  margin-left: auto;
+  margin-right: auto;
 
 
   background-color: #e9eb89;
