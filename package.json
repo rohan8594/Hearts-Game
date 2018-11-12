@@ -26,7 +26,8 @@
     "pg-promise": "^8.5.0",
     "pug": "2.0.0-beta11",
     "sequelize": "^4.39.0",
-    "sequelize-cli": "^5.0.1"
+    "sequelize-cli": "^5.0.1",
+    "socket.io": "^2.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
