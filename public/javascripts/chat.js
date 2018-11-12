@@ -25,7 +25,7 @@ msg.addEventListener('keypress', () => {
 chatSocket.on('send msg', (data) => {
     const { handle, message } = data;
 
-    feedback.innerText = '';
+    feedback.innerHTML = '';
     output.innerHTML += '<p><strong>' + handle + ': </strong>' + message + '</p>'
 });
 

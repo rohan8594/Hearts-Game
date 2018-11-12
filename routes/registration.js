@@ -35,7 +35,6 @@ router.post('/', (req, res) => {
                         res.render('registration', { errors: [{
                             msg: detail
                         }]});
-                        console.log('ERROR:', detail);
                 })
             })
     }

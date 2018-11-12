@@ -4,7 +4,6 @@ io.on('connection', (socket) => {
     console.log('Made a socket connection');
 
     socket.on('entered lobby', (data) => {
-        console.log('Entered');
         io.emit('entry msg', data);
     });
 
