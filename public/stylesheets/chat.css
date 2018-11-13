@@ -13,7 +13,7 @@ h2{
 }
 
 #chat-window{
-    height: 400px;
+    height: 300px;
     overflow: auto;
     background: #f9f9f9;
 }
@@ -49,11 +49,8 @@ input{
     display: block;
     width: 100%;
     background: #fff;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
     font-family: Nunito;
     font-size: 16px;
-}
-
-button{
-    width: 100%;
 }
