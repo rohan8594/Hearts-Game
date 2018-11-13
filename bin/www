@@ -6,6 +6,7 @@
 const app = require('../app');
 const debug = require('debug')('term-project-hearts-game:server');
 const http = require('http');
+const io = require('../sockets');
 
 /**
  * Get port from environment and store in Express.
@@ -17,6 +18,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 const server = http.createServer(app);
+io.attach(server);
 
 /**
  * Listen on provided port, on all network interfaces.

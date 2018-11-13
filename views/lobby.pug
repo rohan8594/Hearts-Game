@@ -1,9 +1,12 @@
 doctype html
 html(lang='en')
 
-include partials/head.pug
+head
+    title= title
+    include partials/head.pug
+    link(rel='stylesheet', href='/stylesheets/chat.css')
 
-block content
+body
     h1= title
 
     div(class='lobby-container')
@@ -18,21 +21,28 @@ block content
                         div(class='games-list-right')
                             label #players/max
                         div(class='games-list-right')
-                            form(action='/lobby/gameid/join', method='post')
-                                button.btn.btn-primary(type='submit') Join
+                            button.btn.btn-primary(id='join-btn', type='submit') Join
                         div(class='games-list-right')
-                            form(action='/lobby/gameid/watch', method='post')
-                                button.btn.btn-primary(type='submit') Watch
-
+                            button.btn.btn-primary(id='watch-btn', type='submit') Watch
 
             p(class='align-center') Create a new game
-            form(class = 'align-center',action='/lobby', method='post')
                 label(class='padding-right') Number of players:
-                select(, name = 'number_of_players')
-                    option(value='2') 2
-                    option(value='4', selected) 4
+                select(id='max-players', name='number_of_players')
+                    option(value=2) 2
+                    option(value=4, selected) 4
 
-                button.btn.btn-primary(type='submit') Create Game
+                button.btn.btn-primary(id='create-game-btn', type='submit') Create Game
 
         div(class = 'chat-box')
-            h1 Chat
+            div(id='lobby-chat')
+                div(id='chat-window')
+                    div(id='output')
+                    div(id='feedback')
+                input(id='message', type='text', placeholder='Message', style='color: black')
+                button.btn.btn-primary(id='send', style='width: 100%') Send
+
+    script.
+        const username = '#{user.username}'
+        const user_id = '#{user.user_id}'
+    script(src='/javascripts/chat.js')
+    script(src='/javascripts/lobby.js')

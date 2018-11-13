@@ -31,7 +31,10 @@ router.post('/', (req, res) => {
                         res.render('login');
                     })
                     .catch((error) => {
-                        console.log('ERROR:', error);
+                        const { detail } = error;
+                        res.render('registration', { errors: [{
+                            msg: detail
+                        }]});
                 })
             })
     }
