@@ -8,27 +8,38 @@ head
 
 body
     h1= title
-    p Welcome to #{title}
-    p User authenticated!!! Username: #{user.username}
 
-    .col-md-6
-        div(id='lobby-games')
-            ul(id='games-list')
-                li game one
-                li game two
-                li game three
-            select(id='max-players', style='color: black; width: 100%')
-                option(value=2) Two Player Game
-                option(value=4) Four Player Game
-            button.btn.btn-primary(id='create-game-btn', type='button') Create Game
+    div(class='lobby-container')
+        div(class = 'lobby-box')
+            h1(class='no-vertical-padding') Current games
 
-    .col-md-6
-        div(id='lobby-chat')
-            div(id='chat-window')
-                div(id='output')
-                div(id='feedback')
-            input(id='message', type='text', placeholder='Message', style='color: black')
-            button.btn.btn-primary(id='send') Send
+            div(class = 'games-list-box')
+                - for (var i = 0; i < 10; i ++)
+                    div
+                        div(class='games-list-left')
+                            label Game room name
+                        div(class='games-list-right')
+                            label #players/max
+                        div(class='games-list-right')
+                            button.btn.btn-primary(id='join-btn', type='submit') Join
+                        div(class='games-list-right')
+                            button.btn.btn-primary(id='watch-btn', type='submit') Watch
+
+            p(class='align-center') Create a new game
+                label(class='padding-right') Number of players:
+                select(id='max-players', name='number_of_players')
+                    option(value=2) 2
+                    option(value=4, selected) 4
+
+                button.btn.btn-primary(id='create-game-btn', type='submit') Create Game
+
+        div(class = 'chat-box')
+            div(id='lobby-chat')
+                div(id='chat-window')
+                    div(id='output')
+                    div(id='feedback')
+                input(id='message', type='text', placeholder='Message', style='color: black')
+                button.btn.btn-primary(id='send', style='width: 100%') Send
 
     script.
         const username = '#{user.username}'

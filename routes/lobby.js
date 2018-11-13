@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const io = require('../sockets');
 const Game = require('../db/game');
@@ -7,7 +7,7 @@ const getRandomId = () => {
     return Math.round(Math.random() * 100000);
 };
 
-/* GET home page. */
+/* GET lobby page. */
 router.get('/', (req, res) => {
     if (req.isAuthenticated()) {
         const { user } = req;

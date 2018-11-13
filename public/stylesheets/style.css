@@ -1,63 +1,129 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #086305;
-  color: whitesmoke;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: #086305;
+    color: whitesmoke;
 }
 
 a {
-  color: #00B7FF;
-  color:#00ccff;
-  color:#086305;
-  color:whitesmoke;
+    color: #00B7FF;
+    color:#00ccff;
+    color:#086305;
+    color:whitesmoke;
 
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
 }
 
 .align-center{
-  text-align: center;
+    text-align: center;
+}
+
+.align-center-padded{
+    text-align: center;
+    padding: 5px;
 }
 
 .align-left{
-  text-align: left;
-  width: 40%;
+    text-align: left;
+    width: 40%;
 }
 
 .align-right{
-  text-align: right;
-  padding-right: 10px;
-  width: 40%;
+    text-align: right;
+    padding-right: 10px;
+    width: 40%;
 }
 
 .vertical-padding{
-  padding-top: 25px;
+    padding-top: 25px;
+}
+
+.padding-right{
+    padding-right:10px;
 }
 
 .center-box{
-  width: 50vh;
-  height: 50vh;
-  margin-left: auto;
-  margin-right: auto;
+    width: 50vh;
+    height: 50vh;
+    margin-left: auto;
+    margin-right: auto;
 
 
-  background-color: #e9eb89;
-  color: rgb(0, 0, 0);
+    background-color: #e9eb89;
+    color: rgb(0, 0, 0);
 
 }
 
 .button-division{
-  color:black;
-  background-color:#00ccff
+    color:black;
+    background-color:#00ccff
 }
 
-#lobby-games{
-  max-width: 600px;
-  margin: 30px auto;
-  border: 1px solid #ddd;
-  box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
-  border-radius: 2px;
+.chat-box{
+    width: 30%;
+    min-width:200px;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height: 65vh;
+    min-height: 405px;
+    padding: 20px;
+    display:inline-block;
+    float:right;
+
+    background-color: #e9eb89;
+    color: rgb(0, 0, 0);
 }
 
-#games-list{
-  height: 400px;
-  overflow: auto;
+.lobby-box{
+    width: 55%;
+    min-width: 415px;
+    height: 65vh;
+    margin: 5% 5%;
+    min-height: 405px;
+    display:inline-block;
+    padding: 20px;
+    overflow:auto;
+    float:left;
+
+    background-color: #e9eb89;
+    color: rgb(0, 0, 0);
+}
+
+.games-list-box{
+    overflow:auto;
+    height: 40vh;
+    min-height: 250px;
+    min-width: 375px;
+    background-color: #b6d7d1;
+}
+
+.games-list-left{
+    display:inline-block;
+    min-width: 50px;
+    padding: 5px;
+}
+
+.games-list-center{
+    display:inline-block;
+    text-align: center;
+    padding: 5px;
+}
+
+.games-list-right{
+    display:inline-block;
+    min-width: 30px;
+    padding: 5px;
+}
+
+.lobby-container{
+    min-width: 765px;
+}
+
+.no-vertical-padding{
+    margin-top: 0;
 }
