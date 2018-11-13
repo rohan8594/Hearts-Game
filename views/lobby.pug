@@ -11,14 +11,27 @@ body
     p Welcome to #{title}
     p User authenticated!!! Username: #{user.username}
 
-    div(id='lobby-chat')
-        div(id='chat-window')
-            div(id='output')
-            div(id='feedback')
-        input(id='message', type='text', placeholder='Message', style='color: black')
-        button(id='send') Send
+    .col-md-6
+        div(id='lobby-games')
+            ul(id='games-list')
+                li game one
+                li game two
+                li game three
+            select(id='max-players', style='color: black; width: 100%')
+                option(value=2) Two Player Game
+                option(value=4) Four Player Game
+            button.btn.btn-primary(id='create-game-btn', type='button') Create Game
+
+    .col-md-6
+        div(id='lobby-chat')
+            div(id='chat-window')
+                div(id='output')
+                div(id='feedback')
+            input(id='message', type='text', placeholder='Message', style='color: black')
+            button.btn.btn-primary(id='send') Send
 
     script.
         const username = '#{user.username}'
         const user_id = '#{user.user_id}'
     script(src='/javascripts/chat.js')
+    script(src='/javascripts/lobby.js')
