@@ -1,5 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const db = require('../db');
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -10,6 +11,10 @@ router.get('/', (req, res) => {
     } else {
         res.redirect('/');
     }
+});
+
+router.post('/', (req, res) => {
+    res.redirect('/game');
 });
 
 module.exports = router;

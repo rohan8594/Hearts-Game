@@ -1,6 +1,38 @@
-extends layout
+doctype html
+html(lang='en')
+
+include partials/head.pug
 
 block content
     h1= title
-    p Welcome to #{title}
-    p User authenticated!!! Username: #{user.username}
+
+    div(class='lobby-container')
+        div(class = 'lobby-box')
+            h1(class='no-vertical-padding') Current games
+
+            div(class = 'games-list-box')
+                - for (var i = 0; i < 10; i ++)
+                    div
+                        div(class='games-list-left')
+                            label Game room name
+                        div(class='games-list-right')
+                            label #players/max
+                        div(class='games-list-right')
+                            form(action='/lobby/gameid/join', method='post')
+                                button.btn.btn-primary(type='submit') Join
+                        div(class='games-list-right')
+                            form(action='/lobby/gameid/watch', method='post')
+                                button.btn.btn-primary(type='submit') Watch
+
+
+            p(class='align-center') Create a new game
+            form(class = 'align-center',action='/lobby', method='post')
+                label(class='padding-right') Number of players:
+                select(, name = 'number_of_players')
+                    option(value='2') 2
+                    option(value='4', selected) 4
+
+                button.btn.btn-primary(type='submit') Create Game
+
+        div(class = 'chat-box')
+            h1 Chat
