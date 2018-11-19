@@ -31,16 +31,16 @@ router.get('/', (req, res) => {
 });
 
 router.post('/createGame', (req, res) => {
-    const { user_id, username, max_players, game_name } = req.body;
+    const { user } = req;
+    const { max_players, game_name } = req.body;
     const game_id = getRandomId();
 
-    Game.createGame(game_id, max_players, user_id, game_name)
+    Game.createGame(game_id, max_players, user.user_id, game_name)
         .then(() => {
-            Game.createInitialGamePlayer(user_id, game_id)
+            Game.createInitialGamePlayer(user.user_id, game_id)
                 .then(() => {
                     displayGameList();
-                    lobbySocket.emit('enter game room', game_id);
-                    // res.redirect(`/game/${game_id}`);
+                    res.redirect(`/game/${game_id}`);
                 })
                 .catch((error) => { console.log(error) })
         })

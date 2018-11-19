@@ -15,14 +15,14 @@ body
 
             div(class = 'games-list-box')
 
-            p(class='align-center') Create a new game
-                input.form-control(id='game-name', type='text', placeholder='Enter game name:')
-                label(class='padding-right') Number of players:
-                select(id='max-players', name='number_of_players')
-                    option(value=2) 2
-                    option(value=4, selected) 4
-
-                button.btn.btn-primary(id='create-game-btn', type='submit') Create Game
+            form(action='/lobby/createGame', method='POST')
+                p(class='align-center') Create a new game
+                    input.form-control(name='game_name', type='text', placeholder='Enter game name:')
+                    label(class='padding-right') Number of players:
+                    select(id='max-players', name='max_players')
+                        option(value=2) 2
+                        option(value=4, selected) 4
+                    button.btn.btn-primary(id='create-game-btn', type='submit') Create Game
 
         div(class = 'chat-box')
             div(id='lobby-chat')
