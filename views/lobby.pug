@@ -17,7 +17,7 @@ body
 
             form(action='/lobby/createGame', method='POST')
                 p(class='align-center') Create a new game
-                    input.form-control(name='game_name', type='text', placeholder='Enter game name:')
+                    input.form-control(name='game_name', type='text', placeholder='Enter game name:', style='color: black')
                     label(class='padding-right') Number of players:
                     select(id='max-players', name='max_players')
                         option(value=2) 2
