@@ -19,10 +19,10 @@ router.get('/', (req, res) => {
 });
 
 router.post('/createGame', (req, res) => {
-    const { user_id, username, max_players } = req.body;
+    const { user_id, username, max_players, game_name } = req.body;
     const game_id = getRandomId();
 
-    Game.createGame(game_id, max_players, user_id)
+    Game.createGame(game_id, max_players, user_id, game_name)
         .then(() => {
             Game.createInitialGamePlayer(user_id, game_id)
                 .then(() => {

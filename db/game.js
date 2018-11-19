@@ -1,7 +1,8 @@
 const db = require('../db');
 
-const createGame = (game_id, max_players, user_id) => {
-    return db.none('INSERT INTO games (game_id, max_players, current_player) VALUES ($1, $2, $3)', [game_id, max_players, user_id])
+const createGame = (game_id, max_players, user_id, game_name) => {
+    return db.none('INSERT INTO games (game_id, max_players, current_player, game_name) VALUES ($1, $2, $3, $4)',
+        [game_id, max_players, user_id, game_name])
 };
 
 const createInitialGamePlayer = (user_id, game_id) => {
