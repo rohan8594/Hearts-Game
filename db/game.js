@@ -10,7 +10,21 @@ const createInitialGamePlayer = (user_id, game_id) => {
         '($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, 1])
 };
 
+const getCurrentGames = () => {
+    return db.any('SELECT * FROM games')
+        .then((results) => {
+            let currentGames = [];
+
+            results.forEach((game) => {
+                currentGames.push(game);
+            });
+            return currentGames;
+        })
+        .catch((error) => { console.log(error) })
+};
+
 module.exports = {
     createGame,
-    createInitialGamePlayer
+    createInitialGamePlayer,
+    getCurrentGames
 };

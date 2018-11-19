@@ -2,10 +2,22 @@ const express = require("express");
 const router = express.Router();
 const io = require('../sockets');
 const Game = require('../db/game');
+const lobbySocket = io.of('/lobby');
 
 const getRandomId = () => {
     return Math.round(Math.random() * 100000);
 };
+
+const displayGameList = () => {
+    Game.getCurrentGames()
+        .then((currentGames) => {
+            lobbySocket.emit('display games list', currentGames);
+        })
+};
+
+lobbySocket.on('connection', (socket) => {
+    displayGameList()
+});
 
 /* GET lobby page. */
 router.get('/', (req, res) => {
@@ -26,7 +38,8 @@ router.post('/createGame', (req, res) => {
         .then(() => {
             Game.createInitialGamePlayer(user_id, game_id)
                 .then(() => {
-                    io.emit('broadcast game', game_id);
+                    displayGameList();
+                    lobbySocket.emit('enter game room', game_id);
                     // res.redirect(`/game/${game_id}`);
                 })
                 .catch((error) => { console.log(error) })

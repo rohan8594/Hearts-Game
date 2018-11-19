@@ -14,16 +14,6 @@ body
             h1(class='no-vertical-padding') Current games
 
             div(class = 'games-list-box')
-                - for (var i = 0; i < 10; i ++)
-                    div
-                        div(class='games-list-left')
-                            label Game room name
-                        div(class='games-list-right')
-                            label #players/max
-                        div(class='games-list-right')
-                            button.btn.btn-primary(id='join-btn', type='submit') Join
-                        div(class='games-list-right')
-                            button.btn.btn-primary(id='watch-btn', type='submit') Watch
 
             p(class='align-center') Create a new game
                 input.form-control(id='game-name', type='text', placeholder='Enter game name:')
