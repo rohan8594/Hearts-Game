@@ -32,7 +32,7 @@ router.post('/createGame', (req, res) => {
 
     Game.createGame(max_players, user.user_id, game_name)
         .then((results) => {
-            var game_id = results[0].game_id
+            const { game_id } = results[0];
             Game.createInitialGamePlayer(user.user_id, game_id)
                 .then(() => {
                     displayGameList();

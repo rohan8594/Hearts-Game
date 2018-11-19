@@ -12,9 +12,7 @@ const createInitialGamePlayer = (user_id, game_id) => {
 
 const getCurrentGames = () => {
     return db.query('SELECT g.game_id, game_name, max_players, COUNT(*) as player_count ' +
-    'FROM games g, game_players gp ' +
-    'WHERE g.game_id=gp.game_id ' +
-    'GROUP BY g.game_id ')
+    'FROM games g, game_players gp WHERE g.game_id=gp.game_id GROUP BY g.game_id ')
         .catch((error) => { console.log(error) })
 };
 
