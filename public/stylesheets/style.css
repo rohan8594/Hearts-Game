@@ -5,13 +5,6 @@ body {
     color: whitesmoke;
 }
 
-a {
-    color: #00B7FF;
-    color:#00ccff;
-    color:#086305;
-    color:whitesmoke;
-
-}
 
 ul {
     list-style-type: none;
@@ -126,4 +119,8 @@ ul {
 
 .no-vertical-padding{
     margin-top: 0;
+}
+
+.vertical-padding-50{
+    padding-top: 50px;
 }

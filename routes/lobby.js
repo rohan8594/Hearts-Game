@@ -4,10 +4,6 @@ const io = require('../sockets');
 const Game = require('../db/game');
 const lobbySocket = io.of('/lobby');
 
-const getRandomId = () => {
-    return Math.round(Math.random() * 100000);
-};
-
 const displayGameList = () => {
     Game.getCurrentGames()
         .then((currentGames) => {
@@ -23,8 +19,9 @@ lobbySocket.on('connection', (socket) => {
 router.get('/', (req, res) => {
     if (req.isAuthenticated()) {
         const { user } = req;
+        const passedError = req.query.error;
 
-        res.render('lobby', {user: user, title: 'Hearts Game'});
+        res.render('lobby', {user: user, title: 'Hearts Game', error: passedError});
     } else {
         res.redirect('/');
     }
@@ -33,18 +30,26 @@ router.get('/', (req, res) => {
 router.post('/createGame', (req, res) => {
     const { user } = req;
     const { max_players, game_name } = req.body;
-    const game_id = getRandomId();
 
-    Game.createGame(game_id, max_players, user.user_id, game_name)
-        .then(() => {
-            Game.createInitialGamePlayer(user.user_id, game_id)
-                .then(() => {
-                    displayGameList();
-                    res.redirect(`/game/${game_id}`);
-                })
-                .catch((error) => { console.log(error) })
-        })
-        .catch((error) => { console.log(error) })
+    req.checkBody('game_name', 'Game name cannot be empty').notEmpty();
+    const errors = req.validationErrors();
+
+    if (errors) {
+        const errStr = encodeURIComponent(errors[0].msg);
+        res.redirect('/lobby?error=' + errStr);
+    } else {
+        Game.createGame(max_players, user.user_id, game_name)
+            .then((results) => {
+                const { game_id } = results[0];
+                Game.createInitialGamePlayer(user.user_id, game_id)
+                    .then(() => {
+                        displayGameList();
+                        res.redirect(`/game/${game_id}`);
+                    })
+                    .catch((error) => { console.log(error) })
+            })
+            .catch((error) => { console.log(error) })
+    }
 });
 
 module.exports = router;
