@@ -16,6 +16,8 @@ body
             div(class = 'games-list-box')
 
             form(action='/lobby/createGame', method='POST')
+                if error
+                    p(class= 'align-center', style= 'color: red')= error
                 p(class='align-center') Create a new game
                     input.form-control(name='game_name', type='text', placeholder='Enter game name:', style='color: black')
                     label(class='padding-right') Number of players:
