@@ -8,6 +8,7 @@ module.exports = {
               game_id: {
                   type: Sequelize.INTEGER,
                   primaryKey: true,
+                  autoIncrement: true
               },
               max_players: {
                   type: Sequelize.INTEGER,
@@ -20,6 +21,10 @@ module.exports = {
                       model: 'users',
                       key: 'user_id'
                   }
+              },
+              game_name: {
+                  type: Sequelize.STRING,
+                  allowNull: false
               }
           }
       );
