@@ -6,28 +6,33 @@ head
     include partials/head.pug
     link(rel='stylesheet', href='/stylesheets/chat.css')
 
-body
-    h1= title
+body(class = 'general-body')
+    div(class='banner')
+            h1(class='banner-align-left') Hearts
+            span
+                a(href='/logout', class='banner-align-right') Sign out
+
 
     div(class='lobby-container')
         div(class = 'lobby-box')
             h1(class='no-vertical-padding') Current games
 
-            div(class = 'games-list-box')
+            div(class = 'games-list-box shadow')
 
             form(action='/lobby/createGame', method='POST')
                 if error
                     p(class= 'align-center', style= 'color: red')= error
-                p(class='align-center') Create a new game
-                    input.form-control(name='game_name', type='text', placeholder='Enter game name:', style='color: black')
-                    label(class='padding-right') Number of players:
-                    select(id='max-players', name='max_players')
-                        option(value=2) 2
-                        option(value=4, selected) 4
-                    button.btn.btn-primary(id='create-game-btn', type='submit') Create Game
+                p(class='create-game') Create a new game
+                input.form-control(name='game_name', type='text', placeholder='Enter game name:', style='color: black')
+                label(class='num-players-left') Number of players:
+                select(class = 'num-players-right', id='max-players', name='max_players')
+                    option(value=2) 2
+                    option(value=4, selected) 4
+                button.btn.btn-primary(class="create-button", id='create-game-btn', type='submit') Create Game
 
         div(class = 'chat-box')
-            div(id='lobby-chat')
+            h1(class='no-vertical-padding') Lobby chat
+            div
                 div(id='chat-window')
                     div(id='output')
                     div(id='feedback')

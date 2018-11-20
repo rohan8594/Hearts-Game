@@ -4,16 +4,13 @@ h2{
     color: #575ed8;
 }
 
-#lobby-chat{
-    max-width: 600px;
-    margin: 30px auto;
+
+#chat-window{
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0,0,0,0.05);
     border-radius: 2px;
-}
-
-#chat-window{
-    height: 300px;
+    height: 46vh;
+    min-height:320px;
     overflow: auto;
     background: #f9f9f9;
 }
