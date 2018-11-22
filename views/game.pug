@@ -17,6 +17,32 @@ body(class = 'general-body')
 
         div(class='game-box')
             p Background color is temporary
+            div(class= "player-card Diamonds two" style ="left: 120px; top: 300px; z-index:2;")
+            div(class= "player-card Diamonds three" style ="left: 140px; top: 300px; z-index:3;")
+            div(class= "player-card Diamonds four" style ="left: 160px; top: 300px; z-index:4;")
+            div(class= "player-card Diamonds five" style ="left: 180px; top: 300px; z-index:5;")
+            div(class= "player-card Diamonds six" style ="left: 200px; top: 300px; z-index:6;")
+            div(class= "player-card Diamonds seven" style ="left: 220px; top: 300px; z-index:7;")
+            div(class= "player-card Diamonds eight" style ="left: 240px; top: 300px; z-index:8;")
+            div(class= "player-card Diamonds nine" style ="left: 260px; top: 300px; z-index:9;")
+            div(class= "player-card Diamonds ten" style ="left: 280px; top: 300px; z-index:10;")
+            div(class= "player-card Hearts jack" style ="left: 300px; top: 300px; z-index:11;")
+            div(class= "player-card Spades queen" style ="left: 320px; top: 300px; z-index:12;")
+            div(class= "player-card Clubs king" style ="left: 340px; top: 300px; z-index:13;")
+
+
+            div(class= "left-player card-back" style ="top: 120px;z-index:2;")
+            div(class= "left-player card-back" style ="top: 140px;z-index:3;")
+            div(class= "left-player card-back" style ="top: 160px; z-index:4;")
+            div(class= "left-player card-back" style ="top: 180px; z-index:5;")
+            div(class= "left-player card-back" style ="top: 200px; z-index:6;")
+            div(class= "left-player card-back" style ="top: 220px; z-index:7;")
+            div(class= "left-player card-back" style ="top: 240px; z-index:8;")
+            div(class= "left-player card-back" style ="top: 260px; z-index:9;")
+            div(class= "left-player card-back" style ="top: 280px; z-index:10;")
+            div(class= "left-player card-back" style ="top: 300px; z-index:11;")
+            div(class= "left-player card-back" style ="top: 320px; z-index:12;")
+            div(class= "left-player card-back" style ="top: 340px; z-index:13;")
 
         div(class = 'chat-box')
             h1(class='no-vertical-padding') Game chat
@@ -26,3 +52,9 @@ body(class = 'general-body')
                     div(id='feedback')
                 input(id='message', type='text', placeholder='Message', style='color: black')
                 button.btn.btn-primary(id='send', style='width: 100%') Send
+
+    script.
+        const username = '#{user.username}'
+        const user_id = '#{user.user_id}'
+    script(src='/javascripts/chat.js')
+    script(src='/javascripts/lobby.js')

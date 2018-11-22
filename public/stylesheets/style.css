@@ -225,6 +225,117 @@ ul {
     padding: 20px;
     float:left;
 
+    position: relative;
+
     background-color: #e9eb89;
     color: rgb(0, 0, 0);
+}
+
+.card-back{
+    background-image: url("/images/cards.png");
+    width: 69px;
+    height: 100px;
+    position: absolute;
+    background-position-x: 0px;
+    background-position-y: -400px;
+}
+
+.top-player{
+    transform: rotate(180deg);
+    left: 100px;
+}
+
+.left-player{
+    transform: rotate(90deg);
+}
+
+.right-player{
+    transform: rotate(270deg);
+}
+
+.card {
+    background-image: url("/images/cards.png");
+    width: 69px;
+    height: 100px;
+    position: absolute;
+}
+
+.player-card{
+    background-image: url("/images/cards.png");
+    width: 69px;
+    height: 100px;
+    position: absolute;
+}
+
+.player-card:hover{
+    transform: translateY(-5px);
+    transition-duration: 100ms
+}
+
+.Clubs{
+    background-position-y: 0px;
+}
+
+.Diamonds{
+    background-position-y: -100px;
+}
+
+.Hearts{
+    background-position-y: -200px;
+}
+
+.Spades{
+    background-position-y: -300px;
+}
+
+.ace{
+    background-position-x: 0px;
+}
+
+.two{
+    background-position-x: -69px;
+}
+
+.three{
+    background-position-x: -138px;
+}
+
+.four{
+    background-position-x: -207px;
+}
+
+.five{
+    background-position-x: -276px;
+}
+
+.six{
+    background-position-x: -345px;
+}
+
+.seven{
+    background-position-x: -414px;
+}
+
+.eight{
+    background-position-x: -483px;
+}
+
+.nine{
+    background-position-x: -552px;
+}
+
+.ten{
+    background-position-x: -621px;
+}
+
+.jack{
+    background-position-x: -690px;
+}
+
+.queen{
+    background-position-x: -759px;
+}
+
+.king{
+    background-position-x: -828px;
 }
