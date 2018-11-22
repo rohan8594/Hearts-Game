@@ -14,7 +14,9 @@ const createInitialGamePlayer = (user_id, game_id) => {
 
 const getCurrentGames = () => {
     return db.query('SELECT g.game_id, game_name, max_players, COUNT(*) as player_count ' +
-    'FROM games g, game_players gp WHERE g.game_id=gp.game_id GROUP BY g.game_id ')
+        'FROM games g, game_players gp ' +
+        'WHERE g.game_id=gp.game_id ' +
+        'GROUP BY g.game_id ')
         .catch((error) => { console.log(error) })
 };
 
@@ -22,12 +24,12 @@ const getPlayerCount = (game_id) => {
     return db.query('SELECT COUNT(*) as player_count ' +
         'FROM game_players ' +
         'WHERE game_id=$1', [game_id])
-        .then((results) => { return results[0].player_count })
+        .then((results) => { return results[0].player_count }) 
         .catch((error) => { console.log(error) })
 };
 
 const observeGame = (user_id, game_id) => {
-    return db.none('INSERT into game_observers(user_id, game_id' +
+    return db.none('INSERT into game_observers(user_id, game_id) ' +
         'VALUES ($1, $2)', [user_id, game_id])
         .catch((error) => { console.log(error) })
 };
@@ -46,11 +48,23 @@ const deleteGame = (game_id) => {
         .catch((error) => {console.log(error) })
 };
 
+const verifyInGame = (user_id, game_id) => {
+    return db.query('SELECT MAX(count) as in_Game ' +
+        'FROM ( ' + 
+        'SELECT COUNT(*) FROM game_players WHERE game_players.user_id = $1 AND game_players.game_id = $2 ' +
+        'UNION ' +
+	    'SELECT COUNT(*) FROM game_observers WHERE game_observers.user_id = $1 AND game_observers.game_id = $2 ' +
+        ') as counts' , [user_id, game_id]) 
+        .then((results) => {return results[0].in_game})
+        .catch((error) => {console.log(error) })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
     getCurrentGames,
     observeGame,
     joinGame,
-    deleteGame
+    deleteGame,
+    verifyInGame
 };
