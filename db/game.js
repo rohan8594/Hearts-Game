@@ -22,7 +22,7 @@ const getPlayerCount = (game_id) => {
     return db.query('SELECT COUNT(*) as player_count ' +
         'FROM game_players ' +
         'WHERE game_id=$1', [game_id])
-        .then((results) => { return results[0].player_count }) 
+        .then((results) => { return results[0].player_count })
     .catch((error) => { console.log(error) })
 }
 
