@@ -161,6 +161,7 @@ ul {
 
 .games-list-left{
     display:inline-block;
+    width: 40%;
     min-width: 50px;
     padding: 5px;
 }
@@ -212,130 +213,60 @@ ul {
 /*Game specific*/
 
 .game-container{
-    min-width: 1150px;
+    min-width: 1250px;
     overflow: auto;
 }
 
 .game-box{
-    min-width: 600px;
-    width:30%;
-    margin: 5% 5%;
-    height: 500px;
+    width: 650px;
+    margin: 30px 5%;
+    height: 630px;
     display:inline-block;
-    padding: 20px;
+    padding: 0px;
     float:left;
 
     position: relative;
+}
+
+.game-chat-box{
+    width: 30%;
+    min-width:400px;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height: 70vh;
+    min-height: 485px;
+    padding: 20px;
+    display:inline-block;
+    float:right;
+
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
     background-color: #e9eb89;
     color: rgb(0, 0, 0);
 }
 
-.card-back{
-    background-image: url("/images/cards.png");
-    width: 69px;
-    height: 100px;
-    position: absolute;
-    background-position-x: 0px;
-    background-position-y: -400px;
-}
-
-.top-player{
-    transform: rotate(180deg);
-    left: 100px;
-}
-
-.left-player{
-    transform: rotate(90deg);
-}
-
-.right-player{
-    transform: rotate(270deg);
-}
-
-.card {
-    background-image: url("/images/cards.png");
-    width: 69px;
-    height: 100px;
+.player-info{
+    left: 170px;
+    top: 590px;
     position: absolute;
 }
 
-.player-card{
-    background-image: url("/images/cards.png");
-    width: 69px;
-    height: 100px;
+.left-player-info{
+    left: 0px;
+    top: 80px;
     position: absolute;
 }
 
-.player-card:hover{
-    transform: translateY(-5px);
-    transition-duration: 100ms
+.right-player-info{
+    left: 500px;
+    top: 80px;
+    position: absolute;
 }
 
-.Clubs{
-    background-position-y: 0px;
-}
-
-.Diamonds{
-    background-position-y: -100px;
-}
-
-.Hearts{
-    background-position-y: -200px;
-}
-
-.Spades{
-    background-position-y: -300px;
-}
-
-.ace{
-    background-position-x: 0px;
-}
-
-.two{
-    background-position-x: -69px;
-}
-
-.three{
-    background-position-x: -138px;
-}
-
-.four{
-    background-position-x: -207px;
-}
-
-.five{
-    background-position-x: -276px;
-}
-
-.six{
-    background-position-x: -345px;
-}
-
-.seven{
-    background-position-x: -414px;
-}
-
-.eight{
-    background-position-x: -483px;
-}
-
-.nine{
-    background-position-x: -552px;
-}
-
-.ten{
-    background-position-x: -621px;
-}
-
-.jack{
-    background-position-x: -690px;
-}
-
-.queen{
-    background-position-x: -759px;
-}
-
-.king{
-    background-position-x: -828px;
+.top-player-info{
+    left: 170px;
+    top: 0px;
+    position: absolute;
 }

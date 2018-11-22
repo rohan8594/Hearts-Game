@@ -5,6 +5,7 @@ head
     title= title
     include partials/head.pug
     link(rel='stylesheet', href='/stylesheets/chat.css')
+    link(rel='stylesheet', href='/stylesheets/cards.css')
 
 body(class = 'general-body')
     div(class='banner')
@@ -16,35 +17,78 @@ body(class = 'general-body')
     div(class='game-container')
 
         div(class='game-box')
-            p Background color is temporary
-            div(class= "player-card Diamonds two" style ="left: 120px; top: 300px; z-index:2;")
-            div(class= "player-card Diamonds three" style ="left: 140px; top: 300px; z-index:3;")
-            div(class= "player-card Diamonds four" style ="left: 160px; top: 300px; z-index:4;")
-            div(class= "player-card Diamonds five" style ="left: 180px; top: 300px; z-index:5;")
-            div(class= "player-card Diamonds six" style ="left: 200px; top: 300px; z-index:6;")
-            div(class= "player-card Diamonds seven" style ="left: 220px; top: 300px; z-index:7;")
-            div(class= "player-card Diamonds eight" style ="left: 240px; top: 300px; z-index:8;")
-            div(class= "player-card Diamonds nine" style ="left: 260px; top: 300px; z-index:9;")
-            div(class= "player-card Diamonds ten" style ="left: 280px; top: 300px; z-index:10;")
-            div(class= "player-card Hearts jack" style ="left: 300px; top: 300px; z-index:11;")
-            div(class= "player-card Spades queen" style ="left: 320px; top: 300px; z-index:12;")
-            div(class= "player-card Clubs king" style ="left: 340px; top: 300px; z-index:13;")
+            div(class = "player-info")
+                p Player 1
+                p This Round's Score: Total Score:
+            div(class= "player-card Diamonds ace" style ="left: 170px; z-index:1;")
+            div(class= "player-card Diamonds two" style ="left: 190px;z-index:2;")
+            div(class= "player-card Diamonds three" style ="left: 210px; z-index:3;")
+            div(class= "player-card Diamonds four" style ="left: 230px; z-index:4;")
+            div(class= "player-card Diamonds five" style ="left: 250px; z-index:5;")
+            div(class= "player-card Diamonds six" style ="left: 270px; z-index:6;")
+            div(class= "player-card Diamonds seven" style ="left: 290px; z-index:7;")
+            div(class= "player-card Diamonds eight" style ="left: 310px; z-index:8;")
+            div(class= "player-card Diamonds nine" style ="left: 330px; z-index:9;")
+            div(class= "player-card Diamonds ten" style ="left: 350px; z-index:10;")
+            div(class= "player-card Hearts jack" style ="left: 370px; z-index:11;")
+            div(class= "player-card Spades queen" style ="left: 390px; z-index:12;")
+            div(class= "player-card Clubs king" style ="left: 410px; z-index:13;")
+
+            div(class = "top-player-info")
+                p Player 3
+                p This Round's Score: Total Score:
+            div(class= "top-player card-back" style ="left: 170px; z-index:1;")
+            div(class= "top-player card-back" style ="left: 190px;z-index:2;")
+            div(class= "top-player card-back" style ="left: 210px; z-index:3;")
+            div(class= "top-player card-back" style ="left: 230px; z-index:4;")
+            div(class= "top-player card-back" style ="left: 250px; z-index:5;")
+            div(class= "top-player card-back" style ="left: 270px; z-index:6;")
+            div(class= "top-player card-back" style ="left: 290px; z-index:7;")
+            div(class= "top-player card-back" style ="left: 310px; z-index:8;")
+            div(class= "top-player card-back" style ="left: 330px; z-index:9;")
+            div(class= "top-player card-back" style ="left: 350px; z-index:10;")
+            div(class= "top-player card-back" style ="left: 370px; z-index:11;")
+            div(class= "top-player card-back" style ="left: 390px; z-index:12;")
+            div(class= "top-player card-back" style ="left: 410px; z-index:13;")
+
+            div(class = "left-player-info")
+                p Player 2
+                p This Round's Score:
+                p Total Score:
+            div(class= "left-player card-back" style ="top: 150px; z-index:10;")
+            div(class= "left-player card-back" style ="top: 170px;z-index:20;")
+            div(class= "left-player card-back" style ="top: 190px;z-index:20;")
+            div(class= "left-player card-back" style ="top: 210px;z-index:30;")
+            div(class= "left-player card-back" style ="top: 230px; z-index:40;")
+            div(class= "left-player card-back" style ="top: 250px; z-index:50;")
+            div(class= "left-player card-back" style ="top: 270px; z-index:60;")
+            div(class= "left-player card-back" style ="top: 290px; z-index:70;")
+            div(class= "left-player card-back" style ="top: 310px; z-index:80;")
+            div(class= "left-player card-back" style ="top: 330px; z-index:90;")
+            div(class= "left-player card-back" style ="top: 350px; z-index:100;")
+            div(class= "left-player card-back" style ="top: 370px; z-index:110;")
+            div(class= "left-player card-back" style ="top: 390px; z-index:120;")
+
+            div(class = "right-player-info")
+                p Player 4
+                p This Round's Score:
+                p Total Score:
+            div(class= "right-player card-back" style ="top: 150px; z-index:10;")
+            div(class= "right-player card-back" style ="top: 170px;z-index:20;")
+            div(class= "right-player card-back" style ="top: 190px;z-index:20;")
+            div(class= "right-player card-back" style ="top: 210px;z-index:30;")
+            div(class= "right-player card-back" style ="top: 230px; z-index:40;")
+            div(class= "right-player card-back" style ="top: 250px; z-index:50;")
+            div(class= "right-player card-back" style ="top: 270px; z-index:60;")
+            div(class= "right-player card-back" style ="top: 290px; z-index:70;")
+            div(class= "right-player card-back" style ="top: 310px; z-index:80;")
+            div(class= "right-player card-back" style ="top: 330px; z-index:90;")
+            div(class= "right-player card-back" style ="top: 350px; z-index:100;")
+            div(class= "right-player card-back" style ="top: 370px; z-index:110;")
+            div(class= "right-player card-back" style ="top: 390px; z-index:120;")
 
 
-            div(class= "left-player card-back" style ="top: 120px;z-index:2;")
-            div(class= "left-player card-back" style ="top: 140px;z-index:3;")
-            div(class= "left-player card-back" style ="top: 160px; z-index:4;")
-            div(class= "left-player card-back" style ="top: 180px; z-index:5;")
-            div(class= "left-player card-back" style ="top: 200px; z-index:6;")
-            div(class= "left-player card-back" style ="top: 220px; z-index:7;")
-            div(class= "left-player card-back" style ="top: 240px; z-index:8;")
-            div(class= "left-player card-back" style ="top: 260px; z-index:9;")
-            div(class= "left-player card-back" style ="top: 280px; z-index:10;")
-            div(class= "left-player card-back" style ="top: 300px; z-index:11;")
-            div(class= "left-player card-back" style ="top: 320px; z-index:12;")
-            div(class= "left-player card-back" style ="top: 340px; z-index:13;")
-
-        div(class = 'chat-box')
+        div(class = 'game-chat-box')
             h1(class='no-vertical-padding') Game chat
             div
                 div(id='chat-window')
