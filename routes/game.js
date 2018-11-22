@@ -1,20 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const isAuthenticated = require('../config/passport/isAuthenticated');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', isAuthenticated, (req, res, next) => {
     res.render('game', { title: 'Hearts Game' });
 });
 
-router.get('/:game_id', (req, res) => {
-    if (req.isAuthenticated()) {
-        const { user } = req;
-        const { game_id } = req.params;
+router.get('/:game_id', isAuthenticated, (req, res) => {
+    const { user } = req;
+    const { game_id } = req.params;
 
-        res.render('game', { user: user, game_id: game_id });
-    } else {
-        res.redirect('/');
-    }
+    res.render('game', { user: user, game_id: game_id });
 });
 
 module.exports = router;

@@ -3,6 +3,7 @@ const router = express.Router();
 const io = require('../sockets');
 const Game = require('../db/game');
 const lobbySocket = io.of('/lobby');
+const isAuthenticated = require('../config/passport/isAuthenticated');
 
 const displayGameList = () => {
     Game.getCurrentGames()
@@ -16,18 +17,14 @@ lobbySocket.on('connection', (socket) => {
 });
 
 /* GET lobby page. */
-router.get('/', (req, res) => {
-    if (req.isAuthenticated()) {
-        const { user } = req;
-        const passedError = req.query.error;
+router.get('/', isAuthenticated, (req, res) => {
+    const { user } = req;
+    const passedError = req.query.error;
 
-        res.render('lobby', {user: user, title: 'Hearts Game', error: passedError});
-    } else {
-        res.redirect('/');
-    }
+    res.render('lobby', {user: user, title: 'Hearts Game', error: passedError});
 });
 
-router.post('/createGame', (req, res) => {
+router.post('/createGame', isAuthenticated, (req, res) => {
     const { user } = req;
     const { max_players, game_name } = req.body;
 
@@ -57,7 +54,7 @@ router.get('/logout', (req, res) => {
    res.redirect('/');
 });
 
-router.post('/joinGame', (req, res) => {
+router.post('/joinGame', isAuthenticated, (req, res) => {
     const { user } = req;
     const { join_btn: game_id } = req.body;
     Game.joinGame(user.user_id, game_id);
@@ -65,7 +62,7 @@ router.post('/joinGame', (req, res) => {
     res.redirect(`/game/${game_id}`);
 });
 
-router.post('/observeGame', (req, res) => {
+router.post('/observeGame', isAuthenticated, (req, res) => {
     const { user } = req;
     const { watch_btn: game_id } = req.body;
 
