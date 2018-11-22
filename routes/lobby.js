@@ -57,4 +57,20 @@ router.get('/logout', (req, res) => {
    res.redirect('/');
 });
 
+router.post('/joinGame', (req, res) => {
+    const { user } = req;
+    const { join_btn: game_id } = req.body;
+    Game.joinGame(user.user_id, game_id)
+    displayGameList();
+    res.redirect(`/game/${game_id}`);
+})
+
+router.post('/observeGame', (req, res) => {
+    const { user } = req;
+    const { watch_btn: game_id } = req.body;
+
+    Game.observeGame(game_id)
+    res.redirect(`/game/${game_id}`);
+})
+
 module.exports = router;
