@@ -24,13 +24,13 @@ const getPlayerCount = (game_id) => {
         'WHERE game_id=$1', [game_id])
         .then((results) => { return results[0].player_count }) 
     .catch((error) => { console.log(error) })
-}
+};
 
 const observeGame = (user_id, game_id) => {
     return db.none('INSERT into game_observers(user_id, game_id' +
         'VALUES ($1, $2)', [user_id, game_id])
     .catch((error) => { console.log(error) })
-}
+};
 
 const joinGame =  (user_id, game_id) => {
     getPlayerCount(game_id)
@@ -39,17 +39,18 @@ const joinGame =  (user_id, game_id) => {
                 'VALUES ($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, player_count + 1])
             .catch((error) => { console.log(error) })
         })
-}
+};
 
 const deleteGame = (game_id) => {
-    return db.none('DELETE FROM games WHERE game_id=$1'), [game_id]
+    return db.none('DELETE FROM games WHERE game_id=$1', [game_id])
     .catch((error) => {console.log(error) })
-}
+};
 
 module.exports = {
     createGame,
     createInitialGamePlayer,
     getCurrentGames,
     observeGame,
-    joinGame
+    joinGame,
+    deleteGame
 };
