@@ -9,8 +9,9 @@ router.get('/', function(req, res, next) {
 router.get('/:game_id', (req, res) => {
     if (req.isAuthenticated()) {
         const { user } = req;
+        const { game_id } = req.params;
 
-        res.render('game', { user: user });
+        res.render('game', { user: user, game_id: game_id });
     } else {
         res.redirect('/');
     }
