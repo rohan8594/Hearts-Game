@@ -1,5 +1,8 @@
-body {
-    padding: 50px;
+
+/*General*/
+
+
+.general-body{
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
     background-color: #086305;
     color: whitesmoke;
@@ -39,21 +42,76 @@ ul {
     padding-right:10px;
 }
 
-.center-box{
-    width: 50vh;
-    height: 50vh;
-    margin-left: auto;
-    margin-right: auto;
-
-
-    background-color: #e9eb89;
-    color: rgb(0, 0, 0);
-
-}
-
 .button-division{
     color:black;
     background-color:#00ccff
+}
+
+.no-vertical-padding{
+    margin-top: 0;
+}
+
+.vertical-padding-50{
+    padding-top: 50px;
+}
+
+.shadow {
+    -moz-box-shadow:    inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow:         inset 0 0 10px #000000;
+}
+
+/*Top banner*/
+
+.banner{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top:10px;
+    width: 100%;
+    height: 60px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.banner-align-left{
+    display:inline;
+}
+
+.banner-align-right{
+    margin-top: 15px;
+    color: #e9eb89;
+    float:right;
+}
+
+.banner-align-right:hover{
+    color: whitesmoke;
+}
+
+/*Login/register specific*/
+
+.login-body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: #086305;
+    color: whitesmoke;
+}
+
+.center-box {
+    width: 400px;
+    height: 350px;
+    margin-left: auto;
+    margin-right: auto;
+
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+
+    background-color: #e9eb89;
+    color: rgb(0, 0, 0);
+}
+
+/*Lobby*/
+
+.lobby-container{
+    min-width: 765px;
 }
 
 .chat-box{
@@ -62,11 +120,14 @@ ul {
     margin-right: 5%;
     margin-top: 5%;
     margin-bottom: 5%;
-    height: 65vh;
-    min-height: 405px;
+    height: 70vh;
+    min-height: 485px;
     padding: 20px;
     display:inline-block;
     float:right;
+
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
     background-color: #e9eb89;
     color: rgb(0, 0, 0);
@@ -75,13 +136,16 @@ ul {
 .lobby-box{
     width: 55%;
     min-width: 415px;
-    height: 65vh;
+    height: 70vh;
     margin: 5% 5%;
-    min-height: 405px;
+    min-height: 485px;
     display:inline-block;
     padding: 20px;
     overflow:auto;
     float:left;
+
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 
     background-color: #e9eb89;
     color: rgb(0, 0, 0);
@@ -90,7 +154,7 @@ ul {
 .games-list-box{
     overflow:auto;
     height: 40vh;
-    min-height: 250px;
+    min-height: 275px;
     min-width: 375px;
     background-color: #b6d7d1;
 }
@@ -113,14 +177,54 @@ ul {
     padding: 5px;
 }
 
-.lobby-container{
-    min-width: 765px;
+.num-players{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    align: left;
 }
 
-.no-vertical-padding{
-    margin-top: 0;
+.num-players-left{
+    display: inline;
+    padding-left: 0px;
+    padding-right: 5px;
+    padding-top: 15px;
+    float: left
 }
 
-.vertical-padding-50{
-    padding-top: 50px;
+.num-players-right{
+    display: inline;
+    margin-top: 15px;
+    align:right;
+}
+
+.create-button{
+    display: inline;
+    margin-top: 10px;
+    float: right;
+}
+
+.create-game{
+    margin-top: 10px;
+    text-align: center;
+}
+
+/*Game specific*/
+
+.game-container{
+    min-width: 1150px;
+    overflow: auto;
+}
+
+.game-box{
+    min-width: 600px;
+    width:30%;
+    margin: 5% 5%;
+    height: 500px;
+    display:inline-block;
+    padding: 20px;
+    float:left;
+
+    background-color: #e9eb89;
+    color: rgb(0, 0, 0);
 }

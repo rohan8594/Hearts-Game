@@ -4,7 +4,9 @@ html(lang='en')
 head
     include partials/head.pug
 
-body
+body(class = 'login-body')
+    h1(class= 'vertical-padding align-center') Welcome to Hearts!
+
     div(class= 'center-box')
         h1(class= 'vertical-padding align-center') Registration
         form(action='/registration', method='post')

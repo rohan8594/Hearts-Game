@@ -4,7 +4,9 @@ html(lang='en')
 head
     include partials/head.pug
 
-body
+body(class = 'login-body')
+    h1(class= 'vertical-padding align-center') Welcome to Hearts!
+
     div(class= 'center-box')
         h1(class= 'vertical-padding align-center') Login
         form(action='login', method='post')
@@ -23,4 +25,4 @@ body
                 button.btn.btn-primary(type='submit') Submit
 
         div(class= 'vertical-padding-50 align-center')
-            a(href='/registration') Not registered? Create account here!
+            a(href='/registration') Not registered? Create an account here!
