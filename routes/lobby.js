@@ -58,17 +58,37 @@ router.post('/joinGame', isAuthenticated, (req, res) => {
     const { user } = req;
     const { join_btn: game_id } = req.body;
 
-    Game.joinGame(user.user_id, game_id);
-    displayGameList();
-    res.redirect(`/game/${game_id}`);
+    Game.verifyInGame(user.user_id, game_id)
+        .then((in_game) => {
+
+            if (in_game === '0') {
+                Game.joinGame(user.user_id, game_id);
+                displayGameList();
+                res.redirect(`/game/${game_id}`);
+            } else {
+                const errStr = encodeURIComponent('You are already in this game!');
+                res.redirect('/lobby?error=' + errStr);
+            }
+
+        });
 });
 
 router.post('/observeGame', isAuthenticated, (req, res) => {
     const { user } = req;
     const { watch_btn: game_id } = req.body;
 
-    Game.observeGame(user.user_id, game_id);
-    res.redirect(`/game/${game_id}`);
+    Game.verifyInGame(user.user_id, game_id)
+        .then((in_game) => {
+
+            if (in_game === '0') {
+                Game.observeGame(user.user_id, game_id);
+                res.redirect(`/game/${game_id}`);
+            } else {
+                const errStr = encodeURIComponent('You are already in this game!');
+                res.redirect('/lobby?error=' + errStr);
+            }
+
+        });
 });
 
 module.exports = router;
