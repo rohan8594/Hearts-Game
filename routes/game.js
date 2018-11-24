@@ -20,8 +20,8 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
 
 gameSocket.on('connection', (socket) => {
     // Game logic will prob go here
-    socket.join(game_id.toString());
-    gameSocket.to(game_id.toString()).emit('Entry', { user: user, game_id: game_id })
+    socket.join(game_id);
+    gameSocket.to(game_id).emit('Entry', { user: user, game_id: game_id })
 });
 
 module.exports = router;
