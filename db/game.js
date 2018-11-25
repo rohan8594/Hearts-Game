@@ -24,7 +24,7 @@ const getPlayerCount = (game_id) => {
     return db.query('SELECT COUNT(*) as player_count ' +
         'FROM game_players ' +
         'WHERE game_id=$1', [game_id])
-        .then((results) => { return results[0].player_count }) 
+        .then((results) => { return results[0].player_count })
         .catch((error) => { console.log(error) })
 };
 
@@ -45,19 +45,110 @@ const joinGame =  (user_id, game_id) => {
 
 const deleteGame = (game_id) => {
     return db.none('DELETE FROM games WHERE game_id=$1', [game_id])
-        .catch((error) => {console.log(error) })
+        .catch((error) => {console.log(error)})
 };
 
 const verifyInGame = (user_id, game_id) => {
     return db.query('SELECT MAX(count) as in_Game ' +
-        'FROM ( ' + 
+        'FROM ( ' +
         'SELECT COUNT(*) FROM game_players WHERE game_players.user_id = $1 AND game_players.game_id = $2 ' +
         'UNION ' +
 	    'SELECT COUNT(*) FROM game_observers WHERE game_observers.user_id = $1 AND game_observers.game_id = $2 ' +
-        ') as counts' , [user_id, game_id]) 
+        ') as counts' , [user_id, game_id])
         .then((results) => {return results[0].in_game})
-        .catch((error) => {console.log(error) })
+        .catch((error) => {console.log(error)})
 };
+
+const getPlayerCards = (user_id, game_id) => {
+    return db.query('SELECT card_id FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error)})
+}
+
+const getCardCount = (user_id, game_id) => {
+    return db.query('SELECT COUNT(card_id) FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error)})
+}
+
+const getPlayerTotalScore = (user_id, game_id) => {
+    return db.query('SELECT total_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error) })
+}
+
+const getPlayerRoundScore = (user_id, game_id) => {
+    return db.query('SELECT current_round_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error)})
+}
+
+const initializeUserGameCards = (game_id) => {
+    for (var card_id = 1; card_id <= 52; card_id++){
+        db.none('INSERT INTO user_game_cards (game_id, card_id) ' +
+            'VALUES ($1, $2)', [card_id, game_id])
+            .catch((error) => {console.log(error)})
+    }
+}
+
+const getUserNamesFromGame = (game_id) => {
+    return db.query('SELECT username FROM users WHERE users.user_id IN ' +
+        '(SELECT game_players.user_id FROM game_players WHERE game_players.game_id = $1)', [game_id])
+        .catch((error) => {console.log(error)})
+}
+
+const getUserIDFromGame = (game_id) => {
+    return db.query('SELECT user_id FROM game_players WHERE game_players.game_id = $1', game_id)
+        .catch((error) => {console.log(error)})
+}
+
+const getUserIDFromName = (user_id) => {
+
+}
+
+const getAllCardsFromGame = (game_id) => {
+    return db.query('SELECT * from user_game_cards WHERE user_game_cards.game_id = $1', game_id)
+        .catch((error) => {console.log(error)})
+}
+
+const dealCards = (game_id, number_players) => {
+    getAllCardsFromGame(game_id)
+        .then((results) => {
+            const cardsLeft = []
+            for(var index = 0; index < results.length; index++){
+                cardsLeft.push(results[index]);
+            }
+            for(var index = 0; index < results.length; index++){
+                let randomValue = Math.floor( Math.random() * cardsLeft.length );
+                let card_assigned = cardsLeft.pop(randomValue);
+                
+                setOwnerOfCard(card_assigned.card_id, index%number_players + 1);
+            }
+        })    
+}
+
+
+const setOwnerOfCard = (card_id, user_id, game_id) => {
+    return db.none('UPDATE user_game_cards ' + 
+        'SET user_id = $1 ' +
+        'WHERE card_id = $2 AND game_id = $3', [user_id, card_id, game_id])
+        .catch((error) => {console.log(error)})
+}
+
+
+const setInPlay = (card_)
+//returns values, cards, and user who played
+const getCardsInPlay = (game_id) => {
+    
+}
+
+const assignPoints = (game_id) => {
+
+}
+
+const passCards = (game_id, user_id, cards_passed, destination) => {
+
+}
+
+const playCard = (game_id, user_id, card_played) => {
+
+}
 
 module.exports = {
     createGame,
@@ -66,5 +157,18 @@ module.exports = {
     observeGame,
     joinGame,
     deleteGame,
-    verifyInGame
+    verifyInGame,
+    getPlayerCards,
+    getCardCount,
+    getPlayerTotalScore,
+    getPlayerRoundScore,
+    getUserNamesFromGame,
+    getUserIDFromName,
+    dealCards,
+    getCardsInPlay,
+    assignPoints,
+    passCards,
+    playCard,
+    initializeUserGameCards,
+    getUserIDFromGame
 };
