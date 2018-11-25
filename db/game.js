@@ -45,7 +45,12 @@ const joinGame =  (user_id, game_id) => {
 
 const deleteGame = (game_id) => {
     return db.none('DELETE FROM games WHERE game_id=$1', [game_id])
-        .catch((error) => {console.log(error) })
+        .catch((error) => { console.log(error) })
+};
+
+const deleteGamePlayer = (user_id, game_id) => {
+    return db.none('DELETE FROM game_players WHERE user_id=$1 AND game_id=$2', [user_id, game_id])
+        .catch((error) => { console.log(error) })
 };
 
 const verifyInGame = (user_id, game_id) => {
@@ -66,5 +71,7 @@ module.exports = {
     observeGame,
     joinGame,
     deleteGame,
+    deleteGamePlayer,
+    getPlayerCount,
     verifyInGame
 };
