@@ -23,24 +23,27 @@ body(class = 'general-body')
             div(class= "top-player-to-mid card Hearts Ace")
             div(class= "right-player-to-mid card Hearts Ace")
 
+            button.btn.btn-primary(id='single-button', type='submit', disabled) Play
+            button.btn.btn-primary(id='multiple-button', type='submit', disabled) Pass Cards
+
             div(class = "player-info")
                 div(class = "player-score-box")
                     p(class="player-round-score") This Round's Score:
                     p(class="player-total-score") Total Score:
                 p Player 1
-            div(class= "bottom-player Diamonds ace" style ="left: 170px; z-index:1;")
-            div(class= "bottom-player Diamonds two" style ="left: 190px;z-index:2;")
-            div(class= "bottom-player Diamonds three" style ="left: 210px; z-index:3;")
-            div(class= "bottom-player Diamonds four" style ="left: 230px; z-index:4;")
-            div(class= "bottom-player Diamonds five" style ="left: 250px; z-index:5;")
-            div(class= "bottom-player Diamonds six" style ="left: 270px; z-index:6;")
-            div(class= "bottom-player Diamonds seven" style ="left: 290px; z-index:7;")
-            div(class= "bottom-player Diamonds eight" style ="left: 310px; z-index:8;")
-            div(class= "bottom-player Diamonds nine" style ="left: 330px; z-index:9;")
-            div(class= "bottom-player Diamonds ten" style ="left: 350px; z-index:10;")
-            div(class= "bottom-player Hearts jack" style ="left: 370px; z-index:11;")
-            div(class= "bottom-player Spades queen" style ="left: 390px; z-index:12;")
-            div(class= "bottom-player Clubs king" style ="left: 410px; z-index:13;")
+            div(class= "bottom-player Clubs ace" onclick="selectMultipleCard(this.id)" id="1" style ="left: 170px; z-index:1;")
+            div(class= "bottom-player Clubs two" onclick="selectMultipleCard(this.id)" id="2" style ="left: 190px;z-index:2;")
+            div(class= "bottom-player Clubs three" onclick="selectMultipleCard(this.id)" id="3" style ="left: 210px; z-index:3;")
+            div(class= "bottom-player Clubs four" onclick="selectMultipleCard(this.id)" id="4" style ="left: 230px; z-index:4;")
+            div(class= "bottom-player Clubs five" onclick="selectMultipleCard(this.id)" id="5" style ="left: 250px; z-index:5;")
+            div(class= "bottom-player Diamonds six" onclick="selectSingleCard(this.id)" id="6" style ="left: 270px; z-index:6;")
+            div(class= "bottom-player Diamonds seven" onclick="selectSingleCard(this.id)" id="7" style ="left: 290px; z-index:7;")
+            div(class= "bottom-player Diamonds eight" onclick="selectSingleCard(this.id)" id="8" style ="left: 310px; z-index:8;")
+            div(class= "bottom-player Diamonds nine" onclick="selectSingleCard(this.id)" id="9" style ="left: 330px; z-index:9;")
+            div(class= "bottom-player Diamonds ten" onclick="selectSingleCard(this.id)" id="10" style ="left: 350px; z-index:10;")
+            div(class= "bottom-player Diamonds jack" onclick="selectSingleCard(this.id)" id="11" style ="left: 370px; z-index:11;")
+            div(class= "bottom-player Diamonds queen" onclick="selectSingleCard(this.id)" id="12" style ="left: 390px; z-index:12;")
+            div(class= "bottom-player Diamonds king" onclick="selectSingleCard(this.id)" id="13" style ="left: 410px; z-index:13;")
 
             div(class = "top-player-info")
                 p Player 3
@@ -66,7 +69,7 @@ body(class = 'general-body')
                     p(class="player-round-score") This Round's Score:
                     p(class="player-total-score") Total Score:
                 p Player 2
-            div(class= "left-player card-back" style ="top: 150px; z-index:10;")
+            div(class= "left-player card-back" style ="top: 150px; z-index:10;" id = "60")
             div(class= "left-player card-back" style ="top: 170px;z-index:20;")
             div(class= "left-player card-back" style ="top: 190px;z-index:20;")
             div(class= "left-player card-back" style ="top: 210px;z-index:30;")
@@ -114,3 +117,4 @@ body(class = 'general-body')
         const user_id = '#{user.user_id}'
     script(src='/javascripts/game.js')
     script(src='/javascripts/lobby.js')
+    script(src='/javascripts/gameClient.js')
