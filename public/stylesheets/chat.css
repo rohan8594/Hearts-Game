@@ -15,20 +15,20 @@ h2{
     background: #f9f9f9;
 }
 
-#output p{
+#lobby_output #game_output p{
     padding: 14px 0px;
     margin: 0 20px;
     border-bottom: 1px solid #e9e9e9;
     color: #555;
 }
 
-#feedback p{
+#lobby_feedback #game_feedback p{
     color: #aaa;
     padding: 14px 0px;
     margin: 0 20px;
 }
 
-#output strong{
+#lobby_output #game_output strong{
     color: #575ed8;
 }
 
