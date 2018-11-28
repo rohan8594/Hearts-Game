@@ -10,10 +10,10 @@ let msg = document.getElementById('message'),
     game_feedback = document.getElementById('game_feedback');
 
 window.addEventListener('load', () => {
-    chatSocket.emit('entered lobby', {
-    room_id: room_id.value,
-    handle: username
-   });
+    chatSocket.emit('entered', {
+        room_id: room_id.value,
+        handle: username
+    })
 });
 
 btn.addEventListener('click', () => {
@@ -47,8 +47,9 @@ chatSocket.on('send msg', (data) => {
 
 chatSocket.on('entry msg', (data) => {
     const { handle, room_id } = data;
+    alert(room_id);
     if (room_id == 'lobby') {
-        lobby_output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the room...</em></p>'
+        lobby_output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the lobby...</em></p>'
     } else {
         game_output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the room...</em></p>'
     }

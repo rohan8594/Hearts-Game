@@ -7,7 +7,8 @@ io.on('connection', (socket) => {
         console.log('client disconnected');
     })
 
-    socket.on('entered lobby', (data) => {
+    socket.on('entered', (data) => {
+        console.log('entered'+ data);
         io.emit('entry msg', data);
     });
 
