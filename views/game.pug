@@ -106,16 +106,18 @@ body(class = 'general-body')
             h1(class='no-vertical-padding') Game chat
             div
                 div(id='chat-window')
-                    div(id='game_output')
-                    div(id='game_feedback')
+                    div(id='output')
+                    div(id='feedback')
                 input(id='message', type='text', placeholder='Message', style='color: black')
-                input(id='room_id', type='hidden' value='room')
+                input(id='room_id', type='hidden')
                 button.btn.btn-primary(id='send', style='width: 100%') Send
 
     script.
         const username = '#{user.username}'
         const user_id = '#{user.user_id}'
+        const game_id = '#{game_id}'
+        document.getElementById('room_id').value = game_id
     script(src='/javascripts/chat.js')
     script(src='/javascripts/game.js')
-    script(src='/javascripts/lobby.js')
+    //script(src='/javascripts/lobby.js')
     script(src='/javascripts/gameClient.js')
