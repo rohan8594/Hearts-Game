@@ -25,11 +25,20 @@ btn.addEventListener('click', () => {
     msg.value = '';
 });
 
-msg.addEventListener('keypress', () => {
-   chatSocket.emit('typing', {
-    room_id: room_id.value,
-    handle: username
-   })
+msg.addEventListener('keypress', (events) => {
+    if (msg.value != '' && events.code == 'Enter') {
+        chatSocket.emit('chat', {
+            room_id: room_id.value,
+            message: msg.value,
+            handle: username
+        });
+        msg.value = '';
+    } else {
+       chatSocket.emit('typing', {
+        room_id: room_id.value,
+        handle: username
+       });
+   }
 });
 
 // Listen for events
