@@ -6,11 +6,14 @@ let msg = document.getElementById('message'),
     btn = document.getElementById('send'),
     lobby_output = document.getElementById('lobby_output'),
     game_output = document.getElementById('game_output'),
-    lobby_feedback = document.getElementById('lobby_feedback');
+    lobby_feedback = document.getElementById('lobby_feedback'),
     game_feedback = document.getElementById('game_feedback');
 
 window.addEventListener('load', () => {
-    chatSocket.emit('entered lobby', username);
+    chatSocket.emit('entered lobby', {
+    room_id: room_id.value,
+    handle: username
+   });
 });
 
 btn.addEventListener('click', () => {
@@ -19,39 +22,44 @@ btn.addEventListener('click', () => {
         message: msg.value,
         handle: username
     })
+    msg.value = '';
 });
 
 msg.addEventListener('keypress', () => {
-   chatSocket.emit('typing', username)
+   chatSocket.emit('typing', {
+    room_id: room_id.value,
+    handle: username
+   })
 });
 
 // Listen for events
 chatSocket.on('send msg', (data) => {
-    feedback.innerHTML = '';
     const { handle, message, room_id } = data;
     if (room_id == 'lobby') {
+        lobby_feedback.innerHTML = '';
         lobby_output.innerHTML += '<p><strong>' + handle + ': </strong>' + message + '</p>'
     } else {
+        game_feedback.innerHTML = '';
         game_output.innerHTML += '<p><strong>' + handle + ': </strong>' + message + '</p>'
     }
     
 });
 
 chatSocket.on('entry msg', (data) => {
-    const { handle, message, room_id } = data;
+    const { handle, room_id } = data;
     if (room_id == 'lobby') {
-        lobby_output.innerHTML += '<p style="color: #aaa;"><em>' + data + ' has entered the room...</em></p>'
+        lobby_output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the room...</em></p>'
     } else {
-        game_output.innerHTML += '<p style="color: #aaa;"><em>' + data + ' has entered the room...</em></p>'
+        game_output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the room...</em></p>'
     }
 });
 
 chatSocket.on('typing msg', (data) => {
-    const { handle, message, room_id } = data;
+    const { handle, room_id } = data;
     if (room_id == 'lobby') {
-        lobby_feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>'
+        lobby_feedback.innerHTML = '<p><em>' + handle + ' is typing a message...</em></p>'
     } else {
-        game_feedback.innerHTML = '<p><em>' + data + ' is typing a message...</em></p>'
+        game_feedback.innerHTML = '<p><em>' + handle + ' is typing a message...</em></p>'
     }
    
 });
