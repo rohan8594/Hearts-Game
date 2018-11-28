@@ -250,23 +250,50 @@ ul {
 .player-info{
     left: 170px;
     top: 590px;
+    width: 310px;
+    height: 50px;
     position: absolute;
 }
 
 .left-player-info{
-    left: 0px;
-    top: 80px;
+    left: -155px;
+    top: 295px;
+    width: 310px;
+    height: 50px;
+    transform: rotate(90deg);
     position: absolute;
 }
 
 .right-player-info{
-    left: 500px;
-    top: 80px;
+    left: 485px;
+    top: 295px;
+    width: 310px;
+    height: 50px;
+    transform: rotate(270deg);
     position: absolute;
 }
 
 .top-player-info{
     left: 170px;
     top: 0px;
+    width: 310px;
+    height: 50px;
     position: absolute;
+}
+
+.player-score-box{
+    width:310px;
+}
+
+.player-round-score{
+    width:155px;
+    display:inline-block;
+    float:left;
+}
+
+.player-total-score{
+    width:155px;
+    text-align:right;
+    display:inline-block;
+    float:right;
 }
