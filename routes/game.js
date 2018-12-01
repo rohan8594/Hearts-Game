@@ -21,26 +21,8 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
 
 gameSocket.on('connection', (socket) => {
     // Game logic will prob go here
-    socket.join(game_id.toString());
-    gameSocket.to(game_id.toString()).emit('Entered game', { user: user, game_id: game_id });
-
-    socket.on('disconnect', () => {
-        if(typeof game_id !== 'undefined') {
-            gameSocket.to(game_id).emit('Left game', { user: user, game_id: game_id });
-
-            Game.deleteGamePlayer(user.user_id, game_id)
-                .then(() => {
-                    Game.getPlayerCount(game_id)
-                        .then((player_count) => {
-
-                            if (player_count < 1) {
-                                Game.deleteGame(game_id)
-                            }
-
-                        })
-                })
-        }
-    })
+    socket.join(game_id);
+    // gameSocket.to(game_id).emit('Entered game', { user: user, game_id: game_id });
 });
 
 module.exports = router;
