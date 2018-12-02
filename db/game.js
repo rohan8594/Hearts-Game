@@ -45,7 +45,12 @@ const joinGame =  (user_id, game_id) => {
 
 const deleteGame = (game_id) => {
     return db.none('DELETE FROM games WHERE game_id=$1', [game_id])
-        .catch((error) => {console.log(error)})
+        .catch((error) => { console.log(error) })
+};
+
+const deleteGamePlayer = (user_id, game_id) => {
+    return db.none('DELETE FROM game_players WHERE user_id=$1 AND game_id=$2', [user_id, game_id])
+        .catch((error) => { console.log(error) })
 };
 
 const verifyInGame = (user_id, game_id) => {
@@ -56,7 +61,12 @@ const verifyInGame = (user_id, game_id) => {
 	    'SELECT COUNT(*) FROM game_observers WHERE game_observers.user_id = $1 AND game_observers.game_id = $2 ' +
         ') as counts' , [user_id, game_id])
         .then((results) => {return results[0].in_game})
-        .catch((error) => {console.log(error)})
+        .catch((error) => { console.log(error) })
+};
+
+const maxPlayers = (game_id) => {
+    return db.one('SELECT max_players FROM games WHERE game_id=$1', [game_id])
+        .then((count) => count)
 };
 
 const getPlayerCards = (user_id, game_id) => {
@@ -190,5 +200,8 @@ module.exports = {
     initializeUserGameCards,
     getUserIDFromGame,
     getAllCardsFromGame,
-    clearUserGameCards
+    clearUserGameCards,
+    deleteGamePlayer,
+    getPlayerCount,
+    maxPlayers
 };
