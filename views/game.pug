@@ -11,7 +11,6 @@ body(class = 'general-body')
     div(class='banner')
         h1(class='banner-align-left') Hearts
         span
-            let game_id = '#{game_id}'
             a(href=`/leave?game_id=${game_id}`, class='banner-align-right') Leave game
 
 
@@ -120,5 +119,4 @@ body(class = 'general-body')
         document.getElementById('room_id').value = game_id
     script(src='/javascripts/chat.js')
     script(src='/javascripts/game.js')
-    //script(src='/javascripts/lobby.js')
     script(src='/javascripts/gameClient.js')

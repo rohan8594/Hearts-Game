@@ -4,17 +4,14 @@ io.on('connection', (socket) => {
     console.log('Made a socket connection');
 
     socket.on('disconnect', data => {
-        console.log('client disconnected');
-    })
+        console.log('Client disconnected');
+    });
 
     socket.on('entered', (data) => {
-        console.log('entering...');
-        console.log('entered: '+ data.room_id);
         io.emit('entry msg', data);
     });
 
     socket.on('chat', (data) => {
-        console.log('chat: '+ data.message);
         io.emit('send msg', data);
     });
 
