@@ -79,12 +79,21 @@ const getPlayerRoundScore = (user_id, game_id) => {
         .catch((error) => {console.log(error)})
 }
 
+const clearUserGameCards = (game_id) => {
+    return db.none('DELETE FROM user_game_cards WHERE game_id = $1', [game_id])
+        .catch((error) => {console.log(error)})
+}
+
 const initializeUserGameCards = (game_id) => {
-    for (var card_id = 1; card_id <= 52; card_id++){
-        db.none('INSERT INTO user_game_cards (game_id, card_id) ' +
-            'VALUES ($1, $2)', [card_id, game_id])
-            .catch((error) => {console.log(error)})
-    }
+    return db.none(
+    'DO $$ ' +
+    'BEGIN ' + 
+      'FOR counter IN 1..52 LOOP ' +
+        'INSERT INTO user_game_cards (game_id, card_id, in_play) ' +
+        'VALUES ($1, counter, \'0\'); ' +
+      'END LOOP; ' +
+    'END; $$ ', [game_id] )
+        .catch((error) => {console.log(error)})
 }
 
 const getUserNamesFromGame = (game_id) => {
@@ -103,24 +112,34 @@ const getUserIDFromName = (user_id) => {
 }
 
 const getAllCardsFromGame = (game_id) => {
-    return db.query('SELECT * from user_game_cards WHERE user_game_cards.game_id = $1', game_id)
+    return db.query('SELECT * from user_game_cards WHERE game_id = $1', [game_id])
         .catch((error) => {console.log(error)})
 }
 
 const dealCards = (game_id, number_players) => {
+    const promisesForRandomCards = [];
     getAllCardsFromGame(game_id)
         .then((results) => {
             const cardsLeft = []
+
             for(var index = 0; index < results.length; index++){
-                cardsLeft.push(results[index]);
+                cardsLeft.push(results[index].card_id);
             }
+
             for(var index = 0; index < results.length; index++){
+                console.log(cardsLeft.length);
                 let randomValue = Math.floor( Math.random() * cardsLeft.length );
                 let card_assigned = cardsLeft.pop(randomValue);
+                //console.log(card_assigned + " : " +  (index%number_players + 1) + "\n");
+                //promisesForRandomCards.push( setOwnerOfCard(card_assigned, index%number_players + 1, game_id) );
                 
-                setOwnerOfCard(card_assigned.card_id, index%number_players + 1);
+                setOwnerOfCard(card_assigned, (index%number_players + 1), game_id)
+                    .then((results) => {});
+               
+               // .then(() => )1
             }
-        })    
+        })
+    //return Promise.all(promisesForRandomCards);   
 }
 
 
@@ -132,7 +151,6 @@ const setOwnerOfCard = (card_id, user_id, game_id) => {
 }
 
 
-const setInPlay = (card_)
 //returns values, cards, and user who played
 const getCardsInPlay = (game_id) => {
     
@@ -170,5 +188,7 @@ module.exports = {
     passCards,
     playCard,
     initializeUserGameCards,
-    getUserIDFromGame
+    getUserIDFromGame,
+    getAllCardsFromGame,
+    clearUserGameCards
 };
