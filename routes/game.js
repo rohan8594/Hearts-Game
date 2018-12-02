@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../config/passport/isAuthenticated');
 const io = require('../sockets');
-// const gameSocket = io.of('/game');
+const gameSocket = io.of('/game');
 const Game = require('../db/game');
 
 let user;
@@ -19,7 +19,7 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
-io.on('connection', (socket) => {
+gameSocket.on('connection', (socket) => {
     // Game logic
     socket.join(game_id);
 
