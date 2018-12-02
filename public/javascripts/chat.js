@@ -49,7 +49,11 @@ chatSocket.on('send msg', (data) => {
 
 chatSocket.on('entry msg', (data) => {
     if (room.value == data.room_id) {
-        output.innerHTML += '<p style="color: #aaa;"><em>' + data.handle + ' has entered the lobby...</em></p>'
+        if (room.value == 0) {
+            output.innerHTML += '<p style="color: #aaa;"><em>' + data.handle + ' has entered the lobby...</em></p>'
+        } else {
+            output.innerHTML += '<p style="color: #aaa;"><em>' + data.handle + ' has entered the room...</em></p>'
+        }
     }
 });
 
