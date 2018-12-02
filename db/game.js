@@ -183,6 +183,14 @@ const playCard = (game_id, user_id, card_played) => {
 
 };
 
+const checkGameStateExists = (game_id) => {
+    return db.query('SELECT * FROM user_game_cards WHERE game_id=$1', [game_id])
+        .then((results) => {
+            return !(results === undefined || results.length === 0);
+        })
+        .catch((error) => { console.log(error) })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -209,5 +217,6 @@ module.exports = {
     deleteGamePlayer,
     getPlayerCount,
     maxPlayers,
-    getGamePlayers
+    getGamePlayers,
+    checkGameStateExists
 };
