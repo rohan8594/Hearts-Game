@@ -145,7 +145,6 @@ const dealCards = (game_id, number_players) => {
                 //promisesForRandomCards.push( setOwnerOfCard(card_assigned, index%number_players + 1, game_id) );
                 
                 setOwnerOfCard(card_assigned, (index%number_players + 1), game_id)
-                    .then((results) => {});
                
                // .then(() => )1
             }
