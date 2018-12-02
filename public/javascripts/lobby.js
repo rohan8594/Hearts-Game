@@ -7,7 +7,7 @@ lobbySocket.on('display games list', (currentGames) => {
     for (let i = 0; i < currentGames.length; i++) {
         const { game_id, game_name, max_players, player_count } = currentGames[i];
         games_list_html += "<div><div class='games-list-left'><label>" + game_name + "</label></div>" +
-            "<div class='games-list-right'><label>" + player_count + "/" + max_players + "</label></div> "
+            "<div class='games-list-right'><label>" + player_count + "/" + max_players + "</label></div> ";
         if (player_count < max_players){
             games_list_html += "<div class='games-list-right'><form action='/lobby/joinGame' method='POST'><button class='btn btn-primary' name='join_btn' value=" + game_id + " type='submit'>Join</button></form></div>"
         }

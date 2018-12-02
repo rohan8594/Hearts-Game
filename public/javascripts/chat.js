@@ -18,7 +18,7 @@ btn.addEventListener('click', () => {
         room_id: room.value,
         message: msg.value,
         handle: username
-    })
+    });
     msg.value = '';
 });
 
@@ -40,26 +40,30 @@ msg.addEventListener('keypress', (events) => {
 
 // Listen for events
 chatSocket.on('send msg', (data) => {
-    if (room.value == data.room_id) {
+    const { room_id, handle, message } = data;
+
+    if (room.value == room_id) {
         feedback.innerHTML = '';
-        output.innerHTML += '<p><strong>' + data.handle + ': </strong>' + data.message + '</p>'
+        output.innerHTML += '<p><strong>' + handle + ': </strong>' + message + '</p>'
     }
-    
 });
 
 chatSocket.on('entry msg', (data) => {
-    if (room.value == data.room_id) {
+    const { room_id, handle } = data;
+
+    if (room.value == room_id) {
         if (room.value == 0) {
-            output.innerHTML += '<p style="color: #aaa;"><em>' + data.handle + ' has entered the lobby...</em></p>'
+            output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the lobby...</em></p>'
         } else {
-            output.innerHTML += '<p style="color: #aaa;"><em>' + data.handle + ' has entered the room...</em></p>'
+            output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the room...</em></p>'
         }
     }
 });
 
 chatSocket.on('typing msg', (data) => {
-    if (room.value == data.room_id) {
-        feedback.innerHTML = '<p><em>' + data.handle + ' is typing a message...</em></p>'
+    const { room_id, handle } = data;
+
+    if (room.value == room_id) {
+        feedback.innerHTML = '<p><em>' + handle + ' is typing a message...</em></p>'
     }
-   
 });
