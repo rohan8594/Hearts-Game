@@ -61,7 +61,12 @@ const verifyInGame = (user_id, game_id) => {
 	    'SELECT COUNT(*) FROM game_observers WHERE game_observers.user_id = $1 AND game_observers.game_id = $2 ' +
         ') as counts' , [user_id, game_id]) 
         .then((results) => {return results[0].in_game})
-        .catch((error) => {console.log(error) })
+        .catch((error) => { console.log(error) })
+};
+
+const maxPlayers = (game_id) => {
+    return db.one('SELECT max_players FROM games WHERE game_id=$1', [game_id])
+        .then((count) => count)
 };
 
 module.exports = {
@@ -73,5 +78,6 @@ module.exports = {
     deleteGame,
     deleteGamePlayer,
     getPlayerCount,
-    verifyInGame
+    verifyInGame,
+    maxPlayers
 };

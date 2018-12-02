@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../config/passport/isAuthenticated');
 const io = require('../sockets');
-const gameSocket = io.of('/game');
+// const gameSocket = io.of('/game');
 const Game = require('../db/game');
 
 let user;
@@ -19,10 +19,26 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
-gameSocket.on('connection', (socket) => {
-    // Game logic will prob go here
+io.on('connection', (socket) => {
+    // Game logic
     socket.join(game_id);
-    // gameSocket.to(game_id).emit('Entered game', { user: user, game_id: game_id });
+
+    Game.maxPlayers(game_id)
+        .then((count) => {
+            const { max_players } = count;
+
+            Game.getPlayerCount(game_id)
+                .then((player_count) => {
+                    // check if game room is full to start game
+                    if (player_count == max_players) {
+                        console.log('Game Full')
+                        // Game.InitGame()
+                    } else {
+                        // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
+                    }
+                })
+        })
+        .catch((error) => { console.log(error) })
 });
 
 module.exports = router;
