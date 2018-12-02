@@ -117,6 +117,11 @@ const getUserIDFromGame = (game_id) => {
         .catch((error) => {console.log(error)})
 };
 
+const getGamePlayers = (game_id) => {
+    return db.query('SELECT * FROM game_players WHERE game_id = $1', [game_id])
+        .catch((error) => {console.log(error)})
+};
+
 const getUserIDFromName = (user_id) => {
 
 };
@@ -126,7 +131,7 @@ const getAllCardsFromGame = (game_id) => {
         .catch((error) => {console.log(error)})
 };
 
-const dealCards = (game_id, number_players) => {
+const dealCards = (game_id, number_players, playersArray) => {
     const promisesForRandomCards = [];
     getAllCardsFromGame(game_id)
         .then((results) => {
@@ -144,7 +149,7 @@ const dealCards = (game_id, number_players) => {
                 //console.log(card_assigned + " : " +  (index%number_players + 1) + "\n");
                 //promisesForRandomCards.push( setOwnerOfCard(card_assigned, index%number_players + 1, game_id) );
                 
-                setOwnerOfCard(card_assigned, (index%number_players + 1), game_id)
+                setOwnerOfCard(card_assigned, playersArray[index % number_players], game_id)
                
                // .then(() => )1
             }
@@ -203,5 +208,6 @@ module.exports = {
     clearUserGameCards,
     deleteGamePlayer,
     getPlayerCount,
-    maxPlayers
+    maxPlayers,
+    getGamePlayers
 };

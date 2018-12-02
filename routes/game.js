@@ -23,6 +23,20 @@ io.on('connection', (socket) => {
     // Game logic
     socket.join(game_id);
 
+    const InitGame = (game_id, player_count) => {
+        Game.initializeUserGameCards(game_id)
+            .then(() => {
+                Game.getGamePlayers(game_id)
+                    .then((players) => {
+                        const playersArr = [];
+                        players.forEach(player => playersArr.push(player.user_id));
+                        console.log(playersArr);
+
+                        Game.dealCards(game_id, player_count, playersArr)
+                    })
+            })
+    };
+
     Game.maxPlayers(game_id)
         .then((count) => {
             const { max_players } = count;
@@ -31,8 +45,8 @@ io.on('connection', (socket) => {
                 .then((player_count) => {
                     // check if game room is full to start game
                     if (player_count == max_players) {
-                        console.log('Game Full')
-                        // Game.InitGame()
+                        // Init Game
+                        InitGame(game_id, player_count)
                     } else {
                         // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
                     }

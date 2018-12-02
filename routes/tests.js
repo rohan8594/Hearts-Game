@@ -7,7 +7,7 @@ router.get("/", (request, response) => {
         .then(() => {
             Game.initializeUserGameCards(13)
                 .then(() => {
-                    Game.dealCards(13, 2);
+                    Game.dealCards(13, 2, [2, 3]);
                     setTimeout(() => {
                         Game.getAllCardsFromGame(13)
                             .then(results => response.json(results))
