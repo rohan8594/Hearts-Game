@@ -143,7 +143,7 @@ const dealCards = (game_id, number_players, playersArray) => {
             }
 
             for(index = 0; index < results.length; index++){
-                console.log(cardsLeft.length);
+                // console.log(cardsLeft.length);
                 let randomValue = Math.floor( Math.random() * cardsLeft.length );
                 let card_assigned = cardsLeft.pop(randomValue);
                 //console.log(card_assigned + " : " +  (index%number_players + 1) + "\n");

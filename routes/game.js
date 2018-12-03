@@ -24,15 +24,16 @@ gameSocket.on('connection', (socket) => {
     socket.join(game_id);
 
     const InitGame = (game_id, player_count) => {
-        Game.initializeUserGameCards(game_id)
+        return Game.initializeUserGameCards(game_id)
             .then(() => {
-                Game.getGamePlayers(game_id)
+                return Game.getGamePlayers(game_id)
                     .then((players) => {
                         const playersArr = [];
                         players.forEach(player => playersArr.push(player.user_id));
                         console.log(playersArr);
 
                         Game.dealCards(game_id, player_count, playersArr)
+                        return players;
                     })
             })
     };
@@ -51,6 +52,16 @@ gameSocket.on('connection', (socket) => {
                                 if (player_count == max_players) {
                                     // Init Game
                                     InitGame(game_id, player_count)
+                                        .then((gamePlayers) => {
+                                            console.log(gamePlayers);
+
+                                            setTimeout(() => {
+                                                Game.getAllCardsFromGame(game_id)
+                                                    .then((cardsDeck) => {
+                                                        gameSocket.to(game_id).emit('START GAME', { cardsDeck: cardsDeck, gamePlayers: gamePlayers })
+                                                    })
+                                            }, 1000)
+                                        })
                                 } else {
                                     // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
                                 }
