@@ -38,7 +38,7 @@ const joinGame =  (user_id, game_id) => {
     getPlayerCount(game_id)
         .then((player_count) => {
             return db.none('INSERT into game_players (user_id, game_id, total_score, current_round_score, turn_sequence) ' +
-                'VALUES ($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, player_count + 1])
+                'VALUES ($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, parseInt(player_count) + 1])
                 .catch((error) => { console.log(error) })
         })
 };
@@ -143,7 +143,7 @@ const dealCards = (game_id, number_players, playersArray) => {
             }
 
             for(index = 0; index < results.length; index++){
-                console.log(cardsLeft.length);
+                // console.log(cardsLeft.length);
                 let randomValue = Math.floor( Math.random() * cardsLeft.length );
                 let card_assigned = cardsLeft.pop(randomValue);
                 //console.log(card_assigned + " : " +  (index%number_players + 1) + "\n");
@@ -183,6 +183,14 @@ const playCard = (game_id, user_id, card_played) => {
 
 };
 
+const checkGameStateExists = (game_id) => {
+    return db.query('SELECT * FROM user_game_cards WHERE game_id=$1', [game_id])
+        .then((results) => {
+            return !(results === undefined || results.length === 0);
+        })
+        .catch((error) => { console.log(error) })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -209,5 +217,6 @@ module.exports = {
     deleteGamePlayer,
     getPlayerCount,
     maxPlayers,
-    getGamePlayers
+    getGamePlayers,
+    checkGameStateExists
 };

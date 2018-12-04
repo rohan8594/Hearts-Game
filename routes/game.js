@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../config/passport/isAuthenticated');
 const io = require('../sockets');
-// const gameSocket = io.of('/game');
+const gameSocket = io.of('/game');
 const Game = require('../db/game');
 
 let user;
@@ -19,40 +19,66 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
-io.on('connection', (socket) => {
+gameSocket.on('connection', (socket) => {
     // Game logic
     socket.join(game_id);
 
     const InitGame = (game_id, player_count) => {
-        Game.initializeUserGameCards(game_id)
+        return Game.initializeUserGameCards(game_id)
             .then(() => {
-                Game.getGamePlayers(game_id)
+                return Game.getGamePlayers(game_id)
                     .then((players) => {
                         const playersArr = [];
                         players.forEach(player => playersArr.push(player.user_id));
-                        console.log(playersArr);
 
                         Game.dealCards(game_id, player_count, playersArr)
+                        return players;
                     })
             })
     };
 
-    Game.maxPlayers(game_id)
-        .then((count) => {
-            const { max_players } = count;
+    // Check if game state is already present in DB or not
+    Game.checkGameStateExists(game_id)
+        .then((exists) => {
+            if (exists === false) {
+                Game.maxPlayers(game_id)
+                    .then((count) => {
+                        const { max_players } = count;
 
-            Game.getPlayerCount(game_id)
-                .then((player_count) => {
-                    // check if game room is full to start game
-                    if (player_count == max_players) {
-                        // Init Game
-                        InitGame(game_id, player_count)
-                    } else {
-                        // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
-                    }
-                })
-        })
-        .catch((error) => { console.log(error) })
+                        Game.getPlayerCount(game_id)
+                            .then((player_count) => {
+                                // check if game room is full to start game
+                                if (player_count == max_players) {
+                                    // Init Game
+                                    InitGame(game_id, player_count)
+                                        .then((gamePlayers) => {
+
+                                            setTimeout(() => {
+                                                gameSocket.to(game_id).emit('START GAME', {
+                                                    gamePlayers: gamePlayers,
+                                                    game_id: game_id
+                                                })
+                                            }, 1000)
+                                        })
+                                } else {
+                                    // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
+                                }
+                            })
+                    })
+                    .catch((error) => { console.log(error) })
+            } else {
+                // Display current game state
+            }
+        });
+
+    socket.on('GET PLAYER HAND', (data) => {
+        const { user_id, game_id } = data;
+
+        console.log('Player: ' + user_id);
+        console.log('Game: ' + game_id);
+
+        // socket.emit('Update game', playerHand)
+    })
 });
 
 module.exports = router;
