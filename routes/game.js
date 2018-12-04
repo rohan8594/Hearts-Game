@@ -30,7 +30,6 @@ gameSocket.on('connection', (socket) => {
                     .then((players) => {
                         const playersArr = [];
                         players.forEach(player => playersArr.push(player.user_id));
-                        console.log(playersArr);
 
                         Game.dealCards(game_id, player_count, playersArr)
                         return players;
@@ -53,13 +52,12 @@ gameSocket.on('connection', (socket) => {
                                     // Init Game
                                     InitGame(game_id, player_count)
                                         .then((gamePlayers) => {
-                                            console.log(gamePlayers);
 
                                             setTimeout(() => {
-                                                Game.getAllCardsFromGame(game_id)
-                                                    .then((cardsDeck) => {
-                                                        gameSocket.to(game_id).emit('START GAME', { cardsDeck: cardsDeck, gamePlayers: gamePlayers })
-                                                    })
+                                                gameSocket.to(game_id).emit('START GAME', {
+                                                    gamePlayers: gamePlayers,
+                                                    game_id: game_id
+                                                })
                                             }, 1000)
                                         })
                                 } else {
@@ -71,7 +69,16 @@ gameSocket.on('connection', (socket) => {
             } else {
                 // Display current game state
             }
-        })
+        });
+
+    socket.on('GET PLAYER HAND', (data) => {
+        const { user_id, game_id } = data;
+
+        console.log('Player: ' + user_id);
+        console.log('Game: ' + game_id);
+
+        // socket.emit('Update game', playerHand)
+    })
 });
 
 module.exports = router;

@@ -1,8 +1,11 @@
 const gameSocket = io('/game');
 
 gameSocket.on('START GAME', (data) => {
-    const { cardsDeck, gamePlayers } = data;
+    const { gamePlayers, game_id } = data;
 
-    console.log(gamePlayers);
-    console.log(cardsDeck);
+    for (let i = 0; i < gamePlayers.length; i++) {
+        if (user_id == gamePlayers[i].user_id) {
+            gameSocket.emit('GET PLAYER HAND', { user_id: gamePlayers[i].user_id, game_id: game_id })
+        }
+    }
 });
