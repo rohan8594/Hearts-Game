@@ -19,25 +19,58 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
+router.post('/playCard', isAuthenticated, (req, res) => { 
+    card_id = req.card_id;
+    user = req.user;
+    game = req.game;
+    
+    update(game_id);
+});
+
+
+
 gameSocket.on('connection', (socket) => {
-    // Game logic
+    //if there is no game, do not join the game or querry.
+    if(game_id == null) { 
+        return;
+        //add redirect to lobby, message game no longer exists.
+    }
+
     socket.join(game_id);
 
-    const InitGame = (game_id, player_count) => {
-        return Game.initializeUserGameCards(game_id)
-            .then(() => {
-                return Game.getGamePlayers(game_id)
-                    .then((players) => {
-                        const playersArr = [];
-                        players.forEach(player => playersArr.push(player.user_id));
-
-                        Game.dealCards(game_id, player_count, playersArr)
-                        return players;
-                    })
+    if(checkGameReady( game_id)){        
+        prepareCards(game_id)
+            .then(() => {           
+                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : extractUserNames(game_id)});
+                update(game_id);
             })
-    };
+    } else{
+        Game.getUserNamesFromGame(game_id)
+            .then((username) => {
+                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
+            })
+            
+        update(game_id);     
+    }
+});
 
-    // Check if game state is already present in DB or not
+
+socket.on('GET PLAYER HAND', (data) => {
+    const { user_id, game_id } = data;
+
+    console.log('Player: ' + user_id);
+    console.log('Game: ' + game_id);
+});
+
+
+const update = (game_id) => {
+    Game.getSharedInformation(game_id)
+        .then((shared_player_information) => {
+            gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information});
+        })
+}
+
+const checkGameReady = (game_id) => {
     Game.checkGameStateExists(game_id)
         .then((exists) => {
             if (exists === false) {
@@ -48,37 +81,18 @@ gameSocket.on('connection', (socket) => {
                         Game.getPlayerCount(game_id)
                             .then((player_count) => {
                                 // check if game room is full to start game
-                                if (player_count == max_players) {
-                                    // Init Game
-                                    InitGame(game_id, player_count)
-                                        .then((gamePlayers) => {
-
-                                            setTimeout(() => {
-                                                gameSocket.to(game_id).emit('START GAME', {
-                                                    gamePlayers: gamePlayers,
-                                                    game_id: game_id
-                                                })
-                                            }, 1000)
-                                        })
-                                } else {
-                                    // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
-                                }
+                                return (player_count == max_players)
                             })
                     })
-                    .catch((error) => { console.log(error) })
-            } else {
-                // Display current game state
-            }
-        });
+                }
+        })
+}
 
-    socket.on('GET PLAYER HAND', (data) => {
-        const { user_id, game_id } = data;
-
-        console.log('Player: ' + user_id);
-        console.log('Game: ' + game_id);
-
-        // socket.emit('Update game', playerHand)
-    })
-});
+const prepareCards = (game_id) => {
+    Game.initializeUserGameCards(game_id)
+        .then(() => {
+            Game.dealCards(game_id)
+        })
+}
 
 module.exports = router;

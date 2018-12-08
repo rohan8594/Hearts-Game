@@ -38,7 +38,7 @@ const joinGame =  (user_id, game_id) => {
     getPlayerCount(game_id)
         .then((player_count) => {
             return db.none('INSERT into game_players (user_id, game_id, total_score, current_round_score, turn_sequence) ' +
-                'VALUES ($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, parseInt(player_count) + 1])
+                'VALUES ($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, (parseInt(player_count) + 1)])
                 .catch((error) => { console.log(error) })
         })
 };
@@ -65,29 +65,12 @@ const verifyInGame = (user_id, game_id) => {
 };
 
 const maxPlayers = (game_id) => {
-    return db.one('SELECT max_players FROM games WHERE game_id=$1', [game_id])
-        .then((count) => count)
-};
-
-const getPlayerCards = (user_id, game_id) => {
-    return db.query('SELECT card_id FROM user_game_cards WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+    return db.one('SELECT max_players FROM games WHERE game_id = $1', [game_id])
+        .then((count) => {count})
         .catch((error) => {console.log(error)})
 };
 
-const getCardCount = (user_id, game_id) => {
-    return db.query('SELECT COUNT(card_id) FROM user_game_cards WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
-        .catch((error) => {console.log(error)})
-};
 
-const getPlayerTotalScore = (user_id, game_id) => {
-    return db.query('SELECT total_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
-        .catch((error) => {console.log(error) })
-};
-
-const getPlayerRoundScore = (user_id, game_id) => {
-    return db.query('SELECT current_round_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
-        .catch((error) => {console.log(error)})
-};
 
 const clearUserGameCards = (game_id) => {
     return db.none('DELETE FROM user_game_cards WHERE game_id = $1', [game_id])
@@ -112,51 +95,42 @@ const getUserNamesFromGame = (game_id) => {
         .catch((error) => {console.log(error)})
 };
 
-const getUserIDFromGame = (game_id) => {
-    return db.query('SELECT user_id FROM game_players WHERE game_players.game_id = $1', [game_id])
-        .catch((error) => {console.log(error)})
-};
-
-const getGamePlayers = (game_id) => {
-    return db.query('SELECT * FROM game_players WHERE game_id = $1', [game_id])
-        .catch((error) => {console.log(error)})
-};
-
-const getUserIDFromName = (user_id) => {
-
-};
 
 const getAllCardsFromGame = (game_id) => {
     return db.query('SELECT * from user_game_cards WHERE game_id = $1', [game_id])
         .catch((error) => {console.log(error)})
 };
 
-const dealCards = (game_id, number_players, playersArray) => {
-    const promisesForRandomCards = [];
-    getAllCardsFromGame(game_id)
+const dealCards = (game_id) => {
+    const player_array = [];
+    getUserIDSortedByTurnSequence(game_id)
         .then((results) => {
-            let index;
-            const cardsLeft = [];
-
+            let number_players = results.length;
             for(index = 0; index < results.length; index++){
-                cardsLeft.push(results[index].card_id);
+                player_array.push(results[index].user_id);
             }
+            getAllCardsFromGame(game_id)
+                .then((results) => {
+                    let index;
+                    const cardsLeft = [];
 
-            for(index = 0; index < results.length; index++){
-                // console.log(cardsLeft.length);
-                let randomValue = Math.floor( Math.random() * cardsLeft.length );
-                let card_assigned = cardsLeft.pop(randomValue);
-                //console.log(card_assigned + " : " +  (index%number_players + 1) + "\n");
-                //promisesForRandomCards.push( setOwnerOfCard(card_assigned, index%number_players + 1, game_id) );
-                
-                setOwnerOfCard(card_assigned, playersArray[index % number_players], game_id)
-               
-               // .then(() => )1
-            }
+                    for(index = 0; index < results.length; index++){
+                        cardsLeft.push(results[index].card_id);
+                    }
+
+                    for(index = 0; index < results.length; index++){
+                        let randomValue = Math.floor( Math.random() * cardsLeft.length );
+                        let card_assigned = cardsLeft.pop(randomValue);
+                        
+                        setOwnerOfCard(card_assigned, player_array[index % number_players], game_id)
+                    }
+                })
         })
-    //return Promise.all(promisesForRandomCards);   
 };
 
+const initializeGame = (game_id) => {
+
+}
 
 const setOwnerOfCard = (card_id, user_id, game_id) => {
     return db.none('UPDATE user_game_cards ' + 
@@ -165,11 +139,14 @@ const setOwnerOfCard = (card_id, user_id, game_id) => {
         .catch((error) => {console.log(error)})
 };
 
-
-//returns values, cards, and user who played
 const getCardsInPlay = (game_id) => {
-    
+    return db.query('SELECT * FROM user_game_cards WHERE in_play = \'1\'')
+        .catch((error) => {console.log(error)})
 };
+
+const getTurnOrder = (game_id) => {
+    return 
+}
 
 const assignPoints = (game_id) => {
 
@@ -189,6 +166,105 @@ const checkGameStateExists = (game_id) => {
             return !(results === undefined || results.length === 0);
         })
         .catch((error) => { console.log(error) })
+};
+
+const getCardCount = (user_id, game_id) => {
+    return db.query('SELECT COUNT(card_id) FROM user_game_cards WHERE user_id = $1 AND game_id = $2 AND in_play = \'0\' ', [user_id, game_id])
+        .catch((error) => {console.log(error)})
+};
+
+
+getUserIDSortedByTurnSequence = (game_id) => {
+    return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
+        .catch((error) => {console.log(error)})
+}
+
+
+getSharedInformation = (game_id) => {
+    let shared_player_information = [];
+    return getUserIDSortedByTurnSequence(game_id)
+        .then((results) => {
+            var max_index = results.length;
+            
+            for (var index = 0; index < max_index; index++){
+                const user = results[index].user_id;
+               
+                promise = getCardCount( user, game_id )
+                    .then((results) => {     
+                        let card_count = results[0].count;
+ 
+                        return getPlayerTotalScore( user, game_id)
+                            .then((results) => {
+                                let total_score = results[0].total_score;
+
+                                return  getPlayerRoundScore( user, game_id)
+                                    .then((results) => {
+                                        let round_score = results[0].current_round_score;
+
+                                   return getCardsInPlay( user, game_id)
+                                        .then((results) => {
+                                            if(results.length > 0){ let card_in_play = results[0].card_id; } 
+                                            else{ card_in_play = 0; }
+
+                                        shared_player_information.push({
+                                            card_count : card_count,
+                                            round_score : round_score, 
+                                            total_score : total_score,
+                                            card_in_play : card_in_play
+                                        });
+                                        return Promise.resolve(shared_player_information);
+                                    })
+                                }) 
+                            })
+                    })    
+                    if( index == max_index - 1) {
+                        return promise;
+                    }
+            }       
+    })
+    
+}
+
+const getCurrentCards = ( game_id, user_id ) => {
+    return db.query('SELECT card_id FROM user_game_cards WHERE user_id = $1', [user_id])
+        .catch((error) => {console.log(error)})
+}
+
+const getUserIDFromGame = (game_id) => {
+    return db.query('SELECT user_id FROM game_players WHERE game_players.game_id = $1', [game_id])
+        .catch((error) => {console.log(error)})
+};
+
+const getUsernameFromID = (username) => {
+    return db.query('SELECT username FROM users WHERE username = $1', [username])
+        .catch((error) => {console.log(error)})
+}
+
+
+const getGamePlayers = (game_id) => {
+    return db.query('SELECT * FROM game_players WHERE game_id = $1', [game_id])
+        .catch((error) => {console.log(error)})
+};
+
+
+const getNameFromID = (user_id) => {
+    return db.query('SELECT username FROM users WHERE user_id = $1', [user_id])
+};
+
+const getPlayerCards = (user_id, game_id) => {
+    return db.query('SELECT card_id FROM user_game_cards WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error)})
+};
+
+
+const getPlayerTotalScore = (user_id, game_id) => {
+    return db.query('SELECT total_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error) })
+};
+
+const getPlayerRoundScore = (user_id, game_id) => {
+    return db.query('SELECT current_round_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error)})
 };
 
 module.exports = {
@@ -218,5 +294,7 @@ module.exports = {
     getPlayerCount,
     maxPlayers,
     getGamePlayers,
-    checkGameStateExists
+    checkGameStateExists,
+    getCurrentCards,
+    getSharedInformation
 };
