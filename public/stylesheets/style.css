@@ -297,3 +297,18 @@ ul {
     display:inline-block;
     float:right;
 }
+
+.game-button{
+    position:absolute;
+    left: 505px;
+    top: 590px;
+}
+
+.waiting-box{
+    position:absolute;
+    top:300px;
+    left:150px;
+    width:350px;
+    text-align: center;
+    font-size: 24px;
+}
