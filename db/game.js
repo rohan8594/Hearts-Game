@@ -157,11 +157,15 @@ getUserIDSortedByTurnSequence = (game_id) => {
 
 getSharedInformation = (game_id) => {
     return db.query(
-        'SELECT  username, turn_sequence, current_round_score, total_score, cards_in_play.card_id AS card_in_play ' +
-        'FROM users, game_players, cards_in_play ' +
-        'WHERE users.user_id = game_players.user_id ' +
-        'AND cards_in_play.game_id = $1 ' +
+        'SELECT  username, turn_sequence, ' +
+        'current_round_score, total_score, ' +
+        'cards_in_play.card_id AS card_in_play, count(user_game_cards.card_id) AS card_count ' +
+        'FROM users, game_players, cards_in_play, user_game_cards ' + 
+        'WHERE users.user_id = game_players.user_id ' + 
+        'AND cards_in_play.game_id = $1 ' + 
         'AND game_players.game_id = $1 ' +
+        'AND user_game_cards.user_id = users.user_id ' +
+        'GROUP BY username, turn_sequence, current_round_score, total_score, cards_in_play.card_id ' +
         'ORDER BY turn_sequence', [game_id]
     )
 }
