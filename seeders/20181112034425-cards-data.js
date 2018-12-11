@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
       return queryInterface.bulkInsert('cards', [
-          {card_id: 1, card_value: 1, card_suit: 'Clubs'},
+          {card_id: 1, card_value: 14, card_suit: 'Clubs'},
           {card_id: 2, card_value: 2, card_suit: 'Clubs'},
           {card_id: 3, card_value: 3, card_suit: 'Clubs'},
           {card_id: 4, card_value: 4, card_suit: 'Clubs'},
@@ -16,7 +16,7 @@ module.exports = {
           {card_id: 11, card_value: 11, card_suit: 'Clubs'},
           {card_id: 12, card_value: 12, card_suit: 'Clubs'},
           {card_id: 13, card_value: 13, card_suit: 'Clubs'},
-          {card_id: 14, card_value: 1, card_suit: 'Diamonds'},
+          {card_id: 14, card_value: 14, card_suit: 'Diamonds'},
           {card_id: 15, card_value: 2, card_suit: 'Diamonds'},
           {card_id: 16, card_value: 3, card_suit: 'Diamonds'},
           {card_id: 17, card_value: 4, card_suit: 'Diamonds'},
@@ -29,7 +29,7 @@ module.exports = {
           {card_id: 24, card_value: 11, card_suit: 'Diamonds'},
           {card_id: 25, card_value: 12, card_suit: 'Diamonds'},
           {card_id: 26, card_value: 13, card_suit: 'Diamonds'},
-          {card_id: 27, card_value: 1, card_suit: 'Hearts'},
+          {card_id: 27, card_value: 14, card_suit: 'Hearts'},
           {card_id: 28, card_value: 2, card_suit: 'Hearts'},
           {card_id: 29, card_value: 3, card_suit: 'Hearts'},
           {card_id: 30, card_value: 4, card_suit: 'Hearts'},
@@ -42,7 +42,7 @@ module.exports = {
           {card_id: 37, card_value: 11, card_suit: 'Hearts'},
           {card_id: 38, card_value: 12, card_suit: 'Hearts'},
           {card_id: 39, card_value: 13, card_suit: 'Hearts'},
-          {card_id: 40, card_value: 1, card_suit: 'Spades'},
+          {card_id: 40, card_value: 14, card_suit: 'Spades'},
           {card_id: 41, card_value: 2, card_suit: 'Spades'},
           {card_id: 42, card_value: 3, card_suit: 'Spades'},
           {card_id: 43, card_value: 4, card_suit: 'Spades'},

@@ -153,22 +153,23 @@ const getCardCount = (user_id, game_id) => {
 getUserIDSortedByTurnSequence = (game_id) => {
     return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
         .catch((error) => {console.log(error)})
-}
+};
 
 getSharedInformation = (game_id) => {
     return db.query(
         'SELECT  username, turn_sequence, ' +
         'current_round_score, total_score, ' +
-        'cards_in_play.card_id AS card_in_play, count(user_game_cards.card_id) AS card_count ' +
+        'cards_in_play.card_id AS card_in_play, count(DISTINCT user_game_cards.card_id) AS card_count ' +
         'FROM users, game_players, cards_in_play, user_game_cards ' + 
         'WHERE users.user_id = game_players.user_id ' + 
         'AND cards_in_play.game_id = $1 ' + 
         'AND game_players.game_id = $1 ' +
         'AND user_game_cards.user_id = users.user_id ' +
+        'AND user_game_cards.game_id = $1 ' +
         'GROUP BY username, turn_sequence, current_round_score, total_score, cards_in_play.card_id ' +
         'ORDER BY turn_sequence', [game_id]
     )
-}
+};
 
 const joinCardsInPlay = (user_id, game_id) => {
     return db.none(
@@ -176,12 +177,12 @@ const joinCardsInPlay = (user_id, game_id) => {
         'VALUES ($1, $2)', [user_id, game_id])
             .catch((error) => {console.log(error)})
     
-}
+};
 
 const getCurrentCards = ( game_id, user_id ) => {
     return db.query('SELECT card_id FROM user_game_cards WHERE user_id = $1', [user_id])
         .catch((error) => {console.log(error)})
-}
+};
 
 const getUserIDFromGame = (game_id) => {
     return db.query('SELECT user_id FROM game_players WHERE game_players.game_id = $1', [game_id])
@@ -191,7 +192,7 @@ const getUserIDFromGame = (game_id) => {
 const getUsernameFromID = (username) => {
     return db.query('SELECT username FROM users WHERE username = $1', [username])
         .catch((error) => {console.log(error)})
-}
+};
 
 const getGamePlayers = (game_id) => {
     return db.query('SELECT * FROM game_players WHERE game_id = $1', [game_id])
@@ -203,7 +204,7 @@ const getNameFromID = (user_id) => {
 };
 
 const getPlayerCards = (user_id, game_id) => {
-    return db.query('SELECT card_id FROM user_game_cards WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+    return db.query('SELECT card_id FROM user_game_cards WHERE user_game_cards.user_id = $1 AND game_id = $2', [user_id, game_id])
         .catch((error) => {console.log(error)})
 };
 

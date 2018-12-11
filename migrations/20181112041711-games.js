@@ -25,6 +25,10 @@ module.exports = {
               game_name: {
                   type: Sequelize.STRING,
                   allowNull: false
+              },
+              round_number: {
+                  type: Sequelize.INTEGER,
+                  allowNull: true
               }
           }
       );

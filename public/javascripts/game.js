@@ -45,14 +45,16 @@ gameSocket.on('UPDATE', (data) => {
         leftPlayer = data.shared_player_information[leftPlayerOrder];
         rightPlayer = data.shared_player_information[rightPlayerOrder];
     }
+
     selectedFirst = false;
     selectedSecond = false;
     selectedThird = false;
     selectedMultiple = ["0", "0", "0"];
     selectedSingleCard = "0";
     selectedSingle = false;
-    //gameSocket.emit('GET PLAYER HAND', user_id)//fetch hand, not emit/socket.io
-    dummyTest()
+
+    gameSocket.emit('GET PLAYER HAND', { user_id: user_id, game_id: game_id });
+    // dummyTest()
 });
 
 function dummyTest(){
@@ -75,7 +77,7 @@ function dummyTest(){
     }
 }
 
-gameSocket.on('PLAYER HAND', (data) => {
+gameSocket.on('SEND PLAYER HAND', (data) => {
     /*
     const { state, hand } = data;
 
@@ -83,9 +85,12 @@ gameSocket.on('PLAYER HAND', (data) => {
     turnState = state;
     playersCards = hand;
     */
+    console.log(data);
 
-    turnState = data[0].state;
-    playersCards = data[0].cards;
+    turnState = data.turnState;
+    playersCards = data.player_hand;
+
+    console.log(playersCards);
 
     if(numPlayers == 4){
         updateBoardFourPlayers()
@@ -145,11 +150,11 @@ function updateBoardTwoPlayers()
         '</div>';
     displacement = 170 + (13 - playersCards.length) * 10;
     for(let i = 0; i < playersCards.length; i++){
-        let suit = -(Math.floor((playersCards[i] - 1) / 13 )) * 100;
-        let face = -((playersCards[i] -1) % 13) * 69;
+        let suit = -(Math.floor((playersCards[i].card_id - 1) / 13 )) * 100;
+        let face = -((playersCards[i].card_id -1) % 13) * 69;
         gameHtml += '<div class= "bottom-player" style="left: ' + displacement +
             'px; z-index: ' + z + '; background-position-y: ' + suit +
-            'px; background-position-x: ' + face + 'px" ' + buttonString +' id="'+ playersCards[i] +'"></div>';
+            'px; background-position-x: ' + face + 'px" ' + buttonString +' id="'+ playersCards[i].card_id +'"></div>';
         z++;
         displacement += 20;
     }
@@ -255,11 +260,11 @@ function updateBoardFourPlayers()
         '</div>';
     displacement = 170 + (13 - playersCards.length) * 10;
     for(let i = 0; i < playersCards.length; i++){
-        let suit = -(Math.floor((playersCards[i] - 1) / 13 )) * 100;
-        let face = -((playersCards[i] -1) % 13) * 69;
+        let suit = -(Math.floor((playersCards[i].card_id - 1) / 13 )) * 100;
+        let face = -((playersCards[i].card_id -1) % 13) * 69;
         gameHtml += '<div class= "bottom-player" style="left: ' + displacement +
             'px; z-index: ' + z + '; background-position-y: ' + suit +
-            'px; background-position-x: ' + face + 'px" ' + buttonString +' id="'+ playersCards[i] +'"></div>';
+            'px; background-position-x: ' + face + 'px" ' + buttonString +' id="'+ playersCards[i].card_id +'"></div>';
         z++;
         displacement += 20;
     }
@@ -376,7 +381,7 @@ function buttonDisableLogic(){
         let playableCard = false;
         for(let i = 0; i < playersCards.length; i++)
         {
-            if(leadSuit == (Math.floor((playersCards[i] - 1) / 13 ))){
+            if(leadSuit == (Math.floor((playersCards[i].card_id - 1) / 13 ))){
                 playableCard = true;
             }
         }
