@@ -63,6 +63,8 @@ router.post('/joinGame', isAuthenticated, (req, res) => {
 
             if (in_game === '0') {
                 Game.joinGame(user.user_id, game_id);
+                Game.joinCardsInPlay(user.user_id, game_id);
+                    
                 displayGameList();
                 res.redirect(`/game/${game_id}`);
             } else {

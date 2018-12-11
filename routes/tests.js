@@ -2,6 +2,34 @@ const express = require("express");
 const router = express.Router();
 const Game = require('../db/game');
 
+/*
+router.get("/", (request, response) => {
+    Game.clearUserGameCards(17)
+        .then(() => {
+            Game.initializeUserGameCards(17)
+                .then(() => {
+                    Game.dealCards(17);
+                    setTimeout(() => {
+                        Game.getAllCardsFromGame(17)
+                            .then(results => response.json(results))
+                    }, 5000)
+                });
+        });
+});
+*/
+
+
+
+router.get("/", (request, response) => {
+    Game.getSharedInformation(17)
+        .then((results)=>{
+            response.json(results);
+        })
+})
+
+
+
+/*
 router.get("/", (request, response) => {
     Game.clearUserGameCards(13)
         .then(() => {
@@ -15,6 +43,7 @@ router.get("/", (request, response) => {
                 });
         });
 });
+*/
 
 /*
 router.get("/", (request, response) => {

@@ -19,66 +19,95 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
+router.post('/playCard', isAuthenticated, (req, res) => { 
+    card_id = req.card_id;
+    user = req.user;
+    game = req.game;
+    
+    update(game_id);
+});
+
+
+
 gameSocket.on('connection', (socket) => {
-    // Game logic
+
     socket.join(game_id);
 
-    const InitGame = (game_id, player_count) => {
-        return Game.initializeUserGameCards(game_id)
-            .then(() => {
-                return Game.getGamePlayers(game_id)
-                    .then((players) => {
-                        const playersArr = [];
-                        players.forEach(player => playersArr.push(player.user_id));
-
-                        Game.dealCards(game_id, player_count, playersArr)
-                        return players;
-                    })
-            })
-    };
-
-    // Check if game state is already present in DB or not
-    Game.checkGameStateExists(game_id)
-        .then((exists) => {
-            if (exists === false) {
-                Game.maxPlayers(game_id)
-                    .then((count) => {
-                        const { max_players } = count;
-
-                        Game.getPlayerCount(game_id)
-                            .then((player_count) => {
-                                // check if game room is full to start game
-                                if (player_count == max_players) {
-                                    // Init Game
-                                    InitGame(game_id, player_count)
-                                        .then((gamePlayers) => {
-
-                                            setTimeout(() => {
-                                                gameSocket.to(game_id).emit('START GAME', {
-                                                    gamePlayers: gamePlayers,
-                                                    game_id: game_id
-                                                })
-                                            }, 1000)
-                                        })
-                                } else {
-                                    // io.to(game_id).emit('Wait', {msg: 'Waiting for more players...'})
-                                }
+    checkGameReady( game_id)
+        .then((results) => {
+            if (results == true){
+                return prepareCards(game_id)
+                    .then(() => {
+                        return Game.getUserNamesFromGame(game_id)
+                            .then((username) => {
+                                console.log(username);
+                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
+                                return update(game_id);
                             })
                     })
-                    .catch((error) => { console.log(error) })
             } else {
-                // Display current game state
+                return Game.getUserNamesFromGame(game_id)
+                    .then((username) => {
+                        gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
+                        return update(game_id);
+                    })
             }
         });
 
     socket.on('GET PLAYER HAND', (data) => {
         const { user_id, game_id } = data;
+        // query db to get player hand
+        console.log(user_id);
+        console.log(game_id);
 
-        console.log('Player: ' + user_id);
-        console.log('Game: ' + game_id);
+        Game.getPlayerCards(user_id, game_id)
+            .then((player_hand) => {
+                console.log(player_hand);
 
-        // socket.emit('Update game', playerHand)
+                socket.emit('SEND PLAYER HAND', { player_hand: player_hand, turnState: 'play' } );
+            })
+
     })
+
 });
+
+
+// game logic related functions
+const checkGameReady = (game_id) => {
+    return Game.checkGameStateExists(game_id)
+        .then((exists) => {
+            if (exists === false) {
+                return Game.maxPlayers(game_id)
+                    .then((results) => {
+                        const max_players = results[0].max_players;
+
+                        return Game.getPlayerCount(game_id)
+                            .then((player_count) => {
+                                // check if game room is full to start game
+                                return Promise.resolve(player_count == max_players);
+                            })
+                    })
+                    .catch((error) => { console.log(error) });
+            }
+        })
+
+};
+
+const prepareCards = (game_id) => {
+    return Game.initializeUserGameCards(game_id)
+        .then(() => {
+            Game.dealCards(game_id);
+            return Promise.resolve(game_id);
+        })
+};
+
+const update = (game_id) => {
+    return Game.getSharedInformation(game_id)
+        .then((shared_player_information) => {
+            gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information});
+            return Promise.resolve(shared_player_information);
+        })
+};
+
 
 module.exports = router;

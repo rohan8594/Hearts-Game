@@ -1,3 +1,4 @@
+/*
 let selectedSingle = false;
 let selectedFirst = false;
 let selectedSecond = false;
@@ -93,3 +94,4 @@ function leftPlayCard(){
     div.style.left = '200px';
     div.style.transform = "rotate(0deg)";
 };
+*/
