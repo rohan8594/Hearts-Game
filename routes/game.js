@@ -28,7 +28,6 @@ router.post('/playCard', isAuthenticated, (req, res) => {
 });
 
 
-
 gameSocket.on('connection', (socket) => {
 
     socket.join(game_id);
@@ -42,7 +41,9 @@ gameSocket.on('connection', (socket) => {
                             .then((username) => {
                                 console.log(username);
                                 gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
-                                return update(game_id);
+                                setTimeout(() => {
+                                    return update(game_id);
+                                }, 500)
                             })
                     })
             } else {
@@ -108,6 +109,5 @@ const update = (game_id) => {
             return Promise.resolve(shared_player_information);
         })
 };
-
 
 module.exports = router;

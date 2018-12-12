@@ -69,8 +69,6 @@ const maxPlayers = (game_id) => {
         .catch((error) => {console.log(error)})
 };
 
-
-
 const clearUserGameCards = (game_id) => {
     return db.none('DELETE FROM user_game_cards WHERE game_id = $1', [game_id])
         .catch((error) => {console.log(error)})
@@ -135,7 +133,6 @@ const setOwnerOfCard = (card_id, user_id, game_id) => {
         'WHERE card_id = $2 AND game_id = $3', [user_id, card_id, game_id])
         .catch((error) => {console.log(error)})
 };
-
 
 const checkGameStateExists = (game_id) => {
     return db.query('SELECT * FROM user_game_cards WHERE game_id=$1', [game_id])
