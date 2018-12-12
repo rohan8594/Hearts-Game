@@ -42,14 +42,18 @@ gameSocket.on('connection', (socket) => {
                             .then((username) => {
                                 console.log(username);
                                 gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
-                                return update(game_id);
+                                setTimeout(() => {
+                                    return update(game_id);
+                                }, 500)
                             })
                     })
             } else {
                 return Game.getUserNamesFromGame(game_id)
                     .then((username) => {
                         gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
-                        return update(game_id);
+                        setTimeout(() => {
+                            return update(game_id);
+                        }, 500)
                     })
             }
         });
@@ -57,13 +61,9 @@ gameSocket.on('connection', (socket) => {
     socket.on('GET PLAYER HAND', (data) => {
         const { user_id, game_id } = data;
         // query db to get player hand
-        console.log(user_id);
-        console.log(game_id);
-
+      
         Game.getPlayerCards(user_id, game_id)
             .then((player_hand) => {
-                console.log(player_hand);
-
                 socket.emit('SEND PLAYER HAND', { player_hand: player_hand, turnState: 'play' } );
             })
 
@@ -104,10 +104,13 @@ const prepareCards = (game_id) => {
 const update = (game_id) => {
     return Game.getSharedInformation(game_id)
         .then((shared_player_information) => {
-            gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information});
-            return Promise.resolve(shared_player_information);
+            return Game.getCurrentTurn(game_id)
+                .then((current_turn) => {
+                    gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information, current_turn : current_turn});
+                    console.log(current_turn);
+                    return Promise.resolve(shared_player_information);
+                })
         })
 };
-
 
 module.exports = router;
