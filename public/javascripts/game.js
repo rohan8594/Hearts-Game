@@ -46,10 +46,13 @@ gameSocket.on('UPDATE', (data) => {
         rightPlayer = data.shared_player_information[rightPlayerOrder];
     }
 
-    if(data.current_player == null){
+    console.log(username);
+    console.log(data);
+
+    if(data.turn_information[0] == null){
         turnState = "pass"
     }
-    else if(data.current_player == username){
+    else if(data.turn_information[0].current_player == username){
         turnState = "play"
     }
     else{
