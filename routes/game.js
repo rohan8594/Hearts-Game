@@ -127,8 +127,12 @@ const prepareCards = (game_id) => {
 const update = (game_id) => {
     return Game.getSharedInformation(game_id)
         .then((shared_player_information) => {
-            gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information});
-            return Promise.resolve(shared_player_information);
+            return Game.getCurrentTurn(game_id)
+                .then((current_turn) => {
+                    gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information, current_turn : current_turn});
+                    console.log(current_turn);
+                    return Promise.resolve(shared_player_information);
+                })
         })
 };
 
