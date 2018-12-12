@@ -215,6 +215,38 @@ const getPlayerRoundScore = (user_id, game_id) => {
         .catch((error) => {console.log(error)})
 };
 
+const verifyUserHasCards = (user_id, game_id, [card1, card2, card3]) => {
+
+    return db.query('SELECT * FROM user_game_cards WHERE user_id=$1 AND game_id=$2 AND card_id=$3', [user_id, game_id, card1])
+        .then((results) => {
+            if (results === undefined || results.length === 0) return false;
+            else {
+                return db.query('SELECT * FROM user_game_cards WHERE user_id=$1 AND game_id=$2 AND card_id=$3', [user_id, game_id, card2])
+                    .then((results) => {
+                        if (results === undefined || results.length === 0) return false;
+                        else {
+                            return db.query('SELECT * FROM user_game_cards WHERE user_id=$1 AND game_id=$2 AND card_id=$3', [user_id, game_id, card3])
+                                .then((results) => {
+                                    if (results === undefined || results.length === 0) return false;
+                                    else return true;
+                                })
+                                .catch((error) => { console.log(error) })
+                        }
+                    })
+                    .catch((error) => { console.log(error) })
+            }
+        })
+        .catch((error) => { console.log(error) })
+};
+
+const addToPassedCardsTable = (user_id, game_id, [card1, card2, card3]) => {
+
+    [card1, card2, card3].forEach((card) => {
+        return db.none('INSERT INTO passed_cards (user_id, game_id, card_id) VALUES ($1, $2, $3)', [user_id, game_id, card])
+            .catch((error) => { console.log(error) })
+    })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -240,5 +272,8 @@ module.exports = {
     checkGameStateExists,
     getCurrentCards,
     getSharedInformation,
-    joinCardsInPlay
+    joinCardsInPlay,
+    verifyUserHasCards,
+    addToPassedCardsTable,
+    setOwnerOfCard
 };

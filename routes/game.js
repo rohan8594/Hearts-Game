@@ -50,24 +50,46 @@ gameSocket.on('connection', (socket) => {
                 return Game.getUserNamesFromGame(game_id)
                     .then((username) => {
                         gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
-                        return update(game_id);
+                        setTimeout(() => {
+                            return update(game_id);
+                        }, 500)
                     })
             }
         });
 
     socket.on('GET PLAYER HAND', (data) => {
         const { user_id, game_id } = data;
-        // query db to get player hand
-        console.log(user_id);
-        console.log(game_id);
 
         Game.getPlayerCards(user_id, game_id)
             .then((player_hand) => {
-                console.log(player_hand);
 
-                socket.emit('SEND PLAYER HAND', { player_hand: player_hand, turnState: 'play' } );
+                socket.emit('SEND PLAYER HAND', { player_hand: player_hand, turnState: 'pass' } );
             })
 
+    });
+
+    socket.on('PASS CARDS', (data) => {
+        const { user_id, game_id, passed_cards } = data;
+
+        let card1 = parseInt(passed_cards[0]),
+            card2 = parseInt(passed_cards[1]),
+            card3 = parseInt(passed_cards[2]);
+
+        Game.verifyUserHasCards(user_id, game_id, [card1, card2, card3])
+            .then((exits) => {
+                if (exits === true) {
+                    // insert cards into passed_cards table
+                    Game.addToPassedCardsTable(user_id, game_id, [card1, card2, card3]);
+                    // set owner of those cards in user_game_cards to 0
+                    setTimeout(() => {
+                        [card1, card2, card3].forEach((card) => {
+                            Game.setOwnerOfCard(card, null, game_id)
+                        })
+                    }, 100)
+                } else {
+                    // notify user that either he doesn't have these cards or they are already passed
+                }
+            })
     })
 
 });
