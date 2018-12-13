@@ -83,15 +83,12 @@ gameSocket.on('SEND PLAYER HAND', (data) => {
     updateGameBoard();
 });
 
-
 gameSocket.on('GAME OVER', (data) => {
     gameOver = true;
     const board = document.getElementsByClassName('game-box')[0];
 
-    let scoreHtml = '<div class="container">' +
-        '    <div class="modal fade" id="game_over_window" role="dialog" style="z-index: 100">' +
-        '        <div class="modal-dialog">' +
-        '            <div class="modal-content" style="border-radius: 15px; background-color: #086305;">' +
+    let scoreHtml = '<div class="container" >' +
+        '    <div class="modal modal-dialog" id="game_over_window" role="dialog" style="border-radius: 15px; background-color: #086305; padding-left: 0; padding-right: 0;">' +
         '                <div class="modal-header">' +
         '                    <center>' +
         '                        <h4 class="modal-title">Game Over!</h4>' +
@@ -107,21 +104,21 @@ gameSocket.on('GAME OVER', (data) => {
         '                        </thead>' +
         '                        <tbody>' +
         '                            <tr>' +
-        '                                <td>' + playerNames[bottomPlayerOrder] + '</td>' +
+        '                                <td>' + playerNames[bottomPlayerOrder].username + '</td>' +
         '                                <td>' + bottomPlayer.total_score + '</td>' +
         '                            </tr>' +
         '                            <tr>' +
-        '                                <td>' + playerNames[topPlayerOrder] + '</td>' +
+        '                                <td>' + playerNames[topPlayerOrder].username + '</td>' +
         '                                <td>' + topPlayer.total_score + '</td>' +
         '                            </tr>';
 
     if(numPlayers == 4) {
         scoreHtml += '                            <tr>' +
-            '                                <td>' + playerNames[leftPlayerOrder] + '</td>' +
+            '                                <td>' + playerNames[leftPlayerOrder].username + '</td>' +
             '                            <td>' + leftPlayer.total_score + '</td>' +
             '                            </tr>' +
             '                            <tr>' +
-            '                                <td>' + playerNames[rightPlayerOrder] + '</td>' +
+            '                                <td>' + playerNames[rightPlayerOrder].username + '</td>' +
             '                            <td>' + rightPlayer.total_score + '</td>' +
             '                            </tr>';
     }
@@ -129,9 +126,9 @@ gameSocket.on('GAME OVER', (data) => {
     scoreHtml += '                        </tbody>' +
         '                    </table>' +
         '                </div>' +
+        '                <div class="modal-footer">' +
+        '                        <button class="btn btn-primary" id="close" style="width: 100%;" data-dismiss="modal">Close</button></div>'+
         '            </div>' +
-        '        </div>' +
-        '    </div>' +
         '</div>';
 
     let div = document.createElement('div');
