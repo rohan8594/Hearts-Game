@@ -71,7 +71,6 @@ gameSocket.on('SEND PLAYER HAND', (data) => {
     playersCards = data.player_hand;
 
     updateGameBoard();
-    test()
 });
 
 gameSocket.on('GAME OVER', (data) => {
