@@ -69,7 +69,7 @@ gameSocket.on('UPDATE', (data) => {
 
 gameSocket.on('VALID PASS', (data) => {
     const alertBox = document.getElementsByClassName('alert-box')[0];
-    alertBox.innerHTML = '<p>Waiting for other plays to select their cars to pass...</p>';
+    alertBox.innerHTML = '<p>Waiting for other players to select their cards to pass...</p>';
     const board = document.getElementsByClassName('game-box')[0];
     let passBtn = document.getElementById("multiple-button");
     board.removeChild(passBtn);
@@ -447,6 +447,13 @@ function selectMultipleCard(id) {
 }
 
 function passButton(){
+    // send three cards to server
+    gameSocket.emit('PASS CARDS', {
+        user_id: user_id,
+        game_id: game_id,
+        passed_cards: [selectedMultiple[0], selectedMultiple[1], selectedMultiple[2]]
+    });
+
     resetCard(selectedMultiple[0]);
     resetCard(selectedMultiple[1]);
     resetCard(selectedMultiple[2]);
