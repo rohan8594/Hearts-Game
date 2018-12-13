@@ -105,18 +105,29 @@ gameSocket.on('connection', (socket) => {
                                                         if (round_number % 4 === 1) {
                                                             // pass to left
                                                             for (let i = 0; i < game_players.length; i++) {
-                                                                let owner = game_players[i].user_id;
-                                                                let player_to_send = game_players[(owner + 1) % 4].user_id;
+                                                                let { user_id: owner } = game_players[i];
+                                                                let { user_id: player_to_send } = game_players[(owner + 1) % game_players.length];
 
                                                                 passCard(owner, game_id, player_to_send);
                                                             }
                                                         } else if (round_number % 4 === 2) {
                                                             // pass to right
+                                                            for (let i = 0; i < game_players.length; i++) {
+                                                                let { user_id: owner } = game_players[i];
+                                                                let { user_id: player_to_send } = game_players[(owner - 1) % game_players.length];
+
+                                                                passCard(owner, game_id, player_to_send);
+                                                            }
                                                         } else if (round_number % 4 === 3) {
                                                             // pass across
-                                                        } else if (round_number % 4 === 0) {
-                                                            // hold
+                                                            for (let i = 0; i < game_players.length; i++) {
+                                                                let { user_id: owner } = game_players[i];
+                                                                let { user_id: player_to_send } = game_players[(owner + (game_players.length) / 2) % game_players.length];
+
+                                                                passCard(owner, game_id, player_to_send);
+                                                            }
                                                         }
+                                                        startGame(game_id);
                                                     })
                                             })
                                     } else {
@@ -185,6 +196,20 @@ const passCard = (owner, game_id, player_to_send) => {
                     })
             }
         })
+};
+
+const startGame = (game_id) => {
+    setTimeout(() => {
+        Game.getStartingPlayer(game_id)
+            .then((results) => {
+                const starting_player = results[0].user_id;
+
+                Game.setCurrentPlayer(starting_player, game_id)
+                    .then(() => {
+                        return update(game_id);
+                    })
+            })
+    }, 500)
 };
 
 module.exports = router;

@@ -296,6 +296,16 @@ const deletePassCard = (card_id, game_id) => {
         .catch((error) => { console.log(error) })
 };
 
+const setCurrentPlayer = (user_id, game_id) => {
+    return db.none('UPDATE games SET current_player=$1 WHERE game_id=$2', [user_id, game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const getStartingPlayer = (game_id) => {
+    return db.query('SELECT user_id FROM user_game_cards WHERE game_id=$1 AND card_id=$2', [game_id, 2])
+        .catch((error) => { console.log(error) })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -331,5 +341,7 @@ module.exports = {
     checkAllPlayersPassed,
     getCurrentRoundNumber,
     getPassCardsForUser,
-    deletePassCard
+    deletePassCard,
+    setCurrentPlayer,
+    getStartingPlayer
 };
