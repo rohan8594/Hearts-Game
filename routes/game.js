@@ -92,13 +92,34 @@ gameSocket.on('connection', (socket) => {
 
                         setTimeout(() => {
                             Game.checkAllPlayersPassed(game_id)
-                                .then((passed) => {
+                                .then((cards_passed) => {
 
-                                    if (passed === true) {
-                                        console.log('Test true')
+                                    if (cards_passed === true) {
                                         // change cards ownership
+                                        Game.getGamePlayers(game_id)
+                                            .then((game_players) => {
+                                                Game.getCurrentRoundNumber(game_id)
+                                                    .then((result) => {
+                                                        const round_number = result[0].round_number;
+
+                                                        if (round_number % 4 === 1) {
+                                                            // pass to left
+                                                            for (let i = 0; i < game_players.length; i++) {
+                                                                let owner = game_players[i].user_id;
+                                                                let player_to_send = game_players[(owner + 1) % 4].user_id;
+
+                                                                passCard(owner, game_id, player_to_send);
+                                                            }
+                                                        } else if (round_number % 4 === 2) {
+                                                            // pass to right
+                                                        } else if (round_number % 4 === 3) {
+                                                            // pass across
+                                                        } else if (round_number % 4 === 0) {
+                                                            // hold
+                                                        }
+                                                    })
+                                            })
                                     } else {
-                                        console.log('Test false')
                                         // notify player to wait for others to pass
                                     }
                                 })
@@ -149,6 +170,20 @@ const update = (game_id) => {
                     gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information, turn_information : turn_information});
                     return Promise.resolve(shared_player_information);
                 })
+        })
+};
+
+const passCard = (owner, game_id, player_to_send) => {
+    Game.getPassCardsForUser(owner, game_id)
+        .then((cards) => {
+            for (let j = 0; j < cards.length; j++) {
+                let card = cards[j].card_id;
+
+                Game.setOwnerOfCard(card, player_to_send, game_id)
+                    .then(() => {
+                        Game.deletePassCard(card, game_id)
+                    })
+            }
         })
 };
 

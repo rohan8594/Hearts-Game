@@ -1,8 +1,8 @@
 const db = require('../db');
 
 const createGame = (max_players, user_id, game_name) => {
-    return db.query('INSERT INTO games (max_players, game_name) VALUES ' +
-        '($1, $2) RETURNING game_id', [max_players, game_name])
+    return db.query('INSERT INTO games (max_players, game_name, round_number) VALUES ' +
+        '($1, $2, $3) RETURNING game_id', [max_players, game_name, 1])
         .catch((error) => { console.log(error) })
 };
 
@@ -195,7 +195,7 @@ const getUsernameFromID = (username) => {
 };
 
 const getGamePlayers = (game_id) => {
-    return db.query('SELECT * FROM game_players WHERE game_id = $1', [game_id])
+    return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
         .catch((error) => {console.log(error)})
 };
 
@@ -281,6 +281,21 @@ const checkAllPlayersPassed = (game_id) => {
         })
 };
 
+const getCurrentRoundNumber = (game_id) => {
+    return db.query('SELECT round_number FROM games WHERE game_id=$1', [game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const getPassCardsForUser = (user_id, game_id) => {
+    return db.query('SELECT * FROM passed_cards WHERE user_id=$1 AND game_id=$2', [user_id, game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const deletePassCard = (card_id, game_id) => {
+    return db.none('DELETE FROM passed_cards WHERE card_id=$1 AND game_id=$2', [card_id, game_id])
+        .catch((error) => { console.log(error) })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -313,5 +328,8 @@ module.exports = {
     retrieveOwnedCard,
     verifyUserHasCards,
     addToPassedCardsTable,
-    checkAllPlayersPassed
+    checkAllPlayersPassed,
+    getCurrentRoundNumber,
+    getPassCardsForUser,
+    deletePassCard
 };
