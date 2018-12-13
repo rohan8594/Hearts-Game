@@ -312,3 +312,17 @@ ul {
     text-align: center;
     font-size: 24px;
 }
+
+.alert-box{
+    position:absolute;
+    width: 310px;
+    left: 170px;
+    top: 160px;
+    text-align: center;
+}
+
+#nudge_output p{
+    color: #aaa;
+    padding: 14px 0px;
+    margin: 0 20px;
+}

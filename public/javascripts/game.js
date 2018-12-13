@@ -12,6 +12,7 @@ let selectedSecond = false;
 let selectedThird = false;
 let selectedSingleCard = "0";
 let selectedMultiple = ["0", "0", "0"];
+let gameOver = false;
 
 gameSocket.on('LOAD PLAYERS', (data) => {
 
@@ -46,9 +47,6 @@ gameSocket.on('UPDATE', (data) => {
         rightPlayer = data.shared_player_information[rightPlayerOrder];
     }
 
-    console.log(username);
-    console.log(data);
-
     if(data.turn_information[0] == null){
         turnState = "pass"
     }
@@ -67,43 +65,73 @@ gameSocket.on('UPDATE', (data) => {
     selectedSingle = false;
 
     gameSocket.emit('GET PLAYER HAND', { user_id: user_id, game_id: game_id });
-    // dummyTest()
 });
-
-function dummyTest(){
-    turnState = "play";
-    playersCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
-
-    /*
-    topPlayer = {current_round_score: 10, total_score: 0, card_count: 12, card_in_play: 0};
-    leftPlayer = {current_round_score: 0, total_score: 0, card_count: 13, card_in_play: 0};
-    rightPlayer = {current_round_score: 0, total_score: 0, card_count: 13, card_in_play: 33};
-    bottomPlayer = {current_round_score: 0, total_score: 0, card_count: 13, card_in_play: 0};
-    */
-
-
-    if(numPlayers == 4){
-        updateBoardFourPlayers()
-    }
-    else{
-        updateBoardTwoPlayers()
-    }
-}
 
 gameSocket.on('SEND PLAYER HAND', (data) => {
-    /*
-    const { state, hand } = data;
-
-    //State: pass play or wait
-    turnState = state;
-    playersCards = hand;
-    */
-    console.log(data);
-
     playersCards = data.player_hand;
 
-    updateGameBoard()
+    updateGameBoard();
+    test()
 });
+
+gameSocket.on('GAME OVER', (data) => {
+    gameOver = true;
+    const board = document.getElementsByClassName('game-box')[0];
+
+    let scoreHtml = '<div class="container">' +
+        '    <div class="modal fade" id="game_over_window" role="dialog">' +
+        '        <div class="modal-dialog">' +
+        '            <div class="modal-content" style="border-radius: 15px; background-color: #086305;">' +
+        '                <div class="modal-header">' +
+        '                    <center>' +
+        '                        <h4 class="modal-title">Game Over!</h4>' +
+        '                    </center>' +
+        '                </div>' +
+        '                <div class="modal-body" style="color:#086305;background-color: #ffffff;">' +
+        '                    <table class="table table-striped table-dark">' +
+        '                        <thead>' +
+        '                            <tr>' +
+        '                                <th scope="col">Player\'s name</th>' +
+        '                                <th scope="col">Score</th>' +
+        '                            </tr>' +
+        '                        </thead>' +
+        '                        <tbody>' +
+        '                            <tr>' +
+        '                                <td>' + playerNames[bottomPlayerOrder] + '</td>' +
+        '                                <td>' + bottomPlayer.total_score + '</td>' +
+        '                            </tr>' +
+        '                            <tr>' +
+        '                                <td>' + playerNames[topPlayerOrder] + '</td>' +
+        '                                <td>' + topPlayer.total_score + '</td>' +
+        '                            </tr>';
+
+    if(numPlayers == 4) {
+        scoreHtml += '                            <tr>' +
+            '                                <td>' + playerNames[leftPlayerOrder] + '</td>' +
+            '                            <td>' + leftPlayer.total_score + '</td>' +
+            '                            </tr>' +
+            '                            <tr>' +
+            '                                <td>' + playerNames[rightPlayerOrder] + '</td>' +
+            '                            <td>' + rightPlayer.total_score + '</td>' +
+            '                            </tr>';
+    }
+
+    scoreHtml += '                        </tbody>' +
+        '                    </table>' +
+        '                </div>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
+        '</div>';
+
+    let div = document.createElement('div');
+    div.innerHTML = scoreHtml;
+
+    board.appendChild(div);
+
+    $("#game_over_window").modal();
+});
+
 
 function updateGameBoard()
 {
@@ -263,7 +291,7 @@ function selectSingleCard(id) {
 
     let btn = document.getElementById("single-button");
 
-    if(selectedSingle){
+    if(selectedSingle && !gameOver){
         buttonDisableLogic()//btn.disabled = false;
     }
     else{
@@ -324,8 +352,14 @@ function buttonDisableLogic(){
             brokenHearts += parseInt(leftPlayer.current_round_score) + parseInt(rightPlayer.current_round_score);
         }
 
-        //If hearts aren't broken, can't start the round with a heart
-        if((brokenHearts == 0) && (selectedSuit == 2)){
+        let hasNonHeart = false;
+        for(let i = 0; i < playersCards.length; i++)
+        {
+            if((Math.floor((playersCards[i].card_id - 1) / 13 )) == 2){
+                hasNonHeart = true;
+            }
+        }
+        if((brokenHearts == 0) && (selectedSuit == 2) && hasNonHeart){
             alertBox.innerHTML="Hearts haven't been broken yet, you can't play hearts as the lead suit.";
             btn.disabled = true;
         }
@@ -395,7 +429,7 @@ function selectMultipleCard(id) {
 
     let btn = document.getElementById("multiple-button");
 
-    if(selectedFirst && selectedSecond && selectedThird){
+    if(selectedFirst && selectedSecond && selectedThird && !gameOver){
         btn.disabled = false;
     }
     else{
