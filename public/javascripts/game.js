@@ -445,6 +445,14 @@ function selectMultipleCard(id) {
 }
 
 function passButton(){
+    // send three cards to server
+
+    gameSocket.emit('PASS CARDS', {
+        user_id: user_id,
+        game_id: game_id,
+        passed_cards: [selectedMultiple[0], selectedMultiple[1], selectedMultiple[2]]
+    });
+
     resetCard(selectedMultiple[0]);
     resetCard(selectedMultiple[1]);
     resetCard(selectedMultiple[2]);

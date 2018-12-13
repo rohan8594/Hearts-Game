@@ -28,7 +28,6 @@ router.post('/playCard', isAuthenticated, (req, res) => {
 });
 
 
-
 gameSocket.on('connection', (socket) => {
 
     if(game_id == null){
@@ -64,15 +63,85 @@ gameSocket.on('connection', (socket) => {
 
     socket.on('GET PLAYER HAND', (data) => {
         const { user_id, game_id } = data;
-        // query db to get player hand
 
         Game.getPlayerCards(user_id, game_id)
             .then((player_hand) => {
-                socket.emit('SEND PLAYER HAND', { player_hand: player_hand, turnState: 'play' } );
+
+                socket.emit('SEND PLAYER HAND', { player_hand: player_hand } );
             })
 
-    })
+    });
 
+    socket.on('PASS CARDS', (data) => {
+        const { user_id, game_id, passed_cards } = data;
+
+        let card1 = parseInt(passed_cards[0]),
+            card2 = parseInt(passed_cards[1]),
+            card3 = parseInt(passed_cards[2]);
+
+        Game.verifyUserHasCards(user_id, game_id, [card1, card2, card3])
+            .then((exits) => {
+                if (exits === true) {
+                    // insert cards into passed_cards table
+                    Game.addToPassedCardsTable(user_id, game_id, [card1, card2, card3]);
+                    // set owner of those cards in user_game_cards to 0
+                    setTimeout(() => {
+                        [card1, card2, card3].forEach((card) => {
+                            Game.setOwnerOfCard(card, null, game_id);
+                        });
+
+                        setTimeout(() => {
+                            Game.checkAllPlayersPassed(game_id)
+                                .then((cards_passed) => {
+
+                                    if (cards_passed === true) {
+                                        // change cards ownership
+                                        Game.getGamePlayers(game_id)
+                                            .then((game_players) => {
+                                                Game.getCurrentRoundNumber(game_id)
+                                                    .then((result) => {
+                                                        const round_number = result[0].round_number;
+
+                                                        if (round_number % 4 === 1) {
+                                                            // pass to left
+                                                            for (let i = 0; i < game_players.length; i++) {
+                                                                let { user_id: owner } = game_players[i];
+                                                                let { user_id: player_to_send } = game_players[(owner + 1) % game_players.length];
+
+                                                                passCard(owner, game_id, player_to_send);
+                                                            }
+                                                        } else if (round_number % 4 === 2) {
+                                                            // pass to right
+                                                            for (let i = 0; i < game_players.length; i++) {
+                                                                let { user_id: owner } = game_players[i];
+                                                                let { user_id: player_to_send } = game_players[(owner - 1) % game_players.length];
+
+                                                                passCard(owner, game_id, player_to_send);
+                                                            }
+                                                        } else if (round_number % 4 === 3) {
+                                                            // pass across
+                                                            for (let i = 0; i < game_players.length; i++) {
+                                                                let { user_id: owner } = game_players[i];
+                                                                let { user_id: player_to_send } = game_players[(owner + (game_players.length) / 2) % game_players.length];
+
+                                                                passCard(owner, game_id, player_to_send);
+                                                            }
+                                                        }
+                                                        startGame(game_id);
+                                                    })
+                                            })
+                                    } else {
+                                        // notify player to wait for others to pass
+                                    }
+                                })
+                        }, 100)
+                    }, 100)
+
+                } else {
+                    // notify user that either he doesn't have these cards or they are already passed
+                }
+            })
+    })
 });
 
 
@@ -94,7 +163,6 @@ const checkGameReady = (game_id) => {
                     .catch((error) => { console.log(error) });
             }
         })
-
 };
 
 const prepareCards = (game_id) => {
@@ -114,6 +182,34 @@ const update = (game_id) => {
                     return Promise.resolve(shared_player_information);
                 })
         })
+};
+
+const passCard = (owner, game_id, player_to_send) => {
+    Game.getPassCardsForUser(owner, game_id)
+        .then((cards) => {
+            for (let j = 0; j < cards.length; j++) {
+                let card = cards[j].card_id;
+
+                Game.setOwnerOfCard(card, player_to_send, game_id)
+                    .then(() => {
+                        Game.deletePassCard(card, game_id)
+                    })
+            }
+        })
+};
+
+const startGame = (game_id) => {
+    setTimeout(() => {
+        Game.getStartingPlayer(game_id)
+            .then((results) => {
+                const starting_player = results[0].user_id;
+
+                Game.setCurrentPlayer(starting_player, game_id)
+                    .then(() => {
+                        return update(game_id);
+                    })
+            })
+    }, 500)
 };
 
 module.exports = router;
