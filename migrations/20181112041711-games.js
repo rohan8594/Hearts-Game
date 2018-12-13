@@ -16,7 +16,8 @@ module.exports = {
               },
               current_player: {
                   type: Sequelize.INTEGER,
-                  allowNull: false,
+                  allowNull: true,
+                  defaultValue: null,
                   references: {
                       model: 'users',
                       key: 'user_id'
