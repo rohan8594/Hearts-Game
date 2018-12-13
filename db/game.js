@@ -69,6 +69,8 @@ const maxPlayers = (game_id) => {
         .catch((error) => {console.log(error)})
 };
 
+
+
 const clearUserGameCards = (game_id) => {
     return db.none('DELETE FROM user_game_cards WHERE game_id = $1', [game_id])
         .catch((error) => {console.log(error)})
@@ -133,6 +135,7 @@ const setOwnerOfCard = (card_id, user_id, game_id) => {
         'WHERE card_id = $2 AND game_id = $3', [user_id, card_id, game_id])
         .catch((error) => {console.log(error)})
 };
+
 
 const checkGameStateExists = (game_id) => {
     return db.query('SELECT * FROM user_game_cards WHERE game_id=$1', [game_id])
@@ -206,7 +209,17 @@ const getPlayerCards = (user_id, game_id) => {
 };
 
 const getCurrentTurn = (game_id) => {
+    return db.query('SELECT users.username AS current_player FROM games, users WHERE game_id = $1 AND current_player = users.user_id', [game_id])
+        .then((results) => { 
+            if(results.length == 0 ) { return Promise.resolve( {current_player : null}) }
+            else {return results}
+        })
+        .catch((error) => {console.log(error)})
+};
+
+const getCurrentTurnId = (game_id) => {
     return db.query('SELECT current_player FROM games WHERE game_id = $1', [game_id])
+        .catch((error) => {console.log(error)})
 };
 
 const getPlayerTotalScore = (user_id, game_id) => {
@@ -216,6 +229,11 @@ const getPlayerTotalScore = (user_id, game_id) => {
 
 const getPlayerRoundScore = (user_id, game_id) => {
     return db.query('SELECT current_round_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => {console.log(error)})
+};
+
+const retrieveOwnedCard = (user_id, game_id, card_id) => {
+    return db.one('SELECT card_id FROM user_game_cards WHERE card_id = $1 AND user_id = $2 AND game_id = $3', [card_id, user_id, game_id])
         .catch((error) => {console.log(error)})
 };
 
@@ -256,9 +274,9 @@ const checkAllPlayersPassed = (game_id) => {
         .then((results) => {
             const max_players = results[0].max_players;
 
-            return db.query('SELECT COUNT(DISTINCT card_id) FROM passed_cards WHERE game_id = $1')
+            return db.query('SELECT COUNT(DISTINCT card_id) FROM passed_cards WHERE game_id = $1', [game_id])
                 .then((results) => {
-                    return results[0].count === max_players * 3;
+                    return results[0].count == max_players * 3;
                 })
         })
 };
@@ -289,9 +307,11 @@ module.exports = {
     getCurrentCards,
     getSharedInformation,
     joinCardsInPlay,
+    getCurrentTurn,
+    setOwnerOfCard,
+    getCurrentTurnId,
+    retrieveOwnedCard,
     verifyUserHasCards,
     addToPassedCardsTable,
-    setOwnerOfCard,
-    getCurrentTurn,
     checkAllPlayersPassed
 };

@@ -88,27 +88,28 @@ gameSocket.on('connection', (socket) => {
                     setTimeout(() => {
                         [card1, card2, card3].forEach((card) => {
                             Game.setOwnerOfCard(card, null, game_id);
+                        });
 
-                            setTimeout(() => {
-                                Game.checkAllPlayersPassed(game_id)
-                                    .then((passed) => {
-                                        if (passed === true) {
-                                            console.log('Test true')
-                                            // change cards ownership
-                                        } else {
-                                            console.log('Test false')
-                                            // notify player to wait for others to pass
-                                        }
-                                    })
-                            }, 100)
-                        })
+                        setTimeout(() => {
+                            Game.checkAllPlayersPassed(game_id)
+                                .then((passed) => {
+
+                                    if (passed === true) {
+                                        console.log('Test true')
+                                        // change cards ownership
+                                    } else {
+                                        console.log('Test false')
+                                        // notify player to wait for others to pass
+                                    }
+                                })
+                        }, 100)
                     }, 100)
+
                 } else {
                     // notify user that either he doesn't have these cards or they are already passed
                 }
             })
     })
-
 });
 
 
@@ -130,7 +131,6 @@ const checkGameReady = (game_id) => {
                     .catch((error) => { console.log(error) });
             }
         })
-
 };
 
 const prepareCards = (game_id) => {
