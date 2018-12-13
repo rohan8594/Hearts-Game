@@ -326,3 +326,7 @@ ul {
     padding: 14px 0px;
     margin: 0 20px;
 }
+
+.blocker{ z-index: 100 !important;}
+
+.close-modal {display: none !important;}

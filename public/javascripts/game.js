@@ -68,6 +68,8 @@ gameSocket.on('UPDATE', (data) => {
 });
 
 gameSocket.on('VALID PASS', (data) => {
+    const alertBox = document.getElementsByClassName('alert-box')[0];
+    alertBox.innerHTML = '<p>Waiting for other plays to select their cars to pass...</p>';
     const board = document.getElementsByClassName('game-box')[0];
     let passBtn = document.getElementById("multiple-button");
     board.removeChild(passBtn);
@@ -83,15 +85,12 @@ gameSocket.on('SEND PLAYER HAND', (data) => {
     updateGameBoard();
 });
 
-
 gameSocket.on('GAME OVER', (data) => {
     gameOver = true;
     const board = document.getElementsByClassName('game-box')[0];
 
-    let scoreHtml = '<div class="container">' +
-        '    <div class="modal fade" id="game_over_window" role="dialog" style="z-index: 100">' +
-        '        <div class="modal-dialog">' +
-        '            <div class="modal-content" style="border-radius: 15px; background-color: #086305;">' +
+    let scoreHtml = '<div class="container" >' +
+        '    <div class="modal modal-dialog" id="game_over_window" role="dialog" style="border-radius: 15px; background-color: #086305; padding-left: 0; padding-right: 0;">' +
         '                <div class="modal-header">' +
         '                    <center>' +
         '                        <h4 class="modal-title">Game Over!</h4>' +
@@ -107,21 +106,21 @@ gameSocket.on('GAME OVER', (data) => {
         '                        </thead>' +
         '                        <tbody>' +
         '                            <tr>' +
-        '                                <td>' + playerNames[bottomPlayerOrder] + '</td>' +
+        '                                <td>' + playerNames[bottomPlayerOrder].username + '</td>' +
         '                                <td>' + bottomPlayer.total_score + '</td>' +
         '                            </tr>' +
         '                            <tr>' +
-        '                                <td>' + playerNames[topPlayerOrder] + '</td>' +
+        '                                <td>' + playerNames[topPlayerOrder].username + '</td>' +
         '                                <td>' + topPlayer.total_score + '</td>' +
         '                            </tr>';
 
     if(numPlayers == 4) {
         scoreHtml += '                            <tr>' +
-            '                                <td>' + playerNames[leftPlayerOrder] + '</td>' +
+            '                                <td>' + playerNames[leftPlayerOrder].username + '</td>' +
             '                            <td>' + leftPlayer.total_score + '</td>' +
             '                            </tr>' +
             '                            <tr>' +
-            '                                <td>' + playerNames[rightPlayerOrder] + '</td>' +
+            '                                <td>' + playerNames[rightPlayerOrder].username + '</td>' +
             '                            <td>' + rightPlayer.total_score + '</td>' +
             '                            </tr>';
     }
@@ -129,9 +128,9 @@ gameSocket.on('GAME OVER', (data) => {
     scoreHtml += '                        </tbody>' +
         '                    </table>' +
         '                </div>' +
+        '                <div class="modal-footer">' +
+        '                        <button class="btn btn-primary" id="close" style="width: 100%;" data-dismiss="modal">Close</button></div>'+
         '            </div>' +
-        '        </div>' +
-        '    </div>' +
         '</div>';
 
     let div = document.createElement('div');
@@ -370,7 +369,7 @@ function buttonDisableLogic(){
             }
         }
         if((brokenHearts == 0) && (selectedSuit == 2) && hasNonHeart){
-            alertBox.innerHTML="Hearts haven't been broken yet, you can't play hearts as the lead suit.";
+            alertBox.innerHTML="<p>Hearts haven't been broken yet, you can't play hearts as the lead suit.</p>";
             btn.disabled = true;
         }
         else{
@@ -391,7 +390,7 @@ function buttonDisableLogic(){
             }
         }
         if(playableCard){
-            alertBox.innerHTML="Your card must match the leading suit.";
+            alertBox.innerHTML="<p>Your card must match the leading suit.</p>";
             btn.disabled = true;
         }
         else{
@@ -448,14 +447,6 @@ function selectMultipleCard(id) {
 }
 
 function passButton(){
-    // send three cards to server
-
-    gameSocket.emit('PASS CARDS', {
-        user_id: user_id,
-        game_id: game_id,
-        passed_cards: [selectedMultiple[0], selectedMultiple[1], selectedMultiple[2]]
-    });
-
     resetCard(selectedMultiple[0]);
     resetCard(selectedMultiple[1]);
     resetCard(selectedMultiple[2]);
