@@ -67,18 +67,29 @@ gameSocket.on('UPDATE', (data) => {
     gameSocket.emit('GET PLAYER HAND', { user_id: user_id, game_id: game_id });
 });
 
+gameSocket.on('VALID PASS', (data) => {
+    const board = document.getElementsByClassName('game-box')[0];
+    let passBtn = document.getElementById("multiple-button");
+    board.removeChild(passBtn);
+    let nudgeBtn = document.createElement('button');
+    let nudgeBtnHTML ='<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
+    nudgeBtn.innerHTML=nudgeBtnHTML;
+    board.appendChild(nudgeBtn);
+});
+
 gameSocket.on('SEND PLAYER HAND', (data) => {
     playersCards = data.player_hand;
 
     updateGameBoard();
 });
 
+
 gameSocket.on('GAME OVER', (data) => {
     gameOver = true;
     const board = document.getElementsByClassName('game-box')[0];
 
     let scoreHtml = '<div class="container">' +
-        '    <div class="modal fade" id="game_over_window" role="dialog">' +
+        '    <div class="modal fade" id="game_over_window" role="dialog" style="z-index: 100">' +
         '        <div class="modal-dialog">' +
         '            <div class="modal-content" style="border-radius: 15px; background-color: #086305;">' +
         '                <div class="modal-header">' +
@@ -172,7 +183,7 @@ function updateGameBoard()
     }
     else{
         buttonString = '';
-        gameHtml += '<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()" disabled>Nudge</button>';
+        gameHtml += '<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
     }
 
     gameHtml += '<div class = "player-info">' +
