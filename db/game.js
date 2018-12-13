@@ -1,8 +1,8 @@
 const db = require('../db');
 
 const createGame = (max_players, user_id, game_name) => {
-    return db.query('INSERT INTO games (max_players, current_player, game_name) VALUES ' +
-        '($1, $2, $3) RETURNING game_id', [max_players, user_id, game_name])
+    return db.query('INSERT INTO games (max_players, game_name) VALUES ' +
+        '($1, $2) RETURNING game_id', [max_players, game_name])
         .catch((error) => { console.log(error) })
 };
 
@@ -204,9 +204,23 @@ const getNameFromID = (user_id) => {
 };
 
 const getPlayerCards = (user_id, game_id) => {
-    return db.query('SELECT card_id FROM user_game_cards WHERE user_game_cards.user_id = $1 AND game_id = $2', [user_id, game_id])
+    return db.query('SELECT card_id FROM user_game_cards WHERE user_game_cards.user_id = $1 AND game_id = $2 ORDER BY card_id', [user_id, game_id])
         .catch((error) => {console.log(error)})
 };
+
+const getCurrentTurn = (game_id) => {
+    return db.query('SELECT users.username AS current_player FROM games, users WHERE game_id = $1 AND current_player = users.user_id', [game_id])
+        .then((results) => { 
+            if(results.length == 0 ) { return Promise.resolve( {current_player : null}) }
+            else {return results}
+        })
+        .catch((error) => {console.log(error)})
+}
+
+const getCurrentTurnId = (game_id) => {
+    return db.query('SELECT current_player FROM games WHERE game_id = $1', [game_id])
+        .catch((error) => {console.log(error)})
+}
 
 const getPlayerTotalScore = (user_id, game_id) => {
     return db.query('SELECT total_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
@@ -217,6 +231,12 @@ const getPlayerRoundScore = (user_id, game_id) => {
     return db.query('SELECT current_round_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
         .catch((error) => {console.log(error)})
 };
+
+const retrieveOwnedCard = (user_id, game_id, card_id) => {
+    return db.one('SELECT card_id FROM user_game_cards WHERE card_id = $1 AND user_id = $2 AND game_id = $3', [card_id, user_id, game_id])
+        .catch((error) => {console.log(error)})
+}
+
 
 module.exports = {
     createGame,
@@ -243,5 +263,9 @@ module.exports = {
     checkGameStateExists,
     getCurrentCards,
     getSharedInformation,
-    joinCardsInPlay
+    joinCardsInPlay,
+    getCurrentTurn,
+    setOwnerOfCard,
+    getCurrentTurnId,
+    retrieveOwnedCard
 };
