@@ -19,18 +19,10 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
-router.post('/playCard', isAuthenticated, (req, res) => {
-    card_id = req.card_id;
-    user = req.user;
-    game = req.game;
-
-    update(game_id);
-});
-
 
 gameSocket.on('connection', (socket) => {
 
-    if(game_id == null){
+    if (game_id == null) {
         return;
     }
 
@@ -44,7 +36,7 @@ gameSocket.on('connection', (socket) => {
                         return Game.getUserNamesFromGame(game_id)
                             .then((username) => {
                                 console.log(username);
-                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
+                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username });
                                 setTimeout(() => {
                                     return update(game_id);
                                 }, 500)
@@ -53,7 +45,7 @@ gameSocket.on('connection', (socket) => {
             } else {
                 return Game.getUserNamesFromGame(game_id)
                     .then((username) => {
-                        gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
+                        gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username });
                         setTimeout(() => {
                             return update(game_id);
                         }, 500)
@@ -82,65 +74,77 @@ gameSocket.on('connection', (socket) => {
         Game.verifyUserHasCards(user_id, game_id, [card1, card2, card3])
             .then((exits) => {
                 if (exits === true) {
-                    // insert cards into passed_cards table
-                    Game.addToPassedCardsTable(user_id, game_id, [card1, card2, card3]);
-                    // set owner of those cards in user_game_cards to 0
-                    setTimeout(() => {
-                        [card1, card2, card3].forEach((card) => {
-                            Game.setOwnerOfCard(card, null, game_id);
-                        });
 
-                        setTimeout(() => {
-                            Game.checkAllPlayersPassed(game_id)
-                                .then((cards_passed) => {
+                    Game.verifyUserPassedCards(user_id, game_id)
+                        .then((hasPassed) => {
+                            if (hasPassed === false) {
 
-                                    if (cards_passed === true) {
-                                        // change cards ownership
-                                        Game.getGamePlayers(game_id)
-                                            .then((game_players) => {
-                                                Game.getCurrentRoundNumber(game_id)
-                                                    .then((result) => {
-                                                        const round_number = result[0].round_number;
+                                // insert cards into passed_cards table
+                                Game.addToPassedCardsTable(user_id, game_id, [card1, card2, card3]);
 
-                                                        if (round_number % 4 === 1) {
-                                                            // pass to left
-                                                            for (let i = 0; i < game_players.length; i++) {
-                                                                let { user_id: owner } = game_players[i];
-                                                                let { user_id: player_to_send } = game_players[(owner + 1) % game_players.length];
+                                // set owner of those cards in user_game_cards to 0
+                                setTimeout(() => {
+                                    [card1, card2, card3].forEach((card) => {
+                                        Game.setOwnerOfCard(card, null, game_id);
+                                    });
 
-                                                                passCard(owner, game_id, player_to_send);
-                                                            }
-                                                        } else if (round_number % 4 === 2) {
-                                                            // pass to right
-                                                            for (let i = 0; i < game_players.length; i++) {
-                                                                let { user_id: owner } = game_players[i];
-                                                                let { user_id: player_to_send } = game_players[(owner - 1) % game_players.length];
+                                    socket.emit('VALID PASS');
 
-                                                                passCard(owner, game_id, player_to_send);
-                                                            }
-                                                        } else if (round_number % 4 === 3) {
-                                                            // pass across
-                                                            for (let i = 0; i < game_players.length; i++) {
-                                                                let { user_id: owner } = game_players[i];
-                                                                let { user_id: player_to_send } = game_players[(owner + (game_players.length) / 2) % game_players.length];
+                                    setTimeout(() => {
+                                        Game.checkAllPlayersPassed(game_id)
+                                            .then((cards_passed) => {
 
-                                                                passCard(owner, game_id, player_to_send);
-                                                            }
-                                                        }
-                                                        startGame(game_id);
-                                                    })
+                                                if (cards_passed === true) {
+                                                    // change cards ownership
+                                                    Game.getGamePlayers(game_id)
+                                                        .then((game_players) => {
+                                                            Game.getCurrentRoundNumber(game_id)
+                                                                .then((result) => {
+                                                                    const round_number = result[0].round_number;
+
+                                                                    if (round_number % 4 === 1) {
+                                                                        // pass to left
+                                                                        for (let i = 0; i < game_players.length; i++) {
+                                                                            let { user_id: owner } = game_players[i];
+                                                                            let { user_id: player_to_send } = game_players[(owner + 1) % game_players.length];
+
+                                                                            passCard(owner, game_id, player_to_send);
+                                                                        }
+                                                                    } else if (round_number % 4 === 2) {
+                                                                        // pass to right
+                                                                        for (let i = 0; i < game_players.length; i++) {
+                                                                            let { user_id: owner } = game_players[i];
+                                                                            let { user_id: player_to_send } = game_players[(owner - 1) % game_players.length];
+
+                                                                            passCard(owner, game_id, player_to_send);
+                                                                        }
+                                                                    } else if (round_number % 4 === 3) {
+                                                                        // pass across
+                                                                        for (let i = 0; i < game_players.length; i++) {
+                                                                            let { user_id: owner } = game_players[i];
+                                                                            let { user_id: player_to_send } = game_players[(owner + (game_players.length) / 2) % game_players.length];
+
+                                                                            passCard(owner, game_id, player_to_send);
+                                                                        }
+                                                                    }
+                                                                    startGame(game_id);
+                                                                })
+                                                        })
+                                                } else {
+                                                    // notify player to wait for others to pass
+                                                }
                                             })
-                                    } else {
-                                        // notify player to wait for others to pass
-                                    }
-                                })
-                        }, 100)
-                    }, 100)
-
+                                    }, 100)
+                                }, 100)
+                            } else {
+                                console.log('You already passed!')
+                            }
+                        });
                 } else {
                     // notify user that either he doesn't have these cards or they are already passed
                 }
             })
+
     })
 });
 

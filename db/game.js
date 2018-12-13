@@ -306,6 +306,13 @@ const getStartingPlayer = (game_id) => {
         .catch((error) => { console.log(error) })
 };
 
+const verifyUserPassedCards = (user_id, game_id) => {
+    return getPassCardsForUser(user_id, game_id)
+        .then((results) => {
+            return !(results === undefined || results.length === 0);
+        })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -343,5 +350,6 @@ module.exports = {
     getPassCardsForUser,
     deletePassCard,
     setCurrentPlayer,
-    getStartingPlayer
+    getStartingPlayer,
+    verifyUserPassedCards
 };

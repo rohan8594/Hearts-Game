@@ -21,11 +21,8 @@ router.get("/", (request, response) => {
 
 
 router.get("/", (request, response) => {
-    Game.verifyUserHasCards(2, 15, [35, 25, 17])
-        .then((result) => {
-            if (result === true) response.json('Test passed');
-            else response.json('Test failed');
-        })
+    Game.verifyUserPassedCards(1, 13)
+        .then((result) => response.json(result))
 });
 
 
