@@ -207,7 +207,7 @@ const getPlayerCards = (user_id, game_id) => {
 
 const getCurrentTurn = (game_id) => {
     return db.query('SELECT current_player FROM games WHERE game_id = $1', [game_id])
-}
+};
 
 const getPlayerTotalScore = (user_id, game_id) => {
     return db.query('SELECT total_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
@@ -251,6 +251,18 @@ const addToPassedCardsTable = (user_id, game_id, [card1, card2, card3]) => {
     })
 };
 
+const checkAllPlayersPassed = (game_id) => {
+    return maxPlayers(game_id)
+        .then((results) => {
+            const max_players = results[0].max_players;
+
+            return db.query('SELECT COUNT(DISTINCT card_id) FROM passed_cards WHERE game_id = $1')
+                .then((results) => {
+                    return results[0].count === max_players * 3;
+                })
+        })
+};
+
 module.exports = {
     createGame,
     createInitialGamePlayer,
@@ -280,5 +292,6 @@ module.exports = {
     verifyUserHasCards,
     addToPassedCardsTable,
     setOwnerOfCard,
-    getCurrentTurn
+    getCurrentTurn,
+    checkAllPlayersPassed
 };

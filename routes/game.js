@@ -83,7 +83,20 @@ gameSocket.on('connection', (socket) => {
                     // set owner of those cards in user_game_cards to 0
                     setTimeout(() => {
                         [card1, card2, card3].forEach((card) => {
-                            Game.setOwnerOfCard(card, null, game_id)
+                            Game.setOwnerOfCard(card, null, game_id);
+
+                            setTimeout(() => {
+                                Game.checkAllPlayersPassed(game_id)
+                                    .then((passed) => {
+                                        if (passed === true) {
+                                            console.log('Test true')
+                                            // change cards ownership
+                                        } else {
+                                            console.log('Test false')
+                                            // notify player to wait for others to pass
+                                        }
+                                    })
+                            }, 100)
                         })
                     }, 100)
                 } else {
