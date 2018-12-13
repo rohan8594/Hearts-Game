@@ -19,16 +19,20 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
     res.render('game', { user: user, game_id: game_id });
 });
 
-router.post('/playCard', isAuthenticated, (req, res) => { 
+router.post('/playCard', isAuthenticated, (req, res) => {
     card_id = req.card_id;
     user = req.user;
     game = req.game;
-    
+
     update(game_id);
 });
 
 
 gameSocket.on('connection', (socket) => {
+
+    if(game_id == null){
+        return;
+    }
 
     socket.join(game_id);
 
@@ -63,7 +67,7 @@ gameSocket.on('connection', (socket) => {
         Game.getPlayerCards(user_id, game_id)
             .then((player_hand) => {
 
-                socket.emit('SEND PLAYER HAND', { player_hand: player_hand, turnState: 'pass' } );
+                socket.emit('SEND PLAYER HAND', { player_hand: player_hand } );
             })
 
     });
@@ -141,9 +145,8 @@ const update = (game_id) => {
     return Game.getSharedInformation(game_id)
         .then((shared_player_information) => {
             return Game.getCurrentTurn(game_id)
-                .then((current_turn) => {
-                    gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information, current_turn : current_turn});
-                    console.log(current_turn);
+                .then((turn_information) => {
+                    gameSocket.to(game_id).emit('UPDATE',  {shared_player_information : shared_player_information, turn_information : turn_information});
                     return Promise.resolve(shared_player_information);
                 })
         })
