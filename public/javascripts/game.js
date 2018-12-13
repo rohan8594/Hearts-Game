@@ -68,6 +68,8 @@ gameSocket.on('UPDATE', (data) => {
 });
 
 gameSocket.on('VALID PASS', (data) => {
+    const alertBox = document.getElementsByClassName('alert-box')[0];
+    alertBox.innerHTML = '<p>Waiting for other plays to select their cars to pass...</p>';
     const board = document.getElementsByClassName('game-box')[0];
     let passBtn = document.getElementById("multiple-button");
     board.removeChild(passBtn);
@@ -367,7 +369,7 @@ function buttonDisableLogic(){
             }
         }
         if((brokenHearts == 0) && (selectedSuit == 2) && hasNonHeart){
-            alertBox.innerHTML="Hearts haven't been broken yet, you can't play hearts as the lead suit.";
+            alertBox.innerHTML="<p>Hearts haven't been broken yet, you can't play hearts as the lead suit.</p>";
             btn.disabled = true;
         }
         else{
@@ -388,7 +390,7 @@ function buttonDisableLogic(){
             }
         }
         if(playableCard){
-            alertBox.innerHTML="Your card must match the leading suit.";
+            alertBox.innerHTML="<p>Your card must match the leading suit.</p>";
             btn.disabled = true;
         }
         else{
@@ -445,14 +447,6 @@ function selectMultipleCard(id) {
 }
 
 function passButton(){
-    // send three cards to server
-
-    gameSocket.emit('PASS CARDS', {
-        user_id: user_id,
-        game_id: game_id,
-        passed_cards: [selectedMultiple[0], selectedMultiple[1], selectedMultiple[2]]
-    });
-
     resetCard(selectedMultiple[0]);
     resetCard(selectedMultiple[1]);
     resetCard(selectedMultiple[2]);
