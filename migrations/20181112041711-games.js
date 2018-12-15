@@ -30,6 +30,14 @@ module.exports = {
               round_number: {
                   type: Sequelize.INTEGER,
                   allowNull: true
+              },
+              leading_suit: {
+                  type: Sequelize.INTEGER,
+                  defaultValue: null,
+                  references: {
+                      model: 'cards',
+                      key: 'card_id'
+                  }
               }
           }
       );
