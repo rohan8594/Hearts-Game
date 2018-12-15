@@ -340,47 +340,60 @@ const getCardsInPlay = (game_id) => {
 //1 Diamond
 //2 Heart
 //3 Spade
-const checkPlayerTakingCards = (game_id, lead_suit) => {
+const checkPlayerTakingCards = (game_id) => {
     //get cards
     return getCardsInPlay(game_id)
         .then((cardsInPlay) => {
-            setTimeout(() => {
-                let value;
-                let max_value = 0;
-                let player_taking_hand;
-                let points_on_table = 0;
+            return getLeadingSuit(game_id)
+                .then((results) => {
+                    let lead_suit = results[0].leading_suit;
 
-                for( index = 0; index < cardsInPlay.length; index++ ) {
-                    let current_card = cardsInPlay[index].card_id;
-                    let current_suite =  math.floor( (current_card) - 1) / 13;
-                    if( (current_card - 1) % 13 == 0) { value = 0 }
-                    else { value = (card_id - 1) % 13 + 1}
+                    console.log(cardsInPlay);
+                    console.log('Leading suite: ' + lead_suit);
 
-                    if( current_suite == 3 && value == 12) { points_on_table += 13 }
-                    else if (current_suite == 2) { points_on_table += 1 }
+                    let value;
+                    let max_value = 0;
+                    let player_taking_hand;
+                    let points_on_table = 0;
 
-                    if( current_suite == lead_suit ){
-                        if( value > max_value) { 
-                            max_value = value;
-                            player_taking_hand = cardsInPlay[index].user_id;
+                    for(let index = 0; index < cardsInPlay.length; index++ ) {
+                        let current_card = cardsInPlay[index].card_id;
+                        let current_suite =  Math.floor(((current_card) - 1) / 13);
+
+                        console.log(current_suite);
+
+                        if((current_card - 1) % 13 == 0) { value = 14 }
+                        else { value = (current_card - 1) % 13 + 1 }
+
+                        if(current_suite == 3 && value == 12) { points_on_table += 13 }
+                        else if (current_suite == 2) { points_on_table += 1 }
+
+                        if(current_suite == lead_suit) {
+                            if(value > max_value) {
+                                max_value = value;
+                                player_taking_hand = cardsInPlay[index].user_id;
+                            }
                         }
-                    } 
-                }
-                return Promise.resolve( { player_taking_hand : player_taking_hand, points_on_table : points_on_table } );
-            }, 100)
+                    }
+                    console.log('Player taking hand: ' + player_taking_hand);
+                    return Promise.resolve( [{ player_taking_hand : player_taking_hand, points_on_table : points_on_table }] );
+                });
         })
 };
 
-const allocatePointsForTurn = (game_id, lead_suit) => {
-    return checkPlayerTakingCards(game_id, lead_suit)
+const allocatePointsForTurn = (game_id) => {
+    return checkPlayerTakingCards(game_id)
         .then((results) => {
             let points_on_table = results[0].points_on_table;
             let player_taking_hand = results[0].player_taking_hand;
-            return givePointsToPlayer( game_id, player_taking_hand, points_on_table)
+            return givePointsToPlayer(game_id, player_taking_hand, points_on_table)
                 .then(() => {
                     return db.none('UPDATE cards_in_play SET card_id = null WHERE game_id = $1', [game_id])
                         .then (() => {
-                            return Promise.resolve(player_taking_hand);
+                            return setLeadingSuit(game_id, null)
+                                .then(() => {
+                                    return Promise.resolve(player_taking_hand);
+                                })
                         })
                 })
         })
@@ -388,7 +401,7 @@ const allocatePointsForTurn = (game_id, lead_suit) => {
 };
 
 const givePointsToPlayer = (game_id, user_id, points) => {
-    return db.none('UPDATE player_games SET current_round_score = current_round_score + $1 WHERE game_id = $2 AND user_id = $3', [points, game_id, user_id])
+    return db.none('UPDATE game_players SET current_round_score = current_round_score + $1 WHERE game_id = $2 AND user_id = $3', [points, game_id, user_id])
         .catch((error) => { console.log(error) })
 };
 
@@ -402,8 +415,9 @@ const getLeadingSuit = (game_id) => {
         .catch((error) => { console.log(error) })
 };
 
-const setLeadingSuit = (game_id, card_id) => {
-    return db.none('UPDATE games SET leading_suit = $1 WHERE game_id = $2', [card_id, game_id])
+const setLeadingSuit = (game_id, lead_suit) => {
+
+    return db.none('UPDATE games SET leading_suit = $1 WHERE game_id = $2', [lead_suit, game_id])
         .catch((error) => { console.log(error) })
 };
 

@@ -172,7 +172,7 @@ gameSocket.on('connection', (socket) => {
 
                                             if (lead_suit == null) {
                                                 // set lead suit
-                                                Game.setLeadingSuit(game_id, card_played)
+                                                Game.setLeadingSuit(game_id, Math.floor(((card_played) - 1) / 13))
                                             }
                                         });
 
@@ -183,11 +183,12 @@ gameSocket.on('connection', (socket) => {
                                                     .then((results) => {
                                                         let numberPlayedCards = results[0].count;
 
-                                                        if(numberPlayedCards === gamePlayers.length) {
-                                                            Game.allocatePointsForTurn(game_id, lead_suit)
+                                                        if(numberPlayedCards == gamePlayers.length) {
+
+                                                            Game.allocatePointsForTurn(game_id)
                                                                 .then((results) => {
                                                                     console.log(results);
-                                                                    let winning_player = results[0].player_taking_hand;
+                                                                    let winning_player = results;
 
                                                                     Game.getCardsLeft(game_id).then((results) => {
                                                                         let cardsLeft = results[0].count;
@@ -204,10 +205,10 @@ gameSocket.on('connection', (socket) => {
                                                                     })
                                                                 })
                                                         } else {
-                                                            let next_player = (turnSequence + 1) % gamePlayers.length;
-                                                            if (next_player === 0) {
-                                                                next_player = 1;
-                                                            }
+                                                            let next_player = turnSequence % gamePlayers.length;
+                                                            // if (next_player === 0) {
+                                                            //     next_player = 1;
+                                                            // }
 
                                                             Game.setCurrentPlayer(gamePlayers[next_player].user_id, game_id)
                                                         }
