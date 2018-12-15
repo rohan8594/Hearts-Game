@@ -225,7 +225,7 @@ const changeCardsOwnership = (game_id) => {
             // pass to left
             for (let i = 0; i < game_players.length; i++) {
               let { user_id: owner } = game_players[i];
-              let { user_id: player_to_send } = game_players[(owner + 1) % game_players.length];
+              let { user_id: player_to_send } = game_players[(i + 1) % game_players.length];
 
               passCard(owner, game_id, player_to_send);
             }
@@ -233,7 +233,7 @@ const changeCardsOwnership = (game_id) => {
             // pass to right
             for (let i = 0; i < game_players.length; i++) {
               let { user_id: owner } = game_players[i];
-              let { user_id: player_to_send } = game_players[(owner - 1) % game_players.length];
+              let { user_id: player_to_send } = game_players[(i - 1) % game_players.length];
 
               passCard(owner, game_id, player_to_send);
             }
@@ -241,7 +241,7 @@ const changeCardsOwnership = (game_id) => {
             // pass across
             for (let i = 0; i < game_players.length; i++) {
               let { user_id: owner } = game_players[i];
-              let { user_id: player_to_send } = game_players[(owner + (game_players.length) / 2) % game_players.length];
+              let { user_id: player_to_send } = game_players[(i + (game_players.length) / 2) % game_players.length];
 
               passCard(owner, game_id, player_to_send);
             }
