@@ -96,7 +96,6 @@ const getUserNamesFromGame = (game_id) => {
         .catch((error) => {console.log(error)})
 };
 
-
 const getAllCardsFromGame = (game_id) => {
     return db.query('SELECT * from user_game_cards WHERE game_id = $1', [game_id])
         .catch((error) => {console.log(error)})
@@ -150,12 +149,12 @@ const getCardCount = (user_id, game_id) => {
         .catch((error) => {console.log(error)})
 };
 
-getUserIDSortedByTurnSequence = (game_id) => {
+const getUserIDSortedByTurnSequence = (game_id) => {
     return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
         .catch((error) => {console.log(error)})
 };
 
-getSharedInformation = (game_id) => {
+const getSharedInformation = (game_id) => {
     return db.query(
         'SELECT  username, turn_sequence, ' +
         'current_round_score, total_score, ' +
@@ -196,7 +195,7 @@ const getUsernameFromID = (username) => {
 
 const getGamePlayers = (game_id) => {
     return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
-        .catch((error) => {console.log(error)})
+        .catch((error) => { console.log(error) })
 };
 
 const getNameFromID = (user_id) => {
@@ -311,6 +310,115 @@ const verifyUserPassedCards = (user_id, game_id) => {
         .then((results) => {
             return !(results === undefined || results.length === 0);
         })
+        .catch((error) => {console.log(error) })
+};
+
+const addPlayedCard = (user_id, game_id, card_id) => {
+    return db.none('UPDATE cards_in_play SET card_id = $1 WHERE user_id = $2 AND game_id = $3', [card_id, user_id, game_id])
+        .then(() => {
+            return setOwnerOfCard(card_id, null, game_id);
+        })
+        .catch((error) => { console.log(error) })
+};
+
+const getTurnSequenceForPlayer = (user_id, game_id) => {
+    return db.query('SELECT turn_sequence FROM game_players WHERE user_id = $1 AND game_id = $2', [user_id, game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const getCardsLeft = (game_id) => {
+    return db.query('SELECT count(DISTINCT card_id) AS cards_left FROM user_game_cards WHERE game_id = $1 AND user_id <> null', [game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const getCardsInPlay = (game_id) => {
+    return db.query('SELECT * from cards_in_play WHERE game_id = $1', [game_id])
+        .catch((error) => { console.log(error) })
+};
+
+//0 Club
+//1 Diamond
+//2 Heart
+//3 Spade
+const checkPlayerTakingCards = (game_id) => {
+    //get cards
+    return getCardsInPlay(game_id)
+        .then((cardsInPlay) => {
+            return getLeadingSuit(game_id)
+                .then((results) => {
+                    let lead_suit = results[0].leading_suit;
+
+                    console.log(cardsInPlay);
+                    console.log('Leading suite: ' + lead_suit);
+
+                    let value;
+                    let max_value = 0;
+                    let player_taking_hand;
+                    let points_on_table = 0;
+
+                    for(let index = 0; index < cardsInPlay.length; index++ ) {
+                        let current_card = cardsInPlay[index].card_id;
+                        let current_suite =  Math.floor(((current_card) - 1) / 13);
+
+                        console.log(current_suite);
+
+                        if((current_card - 1) % 13 == 0) { value = 14 }
+                        else { value = (current_card - 1) % 13 + 1 }
+
+                        if(current_suite == 3 && value == 12) { points_on_table += 13 }
+                        else if (current_suite == 2) { points_on_table += 1 }
+
+                        if(current_suite == lead_suit) {
+                            if(value > max_value) {
+                                max_value = value;
+                                player_taking_hand = cardsInPlay[index].user_id;
+                            }
+                        }
+                    }
+                    console.log('Player taking hand: ' + player_taking_hand);
+                    return Promise.resolve( [{ player_taking_hand : player_taking_hand, points_on_table : points_on_table }] );
+                });
+        })
+};
+
+const allocatePointsForTurn = (game_id) => {
+    return checkPlayerTakingCards(game_id)
+        .then((results) => {
+            let points_on_table = results[0].points_on_table;
+            let player_taking_hand = results[0].player_taking_hand;
+            return givePointsToPlayer(game_id, player_taking_hand, points_on_table)
+                .then(() => {
+                    return db.none('UPDATE cards_in_play SET card_id = null WHERE game_id = $1', [game_id])
+                        .then (() => {
+                            return setLeadingSuit(game_id, null)
+                                .then(() => {
+                                    return Promise.resolve(player_taking_hand);
+                                })
+                        })
+                })
+        })
+
+};
+
+const givePointsToPlayer = (game_id, user_id, points) => {
+    return db.none('UPDATE game_players SET current_round_score = current_round_score + $1 WHERE game_id = $2 AND user_id = $3', [points, game_id, user_id])
+        .catch((error) => { console.log(error) })
+};
+
+const getCardsInPlayCount = (game_id) => {
+    return db.query('SELECT COUNT(card_id) FROM cards_in_play WHERE card_id <> 0 AND game_id = $1', [game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const getLeadingSuit = (game_id) => {
+    return db.query('SELECT leading_suit FROM games WHERE game_id = $1', [game_id])
+        .catch((error) => { console.log(error) })
+};
+
+const setLeadingSuit = (game_id, lead_suit) => {
+
+    return db.none('UPDATE games SET leading_suit = $1 WHERE game_id = $2', [lead_suit, game_id])
+        .catch((error) => { console.log(error) })
 };
 
 module.exports = {
@@ -351,5 +459,14 @@ module.exports = {
     deletePassCard,
     setCurrentPlayer,
     getStartingPlayer,
-    verifyUserPassedCards
+    addPlayedCard,
+    getTurnSequenceForPlayer,
+    getCardsLeft,
+    checkPlayerTakingCards,
+    allocatePointsForTurn,
+    verifyUserPassedCards,
+    getCardsInPlay,
+    getCardsInPlayCount,
+    getLeadingSuit,
+    setLeadingSuit
 };

@@ -36,7 +36,7 @@ gameSocket.on('connection', (socket) => {
                         return Game.getUserNamesFromGame(game_id)
                             .then((username) => {
                                 console.log(username);
-                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username });
+                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
                                 setTimeout(() => {
                                     return update(game_id);
                                 }, 500)
@@ -45,7 +45,7 @@ gameSocket.on('connection', (socket) => {
             } else {
                 return Game.getUserNamesFromGame(game_id)
                     .then((username) => {
-                        gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username });
+                        gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
                         setTimeout(() => {
                             return update(game_id);
                         }, 500)
@@ -145,9 +145,86 @@ gameSocket.on('connection', (socket) => {
                 }
             })
 
-    })
-});
+    });
 
+    socket.on('PLAY CARDS', (data) =>{
+        let { user_id, game_id, passed_card: card_played } = data;
+        card_played = parseInt(card_played);
+
+        Game.getGamePlayers(game_id)
+            .then((game_players) => {
+                let gamePlayers = game_players;
+
+                Game.getTurnSequenceForPlayer(user_id, game_id)
+                    .then((turnQuery) => {
+                        let turnSequence = turnQuery[0].turn_sequence;
+
+                        Game.getCurrentTurnId(game_id)
+                            .then((results) => {
+                                if(results[0].current_player != user_id) return;
+
+                                Game.retrieveOwnedCard(user_id, game_id, card_played).then((results) => {
+                                    if(results.length === 0) return;
+
+                                    Game.getLeadingSuit(game_id)
+                                        .then((results) => {
+                                            let lead_suit = results[0].leading_suit;
+
+                                            if (lead_suit == null) {
+                                                // set lead suit
+                                                Game.setLeadingSuit(game_id, Math.floor(((card_played) - 1) / 13))
+                                            }
+                                        });
+
+                                    setTimeout(() => {
+                                        Game.addPlayedCard(user_id, game_id, card_played)
+                                            .then(() => {
+                                                Game.getCardsInPlayCount(game_id)
+                                                    .then((results) => {
+                                                        let numberPlayedCards = results[0].count;
+
+                                                        if(numberPlayedCards == gamePlayers.length) {
+
+                                                            Game.allocatePointsForTurn(game_id)
+                                                                .then((results) => {
+                                                                    console.log(results);
+                                                                    let winning_player = results;
+
+                                                                    Game.getCardsLeft(game_id).then((results) => {
+                                                                        let cardsLeft = results[0].count;
+
+                                                                        if (cardsLeft === 0) {
+                                                                            Game.setCurrentPlayer(null, game_id).then(() => {
+                                                                                setTimeout(() => {
+                                                                                    Game.dealCards(game_id)
+                                                                                }, 500)
+                                                                            })
+                                                                        } else {
+                                                                            Game.setCurrentPlayer(winning_player, game_id);
+                                                                        }
+                                                                    })
+                                                                })
+                                                        } else {
+                                                            let next_player = turnSequence % gamePlayers.length;
+                                                            // if (next_player === 0) {
+                                                            //     next_player = 1;
+                                                            // }
+
+                                                            Game.setCurrentPlayer(gamePlayers[next_player].user_id, game_id)
+                                                        }
+                                                    })
+
+                                            })
+                                    }, 100);
+                                });
+                            })
+
+                    })
+
+            })
+
+    });
+});
 
 // game logic related functions
 const checkGameReady = (game_id) => {
