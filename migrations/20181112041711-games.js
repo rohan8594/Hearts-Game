@@ -33,11 +33,7 @@ module.exports = {
               },
               leading_suit: {
                   type: Sequelize.INTEGER,
-                  defaultValue: null,
-                  references: {
-                      model: 'cards',
-                      key: 'card_id'
-                  }
+                  defaultValue: null
               }
           }
       );
