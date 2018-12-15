@@ -39,6 +39,7 @@ gameSocket.on('LOAD PLAYERS', (data) => {
 
 
 gameSocket.on('UPDATE', (data) => {
+    console.log(data);
     topPlayer = data.shared_player_information[topPlayerOrder];
     bottomPlayer = data.shared_player_information[bottomPlayerOrder];
 
@@ -466,6 +467,13 @@ function passButton(){
 }
 
 function playButton(){
+    // send one card to server
+    gameSocket.emit('PLAY CARDS', {
+        user_id: user_id,
+        game_id: game_id,
+        passed_card: selectedSingleCard
+    });
+
     resetCard(selectedSingleCard);
     selectedSingleCard = "0";
     selectedSingle = false;
