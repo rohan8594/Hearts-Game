@@ -134,54 +134,70 @@ gameSocket.on('connection', (socket) => {
                   setTimeout(() => {
                     Game.addPlayedCard(user_id, game_id, card_played)
                       .then(() => {
-                        Game.getCardsInPlayCount(game_id)
-                          .then((results) => {
-                            let numberOfPlayedCards = results[0].count;
+                        update(game_id)
+                          .then(() => {
+                            Game.getCardsInPlayCount(game_id)
+                              .then((results) => {
+                                let numberOfPlayedCards = results[0].count;
 
-                            if (numberOfPlayedCards == gamePlayers.length) {
-                              Game.allocatePointsForTurn(game_id)
-                                .then((winning_player) => {
-                                  Game.getCardsLeft(game_id).then((results) => {
-                                    let cardsLeft = results[0].count;
+                                if (numberOfPlayedCards == gamePlayers.length) {
+                                  Game.allocatePointsForTurn(game_id)
+                                    .then((winning_player) => {
+                                      Game.getCardsLeft(game_id).then((results) => {
+                                        let cardsLeft = results[0].cards_left;
 
-                                    if (cardsLeft == 0) {
-                                      // Display Winner of round
-                                      // Big delay and then deal cards again for next round
-                                      Game.setCurrentPlayer(null, game_id).then(() => {
-                                        setTimeout(() => {
-                                          Game.dealCards(game_id)
-                                        }, 500)
-                                      })
-                                    } else {
-                                      Game.setCurrentPlayer(winning_player, game_id)
-                                        .then(() => {
+                                        console.log('Cards left: ' + cardsLeft);
+
+                                        if (cardsLeft == 0) {
+                                          // Display Winner of round
+                                          // Big delay and then deal cards again for next round
+                                          console.log('Reached');
+                                          Game.dealCards(game_id);
                                           setTimeout(() => {
-                                            return update(game_id);
+                                            Game.getUserNamesFromGame(game_id)
+                                              .then((game_players) => {
+                                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                                setTimeout(() => {
+                                                  // start new round
+                                                  startGame(game_id)
+                                                }, 500)
+                                              })
                                           }, 500)
-                                        })
-                                    }
-                                  })
-                                })
-                            } else {
-                              let next_player = turnSequence % gamePlayers.length;
+                                        } else {
+                                          Game.setCurrentPlayer(winning_player, game_id)
+                                            .then(() => {
+                                              setTimeout(() => {
+                                                return update(game_id);
+                                              }, 2000)
+                                            })
+                                        }
+                                      })
+                                    })
+                                } else {
+                                  let next_player = turnSequence % gamePlayers.length;
 
-                              Game.setCurrentPlayer(gamePlayers[next_player].user_id, game_id)
-                                .then(() => {
-                                  setTimeout(() => {
-                                    return update(game_id);
-                                  }, 500)
-                                })
-                            }
+                                  Game.setCurrentPlayer(gamePlayers[next_player].user_id, game_id)
+                                    .then(() => {
+                                      setTimeout(() => {
+                                        return update(game_id);
+                                      }, 2000)
+                                    })
+
+                                }
+                              })
+
                           })
 
                       })
                   }, 100);
+
                 });
               })
 
           })
 
       })
+
   });
 });
 

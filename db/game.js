@@ -324,7 +324,7 @@ const getTurnSequenceForPlayer = (user_id, game_id) => {
 };
 
 const getCardsLeft = (game_id) => {
-  return db.query('SELECT count(DISTINCT card_id) AS cards_left FROM user_game_cards WHERE game_id = $1 AND user_id <> 0', [game_id])
+  return db.query('SELECT COUNT(DISTINCT card_id) AS cards_left FROM user_game_cards WHERE game_id = $1 AND user_id <> 0', [game_id])
     .catch((error) => { console.log(error) })
 };
 
@@ -344,8 +344,6 @@ const checkPlayerTakingCards = (game_id) => {
       return getLeadingSuit(game_id)
         .then((results) => {
           let lead_suit = results[0].leading_suit;
-
-          console.log(cardsInPlay);
 
           let value;
           let max_value = 0;
