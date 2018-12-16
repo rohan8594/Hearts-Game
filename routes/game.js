@@ -15,8 +15,13 @@ router.get('/', isAuthenticated, (req, res, next) => {
 router.get('/:game_id', isAuthenticated, (req, res) => {
   user = req.user;
   game_id = req.params.game_id;
-
-  res.render('game', { user: user, game_id: game_id });
+  Game.checkGameExists(game_id)
+    .then((results) => {
+      if(results.length > 0) {
+        res.render('game', { user: user, game_id: game_id });
+      } else{
+        res.redirect('index');
+      }
 });
 
 
