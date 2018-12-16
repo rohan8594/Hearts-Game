@@ -21,9 +21,9 @@ const getCurrentGames = () => {
 };
 
 const checkGameExists = (game_id) => {
-  return db.none('SELECT * FROM games WHERE game_id = $1', [game_id])
+  return db.query('SELECT * FROM games WHERE game_id = $1', [game_id])
     .catch((error) => { console.log(error) })
-}
+};
 
 const getPlayerCount = (game_id) => {
   return db.query('SELECT COUNT(*) as player_count ' +

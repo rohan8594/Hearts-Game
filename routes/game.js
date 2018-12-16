@@ -17,11 +17,12 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
   game_id = req.params.game_id;
   Game.checkGameExists(game_id)
     .then((results) => {
-      if(results.length > 0) {
-        res.render('game', { user: user, game_id: game_id });
-      } else{
+      if (results === undefined || results.length === 0) {
         res.redirect('/');
+      } else {
+        res.render('game', {user: user, game_id: game_id});
       }
+    });
 });
 
 
