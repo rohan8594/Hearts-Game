@@ -20,7 +20,7 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
       if(results.length > 0) {
         res.render('game', { user: user, game_id: game_id });
       } else{
-        res.redirect('index');
+        res.redirect('/');
       }
 });
 
