@@ -407,13 +407,23 @@ const getLeadingSuit = (game_id) => {
 };
 
 const setLeadingSuit = (game_id, lead_suit) => {
-
   return db.none('UPDATE games SET leading_suit = $1 WHERE game_id = $2', [lead_suit, game_id])
+    .catch((error) => { console.log(error) })
+};
+
+const updateTotalScores = (game_id) => {
+  return db.none('UPDATE game_players SET total_score = total_score + current_round_score WHERE game_id = $1', [game_id])
+    .catch((error) => { console.log(error) })
+};
+
+const incrementRoundNumber = (game_id) => {
+  return db.none('UPDATE games SET round_number = round_number + 1 WHERE game_id = $1', [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getUserId = (user_name) => {
   return db.one('SELECT user_id FROM users WHERE username = $1', [user_name])
+    .catch((error) => { console.log(error) })
 };
 
 const nudgePassPhase = (game_id) => {
@@ -424,6 +434,7 @@ const nudgePassPhase = (game_id) => {
     'NOT IN' +
     '(SELECT * FROM passed_cards ' +
     'WHERE game_id = $1)', [game_id])
+    .catch((error) => { console.log(error) })
 };
 
 const giveTotalPointsToPlayer = (game_id, user_id, points) => {
@@ -479,6 +490,8 @@ module.exports = {
   getCardsInPlayCount,
   getLeadingSuit,
   setLeadingSuit,
+  updateTotalScores,
+  incrementRoundNumber,
   getUserId,
   nudgePassPhase,
   givePointsToPlayer,

@@ -183,20 +183,27 @@ gameSocket.on('connection', (socket) => {
                                         if (cardsLeft == 0) {
                                           // Display Winner of round
                                           // Big delay and then deal cards again for next round
-                                          Game.setCurrentPlayer(null, game_id)
+                                          Game.updateTotalScores(game_id)
                                             .then(() => {
-                                              setTimeout(() => {
-                                                Game.dealCards(game_id);
-                                                setTimeout(() => {
-                                                  Game.getUserNamesFromGame(game_id)
-                                                    .then((game_players) => {
-                                                      gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                              Game.incrementRoundNumber(game_id)
+                                                .then(() => {
+                                                  Game.setCurrentPlayer(null, game_id)
+                                                    .then(() => {
                                                       setTimeout(() => {
-                                                        update(game_id)
-                                                      }, 500)
-                                                    })
-                                                }, 500)
-                                              }, 2000)
+                                                        Game.dealCards(game_id);
+                                                        setTimeout(() => {
+                                                          Game.getUserNamesFromGame(game_id)
+                                                            .then((game_players) => {
+                                                              gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                                              setTimeout(() => {
+                                                                update(game_id)
+                                                              }, 500)
+                                                            })
+                                                        }, 500)
+                                                      }, 2000)
+                                                    });
+
+                                                })
                                             });
                                         } else {
                                           Game.setCurrentPlayer(winning_player, game_id)
