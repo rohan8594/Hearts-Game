@@ -104,7 +104,7 @@ const dealCards = (game_id) => {
   getUserIDSortedByTurnSequence(game_id)
     .then((results) => {
       let number_players = results.length;
-      for(index = 0; index < results.length; index++){
+      for (index = 0; index < results.length; index++) {
         player_array.push(results[index].user_id);
       }
       getAllCardsFromGame(game_id)
@@ -112,12 +112,12 @@ const dealCards = (game_id) => {
           let index;
           const cardsLeft = [];
 
-          for(index = 0; index < results.length; index++){
+          for (index = 0; index < results.length; index++) {
             cardsLeft.push(results[index].card_id);
           }
 
-          for(index = 0; index < results.length; index++){
-            let randomValue = Math.floor( Math.random() * cardsLeft.length );
+          for (index = 0; index < results.length; index++) {
+            let randomValue = Math.floor(Math.random() * cardsLeft.length);
             let card_assigned = cardsLeft[randomValue];
             cardsLeft.splice(randomValue, 1);
             setOwnerOfCard(card_assigned, player_array[index % number_players], game_id)
@@ -346,7 +346,6 @@ const checkPlayerTakingCards = (game_id) => {
           let lead_suit = results[0].leading_suit;
 
           console.log(cardsInPlay);
-          console.log('Leading suite: ' + lead_suit);
 
           let value;
           let max_value = 0;
@@ -356,8 +355,6 @@ const checkPlayerTakingCards = (game_id) => {
           for(let index = 0; index < cardsInPlay.length; index++ ) {
             let current_card = cardsInPlay[index].card_id;
             let current_suite =  Math.floor(((current_card) - 1) / 13);
-
-            console.log(current_suite);
 
             if((current_card - 1) % 13 == 0) { value = 14 }
             else { value = (current_card - 1) % 13 + 1 }
@@ -372,7 +369,6 @@ const checkPlayerTakingCards = (game_id) => {
               }
             }
           }
-          console.log('Player taking hand: ' + player_taking_hand);
           return Promise.resolve([{ player_taking_hand : player_taking_hand, points_on_table : points_on_table }]);
         });
     })
