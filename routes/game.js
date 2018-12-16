@@ -146,23 +146,24 @@ gameSocket.on('connection', (socket) => {
                                       Game.getCardsLeft(game_id).then((results) => {
                                         let cardsLeft = results[0].cards_left;
 
-                                        console.log('Cards left: ' + cardsLeft);
-
                                         if (cardsLeft == 0) {
                                           // Display Winner of round
                                           // Big delay and then deal cards again for next round
-                                          console.log('Reached');
-                                          Game.dealCards(game_id);
-                                          setTimeout(() => {
-                                            Game.getUserNamesFromGame(game_id)
-                                              .then((game_players) => {
-                                                gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                          Game.setCurrentPlayer(null, game_id)
+                                            .then(() => {
+                                              setTimeout(() => {
+                                                Game.dealCards(game_id);
                                                 setTimeout(() => {
-                                                  // start new round
-                                                  startGame(game_id)
+                                                  Game.getUserNamesFromGame(game_id)
+                                                    .then((game_players) => {
+                                                      gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                                      setTimeout(() => {
+                                                        update(game_id)
+                                                      }, 500)
+                                                    })
                                                 }, 500)
-                                              })
-                                          }, 500)
+                                              }, 2000)
+                                            });
                                         } else {
                                           Game.setCurrentPlayer(winning_player, game_id)
                                             .then(() => {
