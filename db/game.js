@@ -159,6 +159,7 @@ const getSharedInformation = (game_id) => {
     'FROM users, game_players, cards_in_play, user_game_cards ' +
     'WHERE users.user_id = game_players.user_id ' +
     'AND cards_in_play.game_id = $1 ' +
+    'AND cards_in_play.user_id = users.user_id ' +
     'AND game_players.game_id = $1 ' +
     'AND user_game_cards.user_id = users.user_id ' +
     'AND user_game_cards.game_id = $1 ' +
