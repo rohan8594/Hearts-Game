@@ -347,18 +347,18 @@ function buttonDisableLogic(){
   let leadCard = 0;
 
   if(numPlayers == 4) {
-    if (parseInt(rightPlayer.card_in_play) != null) {
+    if (rightPlayer.card_in_play != null) {
       leadCard = parseInt(rightPlayer.card_in_play);
     }
-    if (parseInt(topPlayer.card_in_play) != null) {
+    if (topPlayer.card_in_play != null) {
       leadCard = parseInt(topPlayer.card_in_play);
     }
-    if (parseInt(leftPlayer.card_in_play) != null) {
+    if (leftPlayer.card_in_play != null) {
       leadCard = parseInt(leftPlayer.card_in_play);
     }
   }
   else{
-    if (parseInt(topPlayer.card_in_play) != null) {
+    if (topPlayer.card_in_play != null) {
       leadCard = parseInt(topPlayer.card_in_play);
     }
   }
