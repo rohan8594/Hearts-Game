@@ -64,6 +64,40 @@ gameSocket.on('connection', (socket) => {
       })
   });
 
+  socket.on('NUDGE TIMER OVER', (data) => {
+    const game_id = data.game_id;
+    const nudged_player = data.nudged_player;
+
+    Game.getCurrentTurn(game_id)
+      .then((current_player) => {
+        if(current_player[0] == null){
+          if (nudged_player == null) {
+            Game.nudgePassPhase(game_id)
+              .then(() =>{
+                update(game_id)
+                  .then(() => {
+                    gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                  })
+              })
+          }
+        }
+        else{
+          if (current_player[0].current_player == nudged_player) {
+            Game.getUserId(nudged_player)
+              .then((current_player_id) => {
+                Game.giveTotalPointsToPlayer(game_id, current_player_id.user_id, 100)
+                  .then(() =>{
+                    update(game_id)
+                      .then(() => {
+                        gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                      })
+                  })
+              })
+          }
+        }
+      })
+  });
+
   socket.on('PASS CARDS', (data) => {
     const { user_id, game_id, passed_cards } = data;
 
