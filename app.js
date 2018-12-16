@@ -45,6 +45,7 @@ app.use('/lobby', lobbyRouter);
 app.use('/registration', registrationRouter);
 app.use('/tests', testsRouter);
 app.use('/leave', leaveGameRouter);
+app.use('/*', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

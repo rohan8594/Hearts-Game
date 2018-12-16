@@ -199,18 +199,9 @@ const getUserIDFromGame = (game_id) => {
     .catch((error) => { console.log(error) })
 };
 
-const getUsernameFromID = (username) => {
-  return db.query('SELECT username FROM users WHERE username = $1', [username])
-    .catch((error) => { console.log(error) })
-};
-
 const getGamePlayers = (game_id) => {
   return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
     .catch((error) => { console.log(error) })
-};
-
-const getNameFromID = (user_id) => {
-  return db.query('SELECT username FROM users WHERE user_id = $1', [user_id])
 };
 
 const getPlayerCards = (user_id, game_id) => {
