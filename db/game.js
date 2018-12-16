@@ -428,13 +428,12 @@ const getUserId = (user_name) => {
 
 const nudgePassPhase = (game_id) => {
   return db.none('UPDATE game_players ' +
-    'SET game_players.total_score = game_players.total_score + 100 ' +
-    'WHERE game_players.game_id = $1 ' +
-    'AND game_players.user_id ' +
+    'SET total_score = total_score + 100 ' +
+    'WHERE game_id = $1 ' +
+    'AND user_id ' +
     'NOT IN' +
-    '(SELECT * FROM passed_cards ' +
+    '(SELECT user_id FROM passed_cards ' +
     'WHERE game_id = $1)', [game_id])
-    .catch((error) => { console.log(error) })
 };
 
 const giveTotalPointsToPlayer = (game_id, user_id, points) => {
