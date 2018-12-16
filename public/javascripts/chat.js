@@ -67,3 +67,11 @@ chatSocket.on('typing msg', (data) => {
     feedback.innerHTML = '<p><em>' + handle + ' is typing a message...</em></p>'
   }
 });
+
+chatSocket.on('nudge', (data) => {
+  const { room_id, notification } = data;
+
+  if (room.value == room_id) {
+    output.innerHTML += '<p>'+ data.nudged_player + '</p>'
+  }
+});

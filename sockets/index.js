@@ -15,6 +15,10 @@ io.on('connection', (socket) => {
     io.emit('send msg', data);
   });
 
+  socket.on('NUDGE NOTIFICATION', (data) => {
+    io.emit('nudge', data);
+  });
+
   socket.on('typing', (data) => {
     socket.broadcast.emit('typing msg', data);
   })
