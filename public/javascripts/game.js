@@ -7,6 +7,7 @@ let playerNames;
 let playersCards;
 let currentPlayer;
 let turnState;
+let observer;
 let selectedSingle = false;
 let selectedFirst = false;
 let selectedSecond = false;
@@ -20,11 +21,21 @@ gameSocket.on('LOAD PLAYERS', (data) => {
 
   numPlayers = playerNames.length;
 
+  bottomPlayer = null;
+
   for(let i = 0; i < numPlayers; i++){
     if (username == playerNames[i].username){
       bottomPlayerOrder = i;
       break;
     }
+  }
+
+  if(bottomPlayerOrder == null){
+    observer = true;
+    bottomPlayerOrder = 0;
+  }
+  else{
+    observer = false;
   }
 
   if(numPlayers == 4) {
@@ -53,16 +64,19 @@ gameSocket.on('UPDATE', (data) => {
     rightPlayer = data.shared_player_information[rightPlayerOrder];
   }
 
-  if(data.turn_information[0] == null){
-    turnState = "pass"
+  if(observer){
+    turnState = "observer";
+  }
+  else if(data.turn_information[0] == null){
+    turnState = "pass";
     currentPlayer = null;
   }
   else if(data.turn_information[0].current_player == username){
-    turnState = "play"
+    turnState = "play";
     currentPlayer = data.turn_information[0].current_player;
   }
   else{
-    turnState = "nudge"
+    turnState = "nudge";
     currentPlayer = data.turn_information[0].current_player;
   }
 
@@ -73,7 +87,12 @@ gameSocket.on('UPDATE', (data) => {
   selectedSingleCard = "0";
   selectedSingle = false;
 
-  gameSocket.emit('GET PLAYER HAND', { user_id: user_id, game_id: game_id });
+  if(observer){
+    updateGameBoard();
+  }
+  else{
+    gameSocket.emit('GET PLAYER HAND', {user_id: user_id, game_id: game_id});
+  }
 });
 
 gameSocket.on('VALID PASS', (data) => {
@@ -137,9 +156,9 @@ gameSocket.on('GAME OVER', (data) => {
   scoreHtml += '                        </tbody>' +
     '                    </table>' +
     '                </div>' +
-    '                <div class="modal-footer">'
-  '            </div>' +
-  '</div>';
+    '                <div class="modal-footer">' +
+    '            </div>' +
+    '</div>';
 
   let div = document.createElement('div');
   div.innerHTML = scoreHtml;
@@ -189,7 +208,7 @@ function updateGameBoard()
     buttonString = 'onclick="selectMultipleCard(this.id)"';
     gameHtml += '<button class="game-button btn btn-primary " id="multiple-button" onclick="passButton()" disabled>Pass cards</button>';
   }
-  else{
+  else if(!observer){
     buttonString = '';
     gameHtml += '<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
   }
@@ -201,16 +220,29 @@ function updateGameBoard()
     '</div>' +
     '<p>' + playerNames[bottomPlayerOrder].username + '</p>'+
     '</div>';
-  displacement = 170 + (13 - playersCards.length) * 10;
-  for(let i = 0; i < playersCards.length; i++){
-    let suit = -(Math.floor((playersCards[i].card_id - 1) / 13 )) * 100;
-    let face = -((playersCards[i].card_id -1) % 13) * 69;
-    gameHtml += '<div class= "bottom-player" style="left: ' + displacement +
-      'px; z-index: ' + z + '; background-position-y: ' + suit +
-      'px; background-position-x: ' + face + 'px" ' + buttonString +' id="'+ playersCards[i].card_id +'"></div>';
-    z++;
-    displacement += 20;
+
+  if(observer){
+    displacement = 170 + (13 - bottomPlayer.card_count) * 10;
+    for(let i = 0; i < bottomPlayer.card_count; i++){
+      gameHtml += '<div class= "bottom-player-observer card-back" style="left: ' + displacement +
+        'px; z-index: ' + z + ';"></div>';
+      z++;
+      displacement += 20;
+    }
   }
+  else {
+    displacement = 170 + (13 - playersCards.length) * 10;
+    for (let i = 0; i < playersCards.length; i++) {
+      let suit = -(Math.floor((playersCards[i].card_id - 1) / 13)) * 100;
+      let face = -((playersCards[i].card_id - 1) % 13) * 69;
+      gameHtml += '<div class= "bottom-player" style="left: ' + displacement +
+        'px; z-index: ' + z + '; background-position-y: ' + suit +
+        'px; background-position-x: ' + face + 'px" ' + buttonString + ' id="' + playersCards[i].card_id + '"></div>';
+      z++;
+      displacement += 20;
+    }
+  }
+
   if (bottomPlayer.card_in_play != null){
     let suit = -(Math.floor((bottomPlayer.card_in_play -1)  / 13 )) * 100;
     let face = -((bottomPlayer.card_in_play -1) % 13) * 69;
@@ -363,6 +395,8 @@ function buttonDisableLogic(){
     }
   }
 
+  console.log(leadCard);
+
   //Case: you're the leading suit
   if(leadCard == 0){
     let brokenHearts = parseInt(bottomPlayer.current_round_score) + parseInt(topPlayer.current_round_score);
@@ -377,6 +411,11 @@ function buttonDisableLogic(){
         hasNonHeart = true;
       }
     }
+
+    console.log(brokenHearts);
+    console.log(selectedSuit);
+    console.log(hasNonHeart);
+
     if((brokenHearts == 0) && (selectedSuit == 2) && hasNonHeart){
       alertBox.innerHTML="<p>Hearts haven't been broken yet, you can't play hearts as the lead suit.</p>";
       btn.disabled = true;
