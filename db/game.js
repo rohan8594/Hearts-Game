@@ -412,6 +412,16 @@ const setLeadingSuit = (game_id, lead_suit) => {
     .catch((error) => { console.log(error) })
 };
 
+const updateTotalScores = (game_id) => {
+  return db.none('UPDATE game_players SET total_score = total_score + current_round_score WHERE game_id = $1', [game_id])
+    .catch((error) => { console.log(error) })
+};
+
+const incrementRoundNumber = (game_id) => {
+  return db.none('UPDATE games SET round_number = round_number + 1 WHERE game_id = $1', [game_id])
+    .catch((error) => { console.log(error) })
+};
+
 module.exports = {
   createGame,
   createInitialGamePlayer,
@@ -459,5 +469,7 @@ module.exports = {
   getCardsInPlay,
   getCardsInPlayCount,
   getLeadingSuit,
-  setLeadingSuit
+  setLeadingSuit,
+  updateTotalScores,
+  incrementRoundNumber
 };
