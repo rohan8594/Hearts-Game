@@ -233,11 +233,19 @@ const prepareCards = (game_id) => {
 const update = (game_id) => {
   return Game.getSharedInformation(game_id)
     .then((shared_player_information) => {
+      for (let index = 0; index < shared_player_information.length; index++){
+        Game.getHandSize(shared_player_information[index].username, game_id)
+          .then((results) => {
+            shared_player_information[index]['card_count'] = results.card_count;
+          })
+      }
+      setTimeout(() => {
       return Game.getCurrentTurn(game_id)
         .then((turn_information) => {
           gameSocket.to(game_id).emit('UPDATE', { shared_player_information : shared_player_information, turn_information : turn_information });
           return Promise.resolve(shared_player_information);
         })
+      }, 100);
     })
 };
 
