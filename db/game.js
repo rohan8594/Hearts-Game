@@ -150,7 +150,7 @@ const getUserIDSortedByTurnSequence = (game_id) => {
   return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
     .catch((error) => { console.log(error) })
 };
-
+/*
 const getSharedInformation = (game_id) => {
   return db.query(
     'SELECT  username, turn_sequence, ' +
@@ -167,7 +167,31 @@ const getSharedInformation = (game_id) => {
     'ORDER BY turn_sequence', [game_id]
   )
 };
+*/
+const getSharedInformation = (game_id) => {
+  return db.query(
+    'SELECT  username, turn_sequence, ' +
+    'current_round_score, total_score, ' +
+    'cards_in_play.card_id AS card_in_play, 0 AS card_count ' +
+    'FROM users, game_players, cards_in_play ' +
+    'WHERE users.user_id = game_players.user_id ' +
+    'AND cards_in_play.game_id = $1 ' +
+    'AND cards_in_play.user_id = users.user_id ' +
+    'AND game_players.game_id = $1 ' +
+    'GROUP BY username, turn_sequence, current_round_score, total_score, cards_in_play.card_id ' +
+    'ORDER BY turn_sequence', [game_id]
+  )
+}
 
+const getHandSize = (username, game_id) => {
+  return db.one(
+    'SELECT count(DISTINCT user_game_cards.card_id) AS card_count ' +
+    'FROM users, user_game_cards ' + 
+    'WHERE users.username = $1 ' +
+    'AND users.user_id = user_game_cards.user_id ' +
+    'AND user_game_cards.game_id = $2 ', [username, game_id]
+  )
+}
 const joinCardsInPlay = (user_id, game_id) => {
   return db.none(
     'INSERT INTO cards_in_play (user_id, game_id) ' +
@@ -494,5 +518,6 @@ module.exports = {
   getUserId,
   nudgePassPhase,
   givePointsToPlayer,
-  giveTotalPointsToPlayer
+  giveTotalPointsToPlayer,
+  getHandSize
 };
