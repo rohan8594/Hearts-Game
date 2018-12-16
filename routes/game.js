@@ -77,6 +77,7 @@ gameSocket.on('connection', (socket) => {
                 update(game_id)
                   .then(() => {
                     gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                    Game.deleteGame(game_id);
                   })
               })
           }
@@ -90,6 +91,7 @@ gameSocket.on('connection', (socket) => {
                     update(game_id)
                       .then(() => {
                         gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                        Game.deleteGame(game_id);
                       })
                   })
               })
@@ -185,25 +187,34 @@ gameSocket.on('connection', (socket) => {
                                           // Big delay and then deal cards again for next round
                                           Game.updateTotalScores(game_id)
                                             .then(() => {
-                                              Game.incrementRoundNumber(game_id)
-                                                .then(() => {
-                                                  Game.setCurrentPlayer(null, game_id)
-                                                    .then(() => {
-                                                      setTimeout(() => {
-                                                        Game.dealCards(game_id);
-                                                        setTimeout(() => {
-                                                          Game.getUserNamesFromGame(game_id)
-                                                            .then((game_players) => {
-                                                              gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                              Game.getMaximumScore(game_id)
+                                                .then((results) => {
+                                                  let maximumScore = results[0].maximum_score;
+                                                  if( maximumScore >= 100 ){
+                                                    gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                                                    Game.deleteGame(game_id);
+                                                  } else{
+                                                    Game.incrementRoundNumber(game_id)
+                                                      .then(() => {
+                                                        Game.setCurrentPlayer(null, game_id)
+                                                          .then(() => {
+                                                            setTimeout(() => {
+                                                              Game.dealCards(game_id);
                                                               setTimeout(() => {
-                                                                update(game_id)
+                                                                Game.getUserNamesFromGame(game_id)
+                                                                  .then((game_players) => {
+                                                                    gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : game_players });
+                                                                    setTimeout(() => {
+                                                                      update(game_id)
+                                                                    }, 500)
+                                                                  })
                                                               }, 500)
-                                                            })
-                                                        }, 500)
-                                                      }, 2000)
-                                                    });
-
+                                                            }, 2000)
+                                                          });
+                                                      })
+                                                  }
                                                 })
+                                              
                                             });
                                         } else {
                                           Game.setCurrentPlayer(winning_player, game_id)
