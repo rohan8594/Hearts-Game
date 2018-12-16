@@ -153,7 +153,12 @@ gameSocket.on('connection', (socket) => {
                                         }, 500)
                                       })
                                     } else {
-                                      Game.setCurrentPlayer(winning_player, game_id);
+                                      Game.setCurrentPlayer(winning_player, game_id)
+                                        .then(() => {
+                                          setTimeout(() => {
+                                            return update(game_id);
+                                          }, 500)
+                                        })
                                     }
                                   })
                                 })
@@ -161,6 +166,11 @@ gameSocket.on('connection', (socket) => {
                               let next_player = turnSequence % gamePlayers.length;
 
                               Game.setCurrentPlayer(gamePlayers[next_player].user_id, game_id)
+                                .then(() => {
+                                  setTimeout(() => {
+                                    return update(game_id);
+                                  }, 500)
+                                })
                             }
                           })
 
