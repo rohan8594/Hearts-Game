@@ -22,6 +22,7 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
       } else{
         res.redirect('/');
       }
+    })
 });
 
 
