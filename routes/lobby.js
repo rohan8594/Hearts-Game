@@ -5,16 +5,38 @@ const Game = require('../db/game');
 const lobbySocket = io.of('/lobby');
 const isAuthenticated = require('../config/passport/isAuthenticated');
 
-const displayGameList = () => {
+
+const displayGameList = (user_id) => {
   Game.getCurrentGames()
     .then((currentGames) => {
-      lobbySocket.emit('display games list', currentGames);
+      //console.log(user_id)
+      for (let index = 0; index < currentGames.length; index++){
+        // console.log(currentGames[index].game_id)
+        Game.checkIsMyGame(user_id, currentGames[index].game_id)
+          .then((results) => {
+            //console.log(results[0].is_my_game)
+            currentGames[index]['is_my_game'] = results[0].is_my_game;
+          })
+      }
+      
+      setTimeout(() => {
+        //console.log(currentGames)
+        lobbySocket.emit('display games list', currentGames);
+      }, 100);
+      
     })
 };
 
+
 lobbySocket.on('connection', (socket) => {
-  displayGameList()
+  lobbySocket.emit('connected', {user:0});
+
+  socket.on('GAME LIST', (data) => {
+    const { user_id } = data
+    displayGameList(user_id)
+  });
 });
+
 
 /* GET lobby page. */
 router.get('/', isAuthenticated, (req, res) => {
@@ -75,6 +97,13 @@ router.post('/joinGame', isAuthenticated, (req, res) => {
       }
 
     });
+});
+
+router.post('/rejoinGame', isAuthenticated, (req, res) => {
+  const { user } = req;
+  const { rejoin_btn: game_id } = req.body;
+
+  res.redirect(`/game/${game_id}`);
 });
 
 router.post('/observeGame', isAuthenticated, (req, res) => {

@@ -13,10 +13,15 @@ const createInitialGamePlayer = (user_id, game_id) => {
 };
 
 const getCurrentGames = () => {
-  return db.query('SELECT g.game_id, game_name, max_players, COUNT(*) as player_count ' +
+  return db.query('SELECT g.game_id, game_name, max_players, COUNT(*) as player_count, 0 as is_my_game ' +
     'FROM games g, game_players gp ' +
     'WHERE g.game_id=gp.game_id ' +
     'GROUP BY g.game_id ')
+    .catch((error) => { console.log(error) })
+};
+
+const checkIsMyGame = (user_id, game_id) => {
+  return db.query('select count(*) as is_my_game from game_players where user_id=$1 and game_id=$2', [user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
@@ -489,6 +494,7 @@ module.exports = {
   createGame,
   createInitialGamePlayer,
   getCurrentGames,
+  checkIsMyGame,
   observeGame,
   joinGame,
   deleteGame,
