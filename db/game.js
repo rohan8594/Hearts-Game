@@ -175,7 +175,7 @@ const getSharedInformation = (game_id) => {
     'GROUP BY username, turn_sequence, current_round_score, total_score, cards_in_play.card_id ' +
     'ORDER BY turn_sequence', [game_id]
   )
-}
+};
 
 const getHandSize = (username, game_id) => {
   return db.one(
@@ -185,7 +185,8 @@ const getHandSize = (username, game_id) => {
     'AND users.user_id = user_game_cards.user_id ' +
     'AND user_game_cards.game_id = $2 ', [username, game_id]
   )
-}
+};
+
 const joinCardsInPlay = (user_id, game_id) => {
   return db.none(
     'INSERT INTO cards_in_play (user_id, game_id) ' +
@@ -421,8 +422,31 @@ const setLeadingSuit = (game_id, lead_suit) => {
 };
 
 const updateTotalScores = (game_id) => {
-  return db.none('UPDATE game_players SET total_score = total_score + current_round_score WHERE game_id = $1', [game_id])
-    .catch((error) => { console.log(error) })
+  return db.query('SELECT user_id, current_round_score FROM game_players WHERE game_id = $1', [game_id])
+    .then((player_scores) => {
+      let player_who_shot_the_moon;
+
+      for (let i = 0; i < player_scores.length; i++) {
+        let { user_id, current_round_score } = player_scores[i];
+        if (current_round_score == 26) {
+          player_who_shot_the_moon = user_id;
+          break;
+        }
+      }
+
+      if (player_who_shot_the_moon === undefined) {
+        return db.none('UPDATE game_players SET total_score = total_score + current_round_score WHERE game_id = $1', [game_id])
+      } else {
+        for (let i = 0; i < player_scores.length; i++) {
+          let { user_id } = player_scores[i];
+
+          if (user_id != player_who_shot_the_moon) {
+            return db.none('UPDATE game_players SET total_score = total_score + 26 WHERE game_id = $1 AND user_id = $2', [game_id, user_id])
+          }
+        }
+      }
+    })
+
 };
 
 const incrementRoundNumber = (game_id) => {
@@ -454,7 +478,7 @@ const getMaximumScore = (game_id) => {
   return db.query('SELECT MAX(total_score) AS maximum_score ' +
   'FROM game_players ' +
   'WHERE game_id = $1', [game_id])
-}
+};
 
 module.exports = {
   createGame,

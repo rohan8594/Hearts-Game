@@ -21,8 +21,10 @@ router.get("/", (request, response) => {
 
 
 router.get("/", (request, response) => {
-    Game.verifyUserPassedCards(1, 13)
-        .then((result) => response.json(result))
+  Game.updateTotalScores(25)
+    .then(() => {
+      return response.json('Worked');
+    })
 });
 
 
