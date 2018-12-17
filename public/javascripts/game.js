@@ -14,6 +14,7 @@ let selectedSecond = false;
 let selectedThird = false;
 let selectedSingleCard = "0";
 let selectedMultiple = ["0", "0", "0"];
+let validPass = false;
 let gameOver = false;
 
 gameSocket.on('LOAD PLAYERS', (data) => {
@@ -53,6 +54,8 @@ gameSocket.on('UPDATE', (data) => {
   try{
     clearTimeout(timer)
   } catch (e) {}
+
+  validPass = false;
 
   console.log(data);
 
@@ -97,15 +100,7 @@ gameSocket.on('UPDATE', (data) => {
 
 gameSocket.on('VALID PASS', (data) => {
   let { user_id, game_id } = data;
-  const alertBox = document.getElementsByClassName('alert-box')[0];
-  alertBox.innerHTML = '<p>Waiting for other plays to select their cards to pass...</p>';
-  const board = document.getElementsByClassName('game-box')[0];
-  let passBtn = document.getElementById("multiple-button");
-  board.removeChild(passBtn);
-  let nudgeBtn = document.createElement('div');
-  let nudgeBtnHTML ='<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
-  nudgeBtn.innerHTML=nudgeBtnHTML;
-  board.appendChild(nudgeBtn);
+  validPass=true;
   gameSocket.emit('GET PLAYER HAND', {user_id: user_id, game_id: game_id});
 });
 
@@ -178,19 +173,6 @@ function updateGameBoard()
   let gameHtml = '';
   let z = 1;
 
-  if(turnState == 'play'){
-    gameHtml += '<div class = "alert-box"><p>Your turn to play a card.</p></div>';
-  }
-  else if(turnState == 'nudge'){
-    gameHtml += '<div class = "alert-box"><p>' + currentPlayer + '\'s turn to play a card.</p></div>';
-  }
-  else if(turnState == 'pass'){
-    gameHtml += '<div class = "alert-box"><p>Select three cards to pass.</p></div>';
-  }
-  else {
-    gameHtml += '<div class = "alert-box"></div>';
-  }
-
   gameHtml += '<div class = "top-player-info">' +
     '<p>' + playerNames[topPlayerOrder].username + '</p>'+
     '<div class = "player-score-box">' +
@@ -213,18 +195,30 @@ function updateGameBoard()
   }
 
   let buttonString = '';
-  if(turnState == "play")
+  if(validPass){
+    buttonString = '';
+    gameHtml += '<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
+    gameHtml += '<div class = "alert-box"><p>Waiting for other plays to select their cards to pass...</p></div>';
+  }
+  else if(turnState == "play")
   {
     buttonString = 'onclick="selectSingleCard(this.id)"';
     gameHtml += '<button class="game-button btn btn-primary" id="single-button" onclick="playButton()" disabled>Play</button>';
+    gameHtml += '<div class = "alert-box"><p>Your turn to play a card.</p></div>';
   }
   else if(turnState == "pass"){
     buttonString = 'onclick="selectMultipleCard(this.id)"';
     gameHtml += '<button class="game-button btn btn-primary " id="multiple-button" onclick="passButton()" disabled>Pass cards</button>';
+    gameHtml += '<div class = "alert-box"><p>Select three cards to pass.</p></div>';
   }
   else if(!observer){
     buttonString = '';
     gameHtml += '<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
+    gameHtml += '<div class = "alert-box"><p>' + currentPlayer + '\'s turn to play a card.</p></div>';
+  }
+  else{
+    gameHtml += '<div class = "alert-box"><p>' + currentPlayer + '\'s turn to play a card.</p></div>';
+    gameHtml += '<div class = "alert-box"></div>';
   }
 
   gameHtml += '<div class = "player-info">' +
