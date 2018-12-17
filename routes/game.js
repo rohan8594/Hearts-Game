@@ -54,7 +54,16 @@ gameSocket.on('connection', (socket) => {
             gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
 
             setTimeout(() => {
-              return update(game_id);
+              Game.maxPlayers(game_id)
+                .then((results) => {
+                  const max_players = results[0].max_players;
+                  return Game.getPlayerCount(game_id)
+                    .then((player_count) => {
+                      if (player_count == max_players) {
+                        return update(game_id);
+                      }
+                    })
+                })
             }, 500)
           })
       }
