@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
 
 // passport and sessions related stuff
-app.use(session({ secret: process.env["SESSION_SECRET"], resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'session_secret', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
