@@ -197,9 +197,12 @@ gameSocket.on('connection', (socket) => {
                                                 .then((results) => {
                                                   let maximumScore = results[0].maximum_score;
                                                   if( maximumScore >= 100 ){
-                                                    gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
-                                                    Game.deleteGame(game_id);
-                                                  } else{
+                                                    update(game_id);
+                                                    setTimeout(() => {
+                                                      gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                                                      Game.deleteGame(game_id);
+                                                    }, 500);
+                                                  } else {
                                                     Game.incrementRoundNumber(game_id)
                                                       .then(() => {
                                                         Game.setCurrentPlayer(null, game_id)
