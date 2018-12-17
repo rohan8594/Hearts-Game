@@ -95,4 +95,8 @@ router.post('/observeGame', isAuthenticated, (req, res) => {
     });
 });
 
+router.get('/rules', isAuthenticated, (req, res) => {
+  res.render('rules')
+});
+
 module.exports = router;
