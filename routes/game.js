@@ -124,10 +124,9 @@ gameSocket.on('connection', (socket) => {
                 setTimeout(() => {
                   [card1, card2, card3].forEach((card) => {
                     Game.setOwnerOfCard(card, null, game_id);
-                    update(game_id);
                   });
 
-                  socket.emit('VALID PASS');
+                  socket.emit('VALID PASS', { user_id: user_id, game_id: game_id });
 
                   setTimeout(() => {
                     Game.checkAllPlayersPassed(game_id)

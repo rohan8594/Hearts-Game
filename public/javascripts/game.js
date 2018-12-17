@@ -96,6 +96,7 @@ gameSocket.on('UPDATE', (data) => {
 });
 
 gameSocket.on('VALID PASS', (data) => {
+  let { user_id, game_id } = data;
   const alertBox = document.getElementsByClassName('alert-box')[0];
   alertBox.innerHTML = '<p>Waiting for other plays to select their cards to pass...</p>';
   const board = document.getElementsByClassName('game-box')[0];
@@ -105,6 +106,7 @@ gameSocket.on('VALID PASS', (data) => {
   let nudgeBtnHTML ='<button class="game-button btn btn-primary" id="nudge-button" onclick="nudgeButton()">Nudge</button>';
   nudgeBtn.innerHTML=nudgeBtnHTML;
   board.appendChild(nudgeBtn);
+  gameSocket.emit('GET PLAYER HAND', {user_id: user_id, game_id: game_id});
 });
 
 gameSocket.on('SEND PLAYER HAND', (data) => {
