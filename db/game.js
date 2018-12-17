@@ -441,17 +441,22 @@ const updateTotalScores = (game_id) => {
 
       if (player_who_shot_the_moon === undefined) {
         return db.none('UPDATE game_players SET total_score = total_score + current_round_score WHERE game_id = $1', [game_id])
+          .then(() => {
+            return resetRoundScore(game_id);
+          })
       } else {
         for (let i = 0; i < player_scores.length; i++) {
           let { user_id } = player_scores[i];
 
           if (user_id != player_who_shot_the_moon) {
             return db.none('UPDATE game_players SET total_score = total_score + 26 WHERE game_id = $1 AND user_id = $2', [game_id, user_id])
+              .then(() => {
+                return resetRoundScore(game_id);
+              })
           }
         }
       }
     })
-
 };
 
 const incrementRoundNumber = (game_id) => {
@@ -489,6 +494,12 @@ const isGamePlayer = (user_id, game_id) => {
   return db.query('SELECT * FROM game_players WHERE user_id = $1 AND game_id = $2', [user_id, game_id])
     .catch((error) => {console.log(error)})
 };
+
+const resetRoundScore = (game_id) => {
+  return db.none('UPDATE game_players SET current_round_score = 0 WHERE game_id = $1', [game_id])
+    .catch((error) => { console.log(error) })
+};
+
 
 module.exports = {
   createGame,
@@ -548,5 +559,6 @@ module.exports = {
   getHandSize,
   getMaximumScore,
   checkGameExists,
-  isGamePlayer
+  isGamePlayer,
+  resetRoundScore
 };
