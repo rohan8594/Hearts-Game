@@ -124,6 +124,7 @@ gameSocket.on('connection', (socket) => {
                 setTimeout(() => {
                   [card1, card2, card3].forEach((card) => {
                     Game.setOwnerOfCard(card, null, game_id);
+                    update(game_id);
                   });
 
                   socket.emit('VALID PASS');
@@ -227,7 +228,7 @@ gameSocket.on('connection', (socket) => {
                                             .then(() => {
                                               setTimeout(() => {
                                                 return update(game_id);
-                                              }, 2000)
+                                              }, 3000)
                                             })
                                         }
                                       })
@@ -239,7 +240,7 @@ gameSocket.on('connection', (socket) => {
                                     .then(() => {
                                       setTimeout(() => {
                                         return update(game_id);
-                                      }, 2000)
+                                      }, 100)
                                     })
 
                                 }
@@ -326,7 +327,7 @@ const changeCardsOwnership = (game_id) => {
             // pass to right
             for (let i = 0; i < game_players.length; i++) {
               let { user_id: owner } = game_players[i];
-              let { user_id: player_to_send } = game_players[(i - 1) % game_players.length];
+              let { user_id: player_to_send } = game_players[(i + game_players.length - 1) % game_players.length];
 
               passCard(owner, game_id, player_to_send);
             }

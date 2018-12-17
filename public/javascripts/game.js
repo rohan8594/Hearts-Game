@@ -176,7 +176,18 @@ function updateGameBoard()
   let gameHtml = '';
   let z = 1;
 
-  gameHtml += '<div class = "alert-box"></div>'
+  if(turnState == 'play'){
+    gameHtml += '<div class = "alert-box"><p>Your turn to play a card.</p></div>';
+  }
+  else if(turnState == 'nudge'){
+    gameHtml += '<div class = "alert-box"><p>' + currentPlayer + '\'s turn to play a card.</p></div>';
+  }
+  else if(turnState == 'pass'){
+    gameHtml += '<div class = "alert-box"><p>Select three cards to pass.</p></div>';
+  }
+  else {
+    gameHtml += '<div class = "alert-box"></div>';
+  }
 
   gameHtml += '<div class = "top-player-info">' +
     '<p>' + playerNames[topPlayerOrder].username + '</p>'+

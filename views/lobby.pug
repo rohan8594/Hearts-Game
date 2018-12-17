@@ -8,9 +8,10 @@ head
 
 body(class = 'general-body')
     div(class='banner')
-            h1(class='banner-align-left') Hearts
-            span
-                a(href='/lobby/logout', class='banner-align-right') Sign out
+        h1(class='banner-align-left') Hearts
+        span
+            a(href='/lobby/logout', class='banner-align-right') Sign out
+            a(href='/lobby/rules', target='blank' class='banner-align-right' style="padding-right:20px;") Rules
 
 
     div(class='lobby-container')
@@ -41,7 +42,7 @@ body(class = 'general-body')
                 button.btn.btn-primary(id='send', style='width: 100%') Send
 
     script.
-        const username = '#{user.username}'
-        const user_id = '#{user.user_id}'
+      const username = '#{user.username}'
+      const user_id = '#{user.user_id}'
     script(src='/javascripts/chat.js')
     script(src='/javascripts/lobby.js')
