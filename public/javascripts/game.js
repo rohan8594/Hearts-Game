@@ -157,8 +157,9 @@ gameSocket.on('GAME OVER', (data) => {
     '                    </table>' +
     '                </div>' +
     '                <div class="modal-footer">' +
-    '            </div>' +
-    '</div>';
+    '                  <a href="/lobby" style="color:#e9eb89">Return to lobby...</a>'
+  '            </div>' +
+  '</div>';
 
   let div = document.createElement('div');
   div.innerHTML = scoreHtml;
@@ -546,7 +547,7 @@ function nudgeButton(){
     nudged_player: nudgedNote
   });
 
-  let timer = setTimeout(nudgeFinal, 5000)
+  let timer = setTimeout(nudgeFinal, 30000)
 }
 
 function nudgeFinal(){
