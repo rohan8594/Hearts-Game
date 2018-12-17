@@ -1,11 +1,6 @@
 io = require('socket.io')();
 
 io.on('connection', (socket) => {
-  console.log('Made a socket connection');
-
-  socket.on('disconnect', data => {
-    console.log('Client disconnected');
-  });
 
   socket.on('entered', (data) => {
     io.emit('entry msg', data);

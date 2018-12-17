@@ -1,14 +1,10 @@
 const lobbySocket = io('/lobby');
 
-lobbySocket.on('connected', (data) => {
-  //alert(user_id);
-  lobbySocket.emit('GAME LIST', {
-      user_id: user_id
-    });
-})
+lobbySocket.on('CONNECTED', () => {
+  lobbySocket.emit('GAME LIST', { user_id: user_id });
+});
 
-
-lobbySocket.on('display games list', (currentGames) => {
+lobbySocket.on('DISPLAY GAMES LIST', (currentGames) => {
   let games_list_div = document.getElementsByClassName('games-list-box')[0];
   let games_list_html = '';
 

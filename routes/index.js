@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('../config/passport');
 
-/* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
   if (req.isAuthenticated()) {
     res.redirect('/lobby');
   } else {
