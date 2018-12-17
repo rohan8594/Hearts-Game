@@ -1,0 +1,45 @@
+doctype html
+html(lang='en')
+
+head
+  title= title
+  include partials/head.pug
+  link(rel='stylesheet', href='/stylesheets/chat.css')
+
+body(class = 'general-body')
+  div(class='banner')
+    h1(class='banner-align-left') Hearts - Rules
+
+  div
+    h2(style='color:whitesmoke') Rules
+    ul
+      li Hearts is a card game utilizing a standard 52 card deck.
+
+    h2(style='color:whitesmoke') Objective:
+    ul
+      li To be the player with the lowest overall Score.
+      li This implementation will declare a winner upon one player exceeding 100 points.
+
+    h2(style='color:whitesmoke') Dealing:
+    ul
+      li Cards are dealt to each player equally so each player starts with the same number of cards.
+
+    h2(style='color:whitesmoke') Passing:
+    ul
+      li Upon starting each player chooses 3 cards to pass to a neighbor in the following sequence: left, right, across, hold. In the case of two players, the cards are passed across three times, then kept.
+
+    h2(style='color:whitesmoke') Starting and Playing:
+    ul
+      li To begin, the player with the two of clubs goes first and must play the two of clubs.
+      li The suit of the card must be followed if the player has a card of that suit.
+      li Example: 4 of clubs played
+      li Next player must play a club if they have one, if they do not they can play any card.
+      li The player with the highest face value following the suit gets the cards.
+      li Hearts can not be played as the lead suit unless the player has only hearts in their hand or until “Hearts have been broken” - meaning somebody has already played a heart.
+      li Each heart taken is worth 1 point.
+      li The queen of spades is worth 13 points.
+      li  If one player takes every heart and the queen of spades then every other player gets 26 points and that player gets 0 for that deal.  This is called "Shooting the Moon".
+
+    h2(style='color:whitesmoke') Winning:
+    ul
+      li The player with the least number of points once a player exceeds 100 points is declared the winner!
