@@ -227,7 +227,7 @@ gameSocket.on('connection', (socket) => {
                                             .then(() => {
                                               setTimeout(() => {
                                                 return update(game_id);
-                                              }, 2000)
+                                              }, 3000)
                                             })
                                         }
                                       })
@@ -239,7 +239,7 @@ gameSocket.on('connection', (socket) => {
                                     .then(() => {
                                       setTimeout(() => {
                                         return update(game_id);
-                                      }, 2000)
+                                      }, 100)
                                     })
 
                                 }
