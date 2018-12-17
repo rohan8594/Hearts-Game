@@ -480,6 +480,11 @@ const getMaximumScore = (game_id) => {
   'WHERE game_id = $1', [game_id])
 };
 
+const isGamePlayer = (user_id, game_id) => {
+  return db.query('SELECT * FROM game_players WHERE user_id = $1 AND game_id = $2', [user_id, game_id])
+    .catch((error) => {console.log(error)})
+};
+
 module.exports = {
   createGame,
   createInitialGamePlayer,
@@ -536,5 +541,6 @@ module.exports = {
   giveTotalPointsToPlayer,
   getHandSize,
   getMaximumScore,
-  checkGameExists
+  checkGameExists,
+  isGamePlayer
 };
