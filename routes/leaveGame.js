@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
         res.redirect('/lobby');
       } else {
         res.redirect('/lobby');
-        Game.giveTotalPointsToPlayer(game_id, user.user_id.user_id, 100)
+        Game.giveTotalPointsToPlayer(game_id, user.user_id, 100)
           .then(() => {
             setTimeout(() => { 
               gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id});
