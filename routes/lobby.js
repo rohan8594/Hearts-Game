@@ -96,7 +96,7 @@ router.get('/rules', (req, res) => {
 
 
 // Lobby sockets
-const displayGameList = (user_id) => {
+const displayGameList = (user_id, socket) => {
   Game.getCurrentGames()
     .then((currentGames) => {
       for (let index = 0; index < currentGames.length; index++){
@@ -107,7 +107,7 @@ const displayGameList = (user_id) => {
       }
 
       setTimeout(() => {
-        lobbySocket.emit('DISPLAY GAMES LIST', currentGames);
+        socket.emit('DISPLAY GAMES LIST', currentGames);
       }, 200);
     })
 };
@@ -117,7 +117,7 @@ lobbySocket.on('connection', (socket) => {
 
   socket.on('GAME LIST', (data) => {
     const { user_id } = data;
-    displayGameList(user_id)
+    displayGameList(user_id, socket)
   });
 });
 
