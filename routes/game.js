@@ -398,5 +398,7 @@ const startGame = (game_id) => {
   }, 500)
 };
 
-module.exports = { router,
-  update};
+module.exports = {
+  router,
+  update
+};
