@@ -65,14 +65,15 @@ gameSocket.on('UPDATE', (data) => {
     rightPlayer = data.shared_player_information[rightPlayerOrder];
   }
 
-  if(observer){
+  if(observer) {
     turnState = "observer";
-    if(data.turn_information[0] ==null){
+    if (data.turn_information[0] == null) {
       currentPlayer = null;
     }
     else {
       currentPlayer = data.turn_information[0].current_player;
     }
+  }
   else if(data.turn_information[0] == null){
     turnState = "pass";
     currentPlayer = null;
