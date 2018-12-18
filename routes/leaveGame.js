@@ -12,8 +12,11 @@ router.get('/', (req, res) => {
       if (game_player === undefined || game_player.length === 0) {
         res.redirect('/lobby');
       } else {
-        gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id});
-        Game.deleteGame(game_id);
+        res.redirect('/lobby');
+        setTimeout(() => { 
+          gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id});
+          Game.deleteGame(game_id);
+        }, 500);
       }
     })
 

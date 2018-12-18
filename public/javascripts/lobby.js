@@ -1,6 +1,6 @@
 const lobbySocket = io('/lobby');
 
-lobbySocket.on('CONNECTED', () => {
+lobbySocket.on('GET GAMES', () => {
   lobbySocket.emit('GAME LIST', { user_id: user_id });
 });
 

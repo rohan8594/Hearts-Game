@@ -30,7 +30,7 @@ router.post('/createGame', isAuthenticated, (req, res) => {
           .then(() => {
             Game.joinCardsInPlay(user.user_id, game_id);
 
-            displayGameList();
+            lobbySocket.emit('GET GAMES');
             res.redirect(`/game/${game_id}`);
           })
           .catch((error) => { console.log(error) })
@@ -55,7 +55,7 @@ router.post('/joinGame', isAuthenticated, (req, res) => {
         Game.joinGame(user.user_id, game_id);
         Game.joinCardsInPlay(user.user_id, game_id);
 
-        displayGameList();
+        lobbySocket.emit('GET GAMES');
         res.redirect(`/game/${game_id}`);
       } else {
         const errStr = encodeURIComponent('You are already in this game!');
@@ -111,11 +111,11 @@ const displayGameList = (user_id, socket) => {
           socket.emit('DISPLAY GAMES LIST', currentGames);
         }, 200);
       })
-    }
+  }
 };
 
 lobbySocket.on('connection', (socket) => {
-  lobbySocket.emit('CONNECTED');
+  lobbySocket.emit('GET GAMES');
 
   socket.on('GAME LIST', (data) => {
     const { user_id } = data;
