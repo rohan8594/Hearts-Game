@@ -4,7 +4,7 @@ const CREATE_GAME_QUERY = 'INSERT INTO games (max_players, game_name, round_numb
 const CREATE_GAME_PLAYER_QUERY = 'INSERT INTO game_players (user_id, game_id, total_score, current_round_score, ' +
   'turn_sequence) VALUES ($1, $2, $3, $4, $5)';
 
-const GET_CURRENT_GAMES_QUERY = 'SELECT g.game_id, game_name, max_players, COUNT(*) as player_count, 0 as is_my_game ' +
+const GET_CURRENT_GAMES_QUERY = 'SELECT g.game_id, game_name, max_players, COUNT(*) as player_count ' +
   'FROM games g, game_players gp WHERE g.game_id=gp.game_id GROUP BY g.game_id';
 
 const CHECK_GAME_QUERY = 'SELECT COUNT(*) as is_my_game FROM game_players WHERE user_id=$1 and game_id=$2';

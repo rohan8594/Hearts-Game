@@ -108,7 +108,7 @@ const displayGameList = (user_id) => {
 
       setTimeout(() => {
         lobbySocket.emit('DISPLAY GAMES LIST', currentGames);
-      }, 100);
+      }, 200);
 
     })
 };
