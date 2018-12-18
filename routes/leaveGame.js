@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Game = require('../db/game');
 const gameSocket = io.of('/game');
+const { update } = require('./game');
 
 router.get('/', (req, res) => {
   const { user } = req;
@@ -15,7 +16,8 @@ router.get('/', (req, res) => {
         res.redirect('/lobby');
         Game.giveTotalPointsToPlayer(game_id, user.user_id, 100)
           .then(() => {
-            setTimeout(() => { 
+            update(game_id);
+            setTimeout(() => {
               gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id});
               Game.deleteGame(game_id);
             }, 500);
