@@ -7,6 +7,7 @@ const Game = require('../db/game');
 
 let user;
 let game_id;
+let nudge_timer;
 
 router.get('/', isAuthenticated, (req, res, next) => {
   res.render('game', { title: 'Hearts Game' });
@@ -70,6 +71,10 @@ gameSocket.on('connection', (socket) => {
     });
 
   // game events
+  socket.on('NUDGE NOTIFICATION', (data) => {
+    nudge_timer = data.nudge_timer;
+  });
+
   socket.on('GET PLAYER HAND', (data) => {
     const { user_id, game_id } = data;
 
@@ -89,11 +94,11 @@ gameSocket.on('connection', (socket) => {
           if (nudged_player == null) {
             Game.nudgePassPhase(game_id)
               .then(() =>{
-                update(game_id)
-                  .then(() => {
-                    gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
-                    Game.deleteGame(game_id);
-                  })
+                update(game_id);
+                setTimeout(() => {
+                  gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                  Game.deleteGame(game_id);
+                }, 500);
               })
           }
         }
@@ -103,11 +108,11 @@ gameSocket.on('connection', (socket) => {
               .then((current_player_id) => {
                 Game.giveTotalPointsToPlayer(game_id, current_player_id.user_id, 100)
                   .then(() =>{
-                    update(game_id)
-                      .then(() => {
-                        gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
-                        Game.deleteGame(game_id);
-                      })
+                    update(game_id);
+                    setTimeout(() => {
+                      gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                      Game.deleteGame(game_id);
+                    }, 500);
                   })
               })
           }
@@ -121,6 +126,10 @@ gameSocket.on('connection', (socket) => {
     let card1 = parseInt(passed_cards[0]),
       card2 = parseInt(passed_cards[1]),
       card3 = parseInt(passed_cards[2]);
+
+    if (nudge_timer != undefined) {
+      gameSocket.emit('CANCEL NUDGE', nudge_timer);
+    }
 
     Game.verifyUserHasCards(user_id, game_id, [card1, card2, card3])
       .then((hasCards) => {
@@ -161,6 +170,10 @@ gameSocket.on('connection', (socket) => {
   socket.on('PLAY CARDS', (data) => {
     let { user_id, game_id, passed_card: card_played } = data;
     card_played = parseInt(card_played);
+
+    if (nudge_timer != undefined) {
+      gameSocket.emit('CANCEL NUDGE', nudge_timer);
+    }
 
     Game.getGamePlayers(game_id)
       .then((gamePlayers) => {
