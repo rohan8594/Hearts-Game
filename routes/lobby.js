@@ -100,16 +100,15 @@ const displayGameList = (user_id) => {
   Game.getCurrentGames()
     .then((currentGames) => {
       for (let index = 0; index < currentGames.length; index++){
-        Game.checkIsMyGame(user_id, currentGames[index].game_id)
+        Game.verifyInGame(user_id, currentGames[index].game_id)
           .then((results) => {
-            currentGames[index]['is_my_game'] = results[0].is_my_game;
+            currentGames[index]['is_my_game'] = results;
           })
       }
 
       setTimeout(() => {
         lobbySocket.emit('DISPLAY GAMES LIST', currentGames);
       }, 200);
-
     })
 };
 
