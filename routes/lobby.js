@@ -97,19 +97,21 @@ router.get('/rules', (req, res) => {
 
 // Lobby sockets
 const displayGameList = (user_id, socket) => {
-  Game.getCurrentGames()
-    .then((currentGames) => {
-      for (let index = 0; index < currentGames.length; index++){
-        Game.verifyInGame(user_id, currentGames[index].game_id)
-          .then((results) => {
-            currentGames[index]['is_my_game'] = results;
-          })
-      }
+  if(socket != undefined){
+    Game.getCurrentGames()
+      .then((currentGames) => {
+        for (let index = 0; index < currentGames.length; index++){
+          Game.verifyInGame(user_id, currentGames[index].game_id)
+            .then((results) => {
+              currentGames[index]['is_my_game'] = results;
+            })
+        }
 
-      setTimeout(() => {
-        socket.emit('DISPLAY GAMES LIST', currentGames);
-      }, 200);
-    })
+        setTimeout(() => {
+          socket.emit('DISPLAY GAMES LIST', currentGames);
+        }, 200);
+      })
+    }
 };
 
 lobbySocket.on('connection', (socket) => {
