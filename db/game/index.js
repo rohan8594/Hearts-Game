@@ -1,117 +1,84 @@
-const db = require('../db');
+const db = require('../../db');
+
+const { CREATE_GAME_QUERY, CREATE_GAME_PLAYER_QUERY, GET_CURRENT_GAMES_QUERY, CHECK_GAME_QUERY,
+  CHECK_GAME_EXISTS_QUERY, PLAYER_COUNT_QUERY, OBSERVE_GAME_QUERY, JOIN_GAME_QUERY, DELETE_GAME_QUERY,
+  VERIFY_IN_GAME_QUERY, MAX_PLAYERS_QUERY, INIT_CARDS_QUERY, GET_USERS_QUERY, GET_CARDS_QUERY,
+  SET_CARD_OWNER_QUERY, CHECK_GAME_STATE_QUERY, SORT_BY_TURN_QUERY, SHARED_INFO_QUERY, GET_HAND_SIZE_QUERY,
+  JOIN_CARDS_IN_PLAY_QUERY, GET_GAME_PLAYERS_QUERY, GET_PLAYER_CARDS_QUERY, TURN_QUERY,
+  GET_CURRENT_TURN_QUERY, GET_CARD_QUERY, GET_USER_GAME_CARD_QUERY, PASS_CARD_QUERY, GET_PASS_CARD_QUERY,
+  GET_CURRENT_RND_SCORE, GET_ALL_PASS_CARDS, DELETE_PASS_CARD_QUERY, SET_CURRENT_PLAYER_QUERY,
+  GET_STARTING_PLAYER_QUERY, PLAY_CARD_QUERY, GET_PLAYER_TURN_SEQUENCE, CARDS_LEFT_QUERY,
+  CARDS_IN_PLAY_QUERY, UPDATE_CARDS_IN_PLAY_QUERY, UPDATE_POINTS, CARDS_COUNT_QUERY, GET_LEAD_SUIT_QUERY,
+  SET_LEAD_SUIT_QUERY, GET_ROUND_SCORES, UPDATE_SCORES_QUERY, UPDATE_SCORES_QUERY2, INCREMENT_ROUND_QUERY,
+  GET_USER_ID, NUDGE_QUERY, TOTAL_POINTS_QUERY, GET_MAX_SCORE_QUERY, RESET_POINTS_QUERY, VERIFY_PLAYER_QUERY } = require('./queries');
 
 const createGame = (max_players, user_id, game_name) => {
-  return db.query('INSERT INTO games (max_players, game_name, round_number) VALUES ' +
-    '($1, $2, $3) RETURNING game_id', [max_players, game_name, 1])
+  return db.query(CREATE_GAME_QUERY, [max_players, game_name, 1])
     .catch((error) => { console.log(error) })
 };
 
 const createInitialGamePlayer = (user_id, game_id) => {
-  return db.none('INSERT INTO game_players (user_id, game_id, total_score, current_round_score, turn_sequence) VALUES ' +
-    '($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, 1])
+  return db.none(CREATE_GAME_PLAYER_QUERY, [user_id, game_id, 0, 0, 1])
     .catch((error) => { console.log(error) })
 };
 
 const getCurrentGames = () => {
-  return db.query('SELECT g.game_id, game_name, max_players, COUNT(*) as player_count, 0 as is_my_game ' +
-    'FROM games g, game_players gp ' +
-    'WHERE g.game_id=gp.game_id ' +
-    'GROUP BY g.game_id ')
-    .catch((error) => { console.log(error) })
-};
-
-const checkIsMyGame = (user_id, game_id) => {
-  return db.query('select count(*) as is_my_game from game_players where user_id=$1 and game_id=$2', [user_id, game_id])
+  return db.query(GET_CURRENT_GAMES_QUERY)
     .catch((error) => { console.log(error) })
 };
 
 const checkGameExists = (game_id) => {
-  return db.query('SELECT * FROM games WHERE game_id = $1', [game_id])
+  return db.query(CHECK_GAME_EXISTS_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getPlayerCount = (game_id) => {
-  return db.query('SELECT COUNT(*) as player_count ' +
-    'FROM game_players ' +
-    'WHERE game_id=$1', [game_id])
+  return db.query(PLAYER_COUNT_QUERY, [game_id])
     .then((results) => { return results[0].player_count })
     .catch((error) => { console.log(error) })
 };
 
 const observeGame = (user_id, game_id) => {
-  return db.none('INSERT into game_observers(user_id, game_id) ' +
-    'VALUES ($1, $2)', [user_id, game_id])
+  return db.none(OBSERVE_GAME_QUERY, [user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const joinGame =  (user_id, game_id) => {
   getPlayerCount(game_id)
     .then((player_count) => {
-      return db.none('INSERT into game_players (user_id, game_id, total_score, current_round_score, turn_sequence) ' +
-        'VALUES ($1, $2, $3, $4, $5)', [user_id, game_id, 0, 0, (parseInt(player_count) + 1)])
+      return db.none(JOIN_GAME_QUERY, [user_id, game_id, 0, 0, (parseInt(player_count) + 1)])
         .catch((error) => { console.log(error) })
     })
 };
 
 const deleteGame = (game_id) => {
-  return db.none(
-    'DELETE FROM cards_in_play WHERE game_id = $1; ' +
-    'DELETE FROM passed_cards WHERE game_id = $1; ' +
-    'DELETE FROM user_game_cards WHERE game_id = $1; ' +
-    'DELETE FROM game_observers WHERE game_id = $1; ' +
-    'DELETE FROM game_players WHERE game_id = $1; ' +
-    'DELETE FROM games WHERE game_id = $1;', [game_id])
-    .catch((error) => { console.log(error) })
-};
-
-const deleteGamePlayer = (user_id, game_id) => {
-  return db.none('DELETE FROM game_players WHERE user_id=$1 AND game_id=$2', [user_id, game_id])
+  return db.none(DELETE_GAME_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const verifyInGame = (user_id, game_id) => {
-  return db.query('SELECT MAX(count) as in_Game ' +
-    'FROM ( ' +
-    'SELECT COUNT(*) FROM game_players WHERE game_players.user_id = $1 AND game_players.game_id = $2 ' +
-    'UNION ' +
-    'SELECT COUNT(*) FROM game_observers WHERE game_observers.user_id = $1 AND game_observers.game_id = $2 ' +
-    ') as counts' , [user_id, game_id])
+  return db.query(VERIFY_IN_GAME_QUERY, [user_id, game_id])
     .then((results) => { return results[0].in_game })
     .catch((error) => { console.log(error) })
 };
 
 const maxPlayers = (game_id) => {
-  return db.query('SELECT max_players FROM games WHERE game_id = $1', [game_id])
-    .catch((error) => { console.log(error) })
-};
-
-const clearUserGameCards = (game_id) => {
-  return db.none('DELETE FROM user_game_cards WHERE game_id = $1', [game_id])
+  return db.query(MAX_PLAYERS_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const initializeUserGameCards = (game_id) => {
-  return db.none(
-    'DO $$ ' +
-    'BEGIN ' +
-    'FOR counter IN 1..52 LOOP ' +
-    'INSERT INTO user_game_cards (game_id, card_id) ' +
-    'VALUES ($1, counter); ' +
-    'END LOOP; ' +
-    'END; $$ ', [game_id] )
+  return db.none(INIT_CARDS_QUERY, [game_id] )
     .catch((error) => { console.log(error) })
 };
 
 const getUserNamesFromGame = (game_id) => {
-  return db.query('SELECT username, turn_sequence ' +
-    'FROM users, game_players ' +
-    'WHERE users.user_id = game_players.user_id AND game_players.game_id = $1 ' +
-    'ORDER BY turn_sequence ', [game_id])
+  return db.query(GET_USERS_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getAllCardsFromGame = (game_id) => {
-  return db.query('SELECT * from user_game_cards WHERE game_id = $1', [game_id])
+  return db.query(GET_CARDS_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
@@ -143,85 +110,51 @@ const dealCards = (game_id) => {
 };
 
 const setOwnerOfCard = (card_id, user_id, game_id) => {
-  return db.none('UPDATE user_game_cards ' +
-    'SET user_id = $1 ' +
-    'WHERE card_id = $2 AND game_id = $3', [user_id, card_id, game_id])
+  return db.none(SET_CARD_OWNER_QUERY, [user_id, card_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const checkGameStateExists = (game_id) => {
-  return db.query('SELECT * FROM user_game_cards WHERE game_id=$1', [game_id])
+  return db.query(CHECK_GAME_STATE_QUERY, [game_id])
     .then((results) => {
       return !(results === undefined || results.length === 0);
     })
     .catch((error) => { console.log(error) })
 };
 
-const getCardCount = (user_id, game_id) => {
-  return db.query('SELECT COUNT(card_id) FROM user_game_cards WHERE user_id = $1 AND game_id = $2 AND in_play = \'0\' ', [user_id, game_id])
-    .catch((error) => { console.log(error) })
-};
-
 const getUserIDSortedByTurnSequence = (game_id) => {
-  return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
+  return db.query(SORT_BY_TURN_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getSharedInformation = (game_id) => {
-  return db.query(
-    'SELECT  username, turn_sequence, ' +
-    'current_round_score, total_score, ' +
-    'cards_in_play.card_id AS card_in_play, 0 AS card_count ' +
-    'FROM users, game_players, cards_in_play ' +
-    'WHERE users.user_id = game_players.user_id ' +
-    'AND cards_in_play.game_id = $1 ' +
-    'AND cards_in_play.user_id = users.user_id ' +
-    'AND game_players.game_id = $1 ' +
-    'GROUP BY username, turn_sequence, current_round_score, total_score, cards_in_play.card_id ' +
-    'ORDER BY turn_sequence', [game_id]
+  return db.query(SHARED_INFO_QUERY, [game_id]
   )
 };
 
 const getHandSize = (username, game_id) => {
-  return db.one(
-    'SELECT count(DISTINCT user_game_cards.card_id) AS card_count ' +
-    'FROM users, user_game_cards ' + 
-    'WHERE users.username = $1 ' +
-    'AND users.user_id = user_game_cards.user_id ' +
-    'AND user_game_cards.game_id = $2 ', [username, game_id]
+  return db.one(GET_HAND_SIZE_QUERY, [username, game_id]
   )
 };
 
 const joinCardsInPlay = (user_id, game_id) => {
-  return db.none(
-    'INSERT INTO cards_in_play (user_id, game_id) ' +
-    'VALUES ($1, $2)', [user_id, game_id])
+  return db.none(JOIN_CARDS_IN_PLAY_QUERY, [user_id, game_id])
     .catch((error) => { console.log(error) })
 
-};
-
-const getCurrentCards = ( game_id, user_id ) => {
-  return db.query('SELECT card_id FROM user_game_cards WHERE user_id = $1', [user_id])
-    .catch((error) => { console.log(error) })
-};
-
-const getUserIDFromGame = (game_id) => {
-  return db.query('SELECT user_id FROM game_players WHERE game_players.game_id = $1', [game_id])
-    .catch((error) => { console.log(error) })
 };
 
 const getGamePlayers = (game_id) => {
-  return db.query('SELECT * FROM game_players WHERE game_id = $1 ORDER BY turn_sequence', [game_id])
+  return db.query(GET_GAME_PLAYERS_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getPlayerCards = (user_id, game_id) => {
-  return db.query('SELECT card_id FROM user_game_cards WHERE user_game_cards.user_id = $1 AND game_id = $2 ORDER BY card_id', [user_id, game_id])
+  return db.query(GET_PLAYER_CARDS_QUERY, [user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getCurrentTurn = (game_id) => {
-  return db.query('SELECT users.username AS current_player FROM games, users WHERE game_id = $1 AND current_player = users.user_id', [game_id])
+  return db.query(TURN_QUERY, [game_id])
     .then((results) => {
       if(results.length == 0 ) { return Promise.resolve({ current_player : null }) }
       else {return results}
@@ -230,36 +163,26 @@ const getCurrentTurn = (game_id) => {
 };
 
 const getCurrentTurnId = (game_id) => {
-  return db.query('SELECT current_player FROM games WHERE game_id = $1', [game_id])
-    .catch((error) => { console.log(error) })
-};
-
-const getPlayerTotalScore = (user_id, game_id) => {
-  return db.query('SELECT total_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
-    .catch((error) => { console.log(error) })
-};
-
-const getPlayerRoundScore = (user_id, game_id) => {
-  return db.query('SELECT current_round_score FROM game_players WHERE game_players.user_id = $1 AND game_id = $2', [user_id, game_id])
+  return db.query(GET_CURRENT_TURN_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const retrieveOwnedCard = (user_id, game_id, card_id) => {
-  return db.one('SELECT card_id FROM user_game_cards WHERE card_id = $1 AND user_id = $2 AND game_id = $3', [card_id, user_id, game_id])
+  return db.one(GET_CARD_QUERY, [card_id, user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const verifyUserHasCards = (user_id, game_id, [card1, card2, card3]) => {
 
-  return db.query('SELECT * FROM user_game_cards WHERE user_id=$1 AND game_id=$2 AND card_id=$3', [user_id, game_id, card1])
+  return db.query(GET_USER_GAME_CARD_QUERY, [user_id, game_id, card1])
     .then((results) => {
       if (results === undefined || results.length === 0) return false;
       else {
-        return db.query('SELECT * FROM user_game_cards WHERE user_id=$1 AND game_id=$2 AND card_id=$3', [user_id, game_id, card2])
+        return db.query(GET_USER_GAME_CARD_QUERY, [user_id, game_id, card2])
           .then((results) => {
             if (results === undefined || results.length === 0) return false;
             else {
-              return db.query('SELECT * FROM user_game_cards WHERE user_id=$1 AND game_id=$2 AND card_id=$3', [user_id, game_id, card3])
+              return db.query(GET_USER_GAME_CARD_QUERY, [user_id, game_id, card3])
                 .then((results) => {
                   if (results === undefined || results.length === 0) return false;
                   else return true;
@@ -276,7 +199,7 @@ const verifyUserHasCards = (user_id, game_id, [card1, card2, card3]) => {
 const addToPassedCardsTable = (user_id, game_id, [card1, card2, card3]) => {
 
   [card1, card2, card3].forEach((card) => {
-    return db.none('INSERT INTO passed_cards (user_id, game_id, card_id) VALUES ($1, $2, $3)', [user_id, game_id, card])
+    return db.none(PASS_CARD_QUERY, [user_id, game_id, card])
       .catch((error) => { console.log(error) })
   })
 };
@@ -286,7 +209,7 @@ const checkAllPlayersPassed = (game_id) => {
     .then((results) => {
       const max_players = results[0].max_players;
 
-      return db.query('SELECT COUNT(DISTINCT card_id) FROM passed_cards WHERE game_id = $1', [game_id])
+      return db.query(GET_PASS_CARD_QUERY, [game_id])
         .then((results) => {
           return results[0].count == max_players * 3;
         })
@@ -294,27 +217,27 @@ const checkAllPlayersPassed = (game_id) => {
 };
 
 const getCurrentRoundNumber = (game_id) => {
-  return db.query('SELECT round_number FROM games WHERE game_id=$1', [game_id])
+  return db.query(GET_CURRENT_RND_SCORE, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getPassCardsForUser = (user_id, game_id) => {
-  return db.query('SELECT * FROM passed_cards WHERE user_id=$1 AND game_id=$2', [user_id, game_id])
+  return db.query(GET_ALL_PASS_CARDS, [user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const deletePassCard = (card_id, game_id) => {
-  return db.none('DELETE FROM passed_cards WHERE card_id=$1 AND game_id=$2', [card_id, game_id])
+  return db.none(DELETE_PASS_CARD_QUERY, [card_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const setCurrentPlayer = (user_id, game_id) => {
-  return db.none('UPDATE games SET current_player=$1 WHERE game_id=$2', [user_id, game_id])
+  return db.none(SET_CURRENT_PLAYER_QUERY, [user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getStartingPlayer = (game_id) => {
-  return db.query('SELECT user_id FROM user_game_cards WHERE game_id=$1 AND card_id=$2', [game_id, 2])
+  return db.query(GET_STARTING_PLAYER_QUERY, [game_id, 2])
     .catch((error) => { console.log(error) })
 };
 
@@ -327,7 +250,7 @@ const verifyUserPassedCards = (user_id, game_id) => {
 };
 
 const addPlayedCard = (user_id, game_id, card_id) => {
-  return db.none('UPDATE cards_in_play SET card_id = $1 WHERE user_id = $2 AND game_id = $3', [card_id, user_id, game_id])
+  return db.none(PLAY_CARD_QUERY, [card_id, user_id, game_id])
     .then(() => {
       return setOwnerOfCard(card_id, null, game_id);
     })
@@ -335,17 +258,17 @@ const addPlayedCard = (user_id, game_id, card_id) => {
 };
 
 const getTurnSequenceForPlayer = (user_id, game_id) => {
-  return db.query('SELECT turn_sequence FROM game_players WHERE user_id = $1 AND game_id = $2', [user_id, game_id])
+  return db.query(GET_PLAYER_TURN_SEQUENCE, [user_id, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getCardsLeft = (game_id) => {
-  return db.query('SELECT COUNT(DISTINCT card_id) AS cards_left FROM user_game_cards WHERE game_id = $1 AND user_id <> 0', [game_id])
+  return db.query(CARDS_LEFT_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getCardsInPlay = (game_id) => {
-  return db.query('SELECT * from cards_in_play WHERE game_id = $1', [game_id])
+  return db.query(CARDS_IN_PLAY_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
@@ -395,7 +318,7 @@ const allocatePointsForTurn = (game_id) => {
       let player_taking_hand = results[0].player_taking_hand;
       return givePointsToPlayer(game_id, player_taking_hand, points_on_table)
         .then(() => {
-          return db.none('UPDATE cards_in_play SET card_id = null WHERE game_id = $1', [game_id])
+          return db.none(UPDATE_CARDS_IN_PLAY_QUERY, [game_id])
             .then (() => {
               return setLeadingSuit(game_id, null)
                 .then(() => {
@@ -407,27 +330,27 @@ const allocatePointsForTurn = (game_id) => {
 };
 
 const givePointsToPlayer = (game_id, user_id, points) => {
-  return db.none('UPDATE game_players SET current_round_score = current_round_score + $1 WHERE game_id = $2 AND user_id = $3', [points, game_id, user_id])
+  return db.none(UPDATE_POINTS, [points, game_id, user_id])
     .catch((error) => { console.log(error) })
 };
 
 const getCardsInPlayCount = (game_id) => {
-  return db.query('SELECT COUNT(card_id) FROM cards_in_play WHERE card_id <> 0 AND game_id = $1', [game_id])
+  return db.query(CARDS_COUNT_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getLeadingSuit = (game_id) => {
-  return db.query('SELECT leading_suit FROM games WHERE game_id = $1', [game_id])
+  return db.query(GET_LEAD_SUIT_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const setLeadingSuit = (game_id, lead_suit) => {
-  return db.none('UPDATE games SET leading_suit = $1 WHERE game_id = $2', [lead_suit, game_id])
+  return db.none(SET_LEAD_SUIT_QUERY, [lead_suit, game_id])
     .catch((error) => { console.log(error) })
 };
 
 const updateTotalScores = (game_id) => {
-  return db.query('SELECT user_id, current_round_score FROM game_players WHERE game_id = $1', [game_id])
+  return db.query(GET_ROUND_SCORES, [game_id])
     .then((player_scores) => {
       let player_who_shot_the_moon;
 
@@ -440,81 +363,74 @@ const updateTotalScores = (game_id) => {
       }
 
       if (player_who_shot_the_moon === undefined) {
-        return db.none('UPDATE game_players SET total_score = total_score + current_round_score WHERE game_id = $1', [game_id])
+        return db.none(UPDATE_SCORES_QUERY, [game_id])
+          .then(() => {
+            return resetRoundScore(game_id);
+          })
       } else {
         for (let i = 0; i < player_scores.length; i++) {
           let { user_id } = player_scores[i];
 
           if (user_id != player_who_shot_the_moon) {
-            return db.none('UPDATE game_players SET total_score = total_score + 26 WHERE game_id = $1 AND user_id = $2', [game_id, user_id])
+            return db.none(UPDATE_SCORES_QUERY2, [game_id, user_id])
+              .then(() => {
+                return resetRoundScore(game_id);
+              })
           }
         }
       }
     })
-
 };
 
 const incrementRoundNumber = (game_id) => {
-  return db.none('UPDATE games SET round_number = round_number + 1 WHERE game_id = $1', [game_id])
+  return db.none(INCREMENT_ROUND_QUERY, [game_id])
     .catch((error) => { console.log(error) })
 };
 
 const getUserId = (user_name) => {
-  return db.one('SELECT user_id FROM users WHERE username = $1', [user_name])
+  return db.one(GET_USER_ID, [user_name])
     .catch((error) => { console.log(error) })
 };
 
 const nudgePassPhase = (game_id) => {
-  return db.none('UPDATE game_players ' +
-    'SET total_score = total_score + 100 ' +
-    'WHERE game_id = $1 ' +
-    'AND user_id ' +
-    'NOT IN' +
-    '(SELECT user_id FROM passed_cards ' +
-    'WHERE game_id = $1)', [game_id])
+  return db.none(NUDGE_QUERY, [game_id])
 };
 
 const giveTotalPointsToPlayer = (game_id, user_id, points) => {
-  return db.none('UPDATE game_players SET total_score = total_score + $1 WHERE game_id = $2 AND user_id = $3', [points, game_id, user_id])
+  return db.none(TOTAL_POINTS_QUERY, [points, game_id, user_id])
     .catch((error) => {console.log(error)})
 };
 
 const getMaximumScore = (game_id) => {
-  return db.query('SELECT MAX(total_score) AS maximum_score ' +
-  'FROM game_players ' +
-  'WHERE game_id = $1', [game_id])
+  return db.query(GET_MAX_SCORE_QUERY, [game_id])
 };
 
 const isGamePlayer = (user_id, game_id) => {
-  return db.query('SELECT * FROM game_players WHERE user_id = $1 AND game_id = $2', [user_id, game_id])
+  return db.query(VERIFY_PLAYER_QUERY, [user_id, game_id])
     .catch((error) => {console.log(error)})
+};
+
+const resetRoundScore = (game_id) => {
+  return db.none(RESET_POINTS_QUERY, [game_id])
+    .catch((error) => { console.log(error) })
 };
 
 module.exports = {
   createGame,
   createInitialGamePlayer,
   getCurrentGames,
-  checkIsMyGame,
   observeGame,
   joinGame,
   deleteGame,
   verifyInGame,
   getPlayerCards,
-  getCardCount,
-  getPlayerTotalScore,
-  getPlayerRoundScore,
   getUserNamesFromGame,
   dealCards,
   initializeUserGameCards,
-  getUserIDFromGame,
-  getAllCardsFromGame,
-  clearUserGameCards,
-  deleteGamePlayer,
   getPlayerCount,
   maxPlayers,
   getGamePlayers,
   checkGameStateExists,
-  getCurrentCards,
   getSharedInformation,
   joinCardsInPlay,
   getCurrentTurn,
@@ -532,10 +448,8 @@ module.exports = {
   addPlayedCard,
   getTurnSequenceForPlayer,
   getCardsLeft,
-  checkPlayerTakingCards,
   allocatePointsForTurn,
   verifyUserPassedCards,
-  getCardsInPlay,
   getCardsInPlayCount,
   getLeadingSuit,
   setLeadingSuit,
@@ -543,7 +457,6 @@ module.exports = {
   incrementRoundNumber,
   getUserId,
   nudgePassPhase,
-  givePointsToPlayer,
   giveTotalPointsToPlayer,
   getHandSize,
   getMaximumScore,

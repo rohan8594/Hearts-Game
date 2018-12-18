@@ -7,6 +7,7 @@ const Game = require('../db/game');
 
 let user;
 let game_id;
+let nudge_timer;
 
 router.get('/', isAuthenticated, (req, res, next) => {
   res.render('game', { title: 'Hearts Game' });
@@ -20,7 +21,7 @@ router.get('/:game_id', isAuthenticated, (req, res) => {
       if (results === undefined || results.length === 0) {
         res.redirect('/');
       } else {
-        res.render('game', {user: user, game_id: game_id});
+        res.render('game', { user: user, game_id: game_id, title: 'Game room ' + game_id});
       }
     });
 });
@@ -54,13 +55,26 @@ gameSocket.on('connection', (socket) => {
             gameSocket.to(game_id).emit('LOAD PLAYERS', { game_players : username});
 
             setTimeout(() => {
-              return update(game_id);
+              Game.maxPlayers(game_id)
+                .then((results) => {
+                  const max_players = results[0].max_players;
+                  return Game.getPlayerCount(game_id)
+                    .then((player_count) => {
+                      if (player_count == max_players) {
+                        return update(game_id);
+                      }
+                    })
+                })
             }, 500)
           })
       }
     });
 
   // game events
+  socket.on('NUDGE NOTIFICATION', (data) => {
+    nudge_timer = data.nudge_timer;
+  });
+
   socket.on('GET PLAYER HAND', (data) => {
     const { user_id, game_id } = data;
 
@@ -80,11 +94,11 @@ gameSocket.on('connection', (socket) => {
           if (nudged_player == null) {
             Game.nudgePassPhase(game_id)
               .then(() =>{
-                update(game_id)
-                  .then(() => {
-                    gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
-                    Game.deleteGame(game_id);
-                  })
+                update(game_id);
+                setTimeout(() => {
+                  gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                  Game.deleteGame(game_id);
+                }, 500);
               })
           }
         }
@@ -94,11 +108,11 @@ gameSocket.on('connection', (socket) => {
               .then((current_player_id) => {
                 Game.giveTotalPointsToPlayer(game_id, current_player_id.user_id, 100)
                   .then(() =>{
-                    update(game_id)
-                      .then(() => {
-                        gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
-                        Game.deleteGame(game_id);
-                      })
+                    update(game_id);
+                    setTimeout(() => {
+                      gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                      Game.deleteGame(game_id);
+                    }, 500);
                   })
               })
           }
@@ -112,6 +126,10 @@ gameSocket.on('connection', (socket) => {
     let card1 = parseInt(passed_cards[0]),
       card2 = parseInt(passed_cards[1]),
       card3 = parseInt(passed_cards[2]);
+
+    if (nudge_timer != undefined) {
+      gameSocket.emit('CANCEL NUDGE', nudge_timer);
+    }
 
     Game.verifyUserHasCards(user_id, game_id, [card1, card2, card3])
       .then((hasCards) => {
@@ -152,6 +170,10 @@ gameSocket.on('connection', (socket) => {
   socket.on('PLAY CARDS', (data) => {
     let { user_id, game_id, passed_card: card_played } = data;
     card_played = parseInt(card_played);
+
+    if (nudge_timer != undefined) {
+      gameSocket.emit('CANCEL NUDGE', nudge_timer);
+    }
 
     Game.getGamePlayers(game_id)
       .then((gamePlayers) => {
@@ -197,9 +219,12 @@ gameSocket.on('connection', (socket) => {
                                                 .then((results) => {
                                                   let maximumScore = results[0].maximum_score;
                                                   if( maximumScore >= 100 ){
-                                                    gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
-                                                    Game.deleteGame(game_id);
-                                                  } else{
+                                                    update(game_id);
+                                                    setTimeout(() => {
+                                                      gameSocket.to(game_id).emit('GAME OVER', {game_id: game_id})
+                                                      Game.deleteGame(game_id);
+                                                    }, 500);
+                                                  } else {
                                                     Game.incrementRoundNumber(game_id)
                                                       .then(() => {
                                                         Game.setCurrentPlayer(null, game_id)
@@ -373,4 +398,7 @@ const startGame = (game_id) => {
   }, 500)
 };
 
-module.exports = router;
+module.exports = {
+  router,
+  update
+};

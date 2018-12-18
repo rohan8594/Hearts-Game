@@ -57,8 +57,6 @@ gameSocket.on('UPDATE', (data) => {
 
   validPass = false;
 
-  console.log(data);
-
   topPlayer = data.shared_player_information[topPlayerOrder];
   bottomPlayer = data.shared_player_information[bottomPlayerOrder];
 
@@ -192,7 +190,6 @@ function updateGameBoard()
     displacement -= 20;
   }
   if (topPlayer.card_in_play != null){
-    console.log('no card in play')
     let suit = -(Math.floor((topPlayer.card_in_play -1) / 13 )) * 100;
     let face = -((topPlayer.card_in_play -1) % 13) * 69;
     gameHtml += '<div class = "top-player-to-mid card " style="background-position-y: ' + suit +
@@ -377,7 +374,6 @@ function buttonDisableLogic(){
   }
   if(handSizeTotal == 52){
     //Must pick 2 of clubs
-    console.log(selectedCard);
     if(selectedCard  == 2){
       alertBox.innerHTML="";
       btn.disabled = false;
@@ -408,8 +404,6 @@ function buttonDisableLogic(){
     }
   }
 
-  console.log(leadCard);
-
   //Case: you're the leading suit
   if(leadCard == 0){
     let brokenHearts = parseInt(bottomPlayer.current_round_score) + parseInt(topPlayer.current_round_score);
@@ -424,10 +418,6 @@ function buttonDisableLogic(){
         hasNonHeart = true;
       }
     }
-
-    console.log(brokenHearts);
-    console.log(selectedSuit);
-    console.log(hasNonHeart);
 
     if((brokenHearts == 0) && (selectedSuit == 2) && hasNonHeart){
       alertBox.innerHTML="<p>Hearts haven't been broken yet, you can't play hearts as the lead suit.</p>";
@@ -559,8 +549,17 @@ function nudgeButton(){
     nudged_player: nudgedNote
   });
 
-  let timer = setTimeout(nudgeFinal, 30000)
+  let timer = setTimeout(nudgeFinal, 30000);
+
+  gameSocket.emit('NUDGE NOTIFICATION', {
+    room_id: room.value,
+    nudge_timer: timer
+  });
 }
+
+gameSocket.on('CANCEL NUDGE', (timer) => {
+  clearTimeout(timer)
+});
 
 function nudgeFinal(){
   gameSocket.emit('NUDGE TIMER OVER', {

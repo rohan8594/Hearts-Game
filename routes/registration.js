@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const db = require('../db');
+const User = require('../db/user');
 
 const validateFields = (req, password) => {
   // Field validation
@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
   } else {
     bcrypt.hash(password, 10)
       .then((hash) => {
-        db.none('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash])
+        User.createUser(username, hash)
           .then(() => {
             res.render('login');
           })
