@@ -14,10 +14,11 @@ lobbySocket.on('DISPLAY GAMES LIST', (currentGames) => {
       "<div class='games-list-right'><label>" + player_count + "/" + max_players + "</label></div> ";
     if (is_my_game == 1) {
       games_list_html += "<div class='games-list-right'><form action='/lobby/rejoinGame' method='POST'><button class='btn btn-primary' name='rejoin_btn' value=" + game_id + " type='submit'>Rejoin</button></form></div>"
-    } else if (player_count < max_players){
-      games_list_html += "<div class='games-list-right'><form action='/lobby/joinGame' method='POST'><button class='btn btn-primary' name='join_btn' value=" + game_id + " type='submit'>Join</button></form></div>"
     } else {
-      games_list_html+= "<div class='games-list-right'><form action='/lobby/observeGame' method='POST'><button class='btn btn-primary' name='watch_btn' value=" + game_id + " type='submit'>Watch</button></form></div></div>"
+      if (player_count < max_players){
+        games_list_html += "<div class='games-list-right'><form action='/lobby/joinGame' method='POST'><button class='btn btn-primary' name='join_btn' value=" + game_id + " type='submit'>Join</button></form></div>"
+      }
+      games_list_html+= "<div class='games-list-right'><form action='/lobby/observeGame' method='POST'><button class='btn btn-primary' name='watch_btn' value=" + game_id + " type='submit'>Watch</button></form></div></div>" 
     }
   }
   games_list_div.innerHTML = games_list_html;
