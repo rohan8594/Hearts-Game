@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'development') {
 const passport = require('./config/passport');
 const indexRouter = require('./routes/index');
 const testsRouter = require('./routes/tests');
-const gameRouter = require('./routes/game');
+const { router: gameRouter } = require('./routes/game');
 const registrationRouter = require('./routes/registration');
 const lobbyRouter = require('./routes/lobby');
 const leaveGameRouter = require('./routes/leaveGame');

@@ -7,8 +7,6 @@ const CREATE_GAME_PLAYER_QUERY = 'INSERT INTO game_players (user_id, game_id, to
 const GET_CURRENT_GAMES_QUERY = 'SELECT g.game_id, game_name, max_players, COUNT(*) as player_count ' +
   'FROM games g, game_players gp WHERE g.game_id=gp.game_id GROUP BY g.game_id';
 
-const CHECK_GAME_QUERY = 'SELECT COUNT(*) as is_my_game FROM game_players WHERE user_id=$1 and game_id=$2';
-
 const CHECK_GAME_EXISTS_QUERY = 'SELECT * FROM games WHERE game_id = $1';
 
 const PLAYER_COUNT_QUERY = 'SELECT COUNT(*) as player_count FROM game_players WHERE game_id=$1';
@@ -144,7 +142,6 @@ module.exports = {
   CREATE_GAME_QUERY,
   CREATE_GAME_PLAYER_QUERY,
   GET_CURRENT_GAMES_QUERY,
-  CHECK_GAME_QUERY,
   CHECK_GAME_EXISTS_QUERY,
   PLAYER_COUNT_QUERY,
   OBSERVE_GAME_QUERY,

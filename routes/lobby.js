@@ -30,7 +30,7 @@ router.post('/createGame', isAuthenticated, (req, res) => {
           .then(() => {
             Game.joinCardsInPlay(user.user_id, game_id);
 
-            displayGameList();
+            lobbySocket.emit('GET GAMES');
             res.redirect(`/game/${game_id}`);
           })
           .catch((error) => { console.log(error) })
@@ -55,7 +55,7 @@ router.post('/joinGame', isAuthenticated, (req, res) => {
         Game.joinGame(user.user_id, game_id);
         Game.joinCardsInPlay(user.user_id, game_id);
 
-        displayGameList();
+        lobbySocket.emit('GET GAMES');
         res.redirect(`/game/${game_id}`);
       } else {
         const errStr = encodeURIComponent('You are already in this game!');
@@ -96,29 +96,30 @@ router.get('/rules', (req, res) => {
 
 
 // Lobby sockets
-const displayGameList = (user_id) => {
-  Game.getCurrentGames()
-    .then((currentGames) => {
-      for (let index = 0; index < currentGames.length; index++){
-        Game.checkIsMyGame(user_id, currentGames[index].game_id)
-          .then((results) => {
-            currentGames[index]['is_my_game'] = results[0].is_my_game;
-          })
-      }
+const displayGameList = (user_id, socket) => {
+  if(socket != undefined){
+    Game.getCurrentGames()
+      .then((currentGames) => {
+        for (let index = 0; index < currentGames.length; index++){
+          Game.verifyInGame(user_id, currentGames[index].game_id)
+            .then((results) => {
+              currentGames[index]['is_my_game'] = results;
+            })
+        }
 
-      setTimeout(() => {
-        lobbySocket.emit('DISPLAY GAMES LIST', currentGames);
-      }, 200);
-
-    })
+        setTimeout(() => {
+          socket.emit('DISPLAY GAMES LIST', currentGames);
+        }, 200);
+      })
+  }
 };
 
 lobbySocket.on('connection', (socket) => {
-  lobbySocket.emit('CONNECTED');
+  lobbySocket.emit('GET GAMES');
 
   socket.on('GAME LIST', (data) => {
     const { user_id } = data;
-    displayGameList(user_id)
+    displayGameList(user_id, socket)
   });
 });
 

@@ -27,11 +27,6 @@ const getCurrentGames = () => {
     .catch((error) => { console.log(error) })
 };
 
-const checkIsMyGame = (user_id, game_id) => {
-  return db.query(CHECK_GAME_QUERY, [user_id, game_id])
-    .catch((error) => { console.log(error) })
-};
-
 const checkGameExists = (game_id) => {
   return db.query(CHECK_GAME_EXISTS_QUERY, [game_id])
     .catch((error) => { console.log(error) })
@@ -424,7 +419,6 @@ module.exports = {
   createGame,
   createInitialGamePlayer,
   getCurrentGames,
-  checkIsMyGame,
   observeGame,
   joinGame,
   deleteGame,
