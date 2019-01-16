@@ -1,37 +1,37 @@
 const chatSocket = io();
 // Query DOM
-let msg = document.getElementById('message'),
-  room = document.getElementById('room_id'),
-  btn = document.getElementById('send'),
-  output = document.getElementById('output'),
-  feedback = document.getElementById('feedback');
+let msg = document.getElementById("message"),
+  room = document.getElementById("room_id"),
+  btn = document.getElementById("send"),
+  output = document.getElementById("output"),
+  feedback = document.getElementById("feedback");
 
-window.addEventListener('load', () => {
-  chatSocket.emit('entered', {
+window.addEventListener("load", () => {
+  chatSocket.emit("entered", {
     room_id: room.value,
     handle: username
-  })
+  });
 });
 
-btn.addEventListener('click', () => {
-  chatSocket.emit('chat', {
+btn.addEventListener("click", () => {
+  chatSocket.emit("chat", {
     room_id: room.value,
     message: msg.value,
     handle: username
   });
-  msg.value = '';
+  msg.value = "";
 });
 
-msg.addEventListener('keypress', (events) => {
-  if (msg.value != '' && events.code == 'Enter') {
-    chatSocket.emit('chat', {
+msg.addEventListener("keypress", events => {
+  if (msg.value != "" && events.code == "Enter") {
+    chatSocket.emit("chat", {
       room_id: room.value,
       message: msg.value,
       handle: username
     });
-    msg.value = '';
+    msg.value = "";
   } else {
-    chatSocket.emit('typing', {
+    chatSocket.emit("typing", {
       room_id: room.value,
       handle: username
     });
@@ -39,39 +39,47 @@ msg.addEventListener('keypress', (events) => {
 });
 
 // Listen for events
-chatSocket.on('send msg', (data) => {
+chatSocket.on("send msg", data => {
   const { room_id, handle, message } = data;
 
   if (room.value == room_id) {
-    feedback.innerHTML = '';
-    output.innerHTML += '<p><strong>' + handle + ': </strong>' + message + '</p>'
+    feedback.innerHTML = "";
+    output.innerHTML +=
+      "<p><strong>" + handle + ": </strong>" + message + "</p>";
   }
 });
 
-chatSocket.on('entry msg', (data) => {
+chatSocket.on("entry msg", data => {
   const { room_id, handle } = data;
 
   if (room.value == room_id) {
     if (room.value == 0) {
-      output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the lobby...</em></p>'
+      output.innerHTML +=
+        '<p style="color: #aaa;"><em>' +
+        handle +
+        " has entered the lobby...</em></p>";
     } else {
-      output.innerHTML += '<p style="color: #aaa;"><em>' + handle + ' has entered the room...</em></p>'
+      output.innerHTML +=
+        '<p style="color: #aaa;"><em>' +
+        handle +
+        " has entered the room...</em></p>";
     }
   }
 });
 
-chatSocket.on('typing msg', (data) => {
+chatSocket.on("typing msg", data => {
   const { room_id, handle } = data;
 
   if (room.value == room_id) {
-    feedback.innerHTML = '<p><em>' + handle + ' is typing a message...</em></p>'
+    feedback.innerHTML =
+      "<p><em>" + handle + " is typing a message...</em></p>";
   }
 });
 
-chatSocket.on('nudge', (data) => {
+chatSocket.on("nudge", data => {
   const { room_id, notification } = data;
 
   if (room.value == room_id) {
-    output.innerHTML += '<p>'+ data.nudged_player + '</p>'
+    output.innerHTML += "<p>" + data.nudged_player + "</p>";
   }
 });

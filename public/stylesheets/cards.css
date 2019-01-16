@@ -1,81 +1,79 @@
-.top-player{
-    -ms-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    transform: rotate(180deg);
-    top: 50px;
+.top-player {
+  -ms-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  transform: rotate(180deg);
+  top: 50px;
 }
 
-.left-player{
-    -ms-transform: rotate(90deg);
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    transform: rotate(90deg);
-    left: 50px;
+.left-player {
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  transform: rotate(90deg);
+  left: 50px;
 }
 
-.right-player{
-    -ms-transform: rotate(270deg);
-    -webkit-transform: rotate(270deg);
-    -moz-transform: rotate(270deg);
-    transform: rotate(270deg);
-    left: 520px;
+.right-player {
+  -ms-transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  transform: rotate(270deg);
+  left: 520px;
 }
 
-
-.bottom-player-observer{
-    top: 480px;
+.bottom-player-observer {
+  top: 480px;
 }
 
-.card-back{
-    background-image: url("/images/cards.png");
-    width: 69px;
-    height: 100px;
-    position: absolute;
-    background-position-x: 1px;
-    background-position-y: -400px;
+.card-back {
+  background-image: url("/images/cards.png");
+  width: 69px;
+  height: 100px;
+  position: absolute;
+  background-position-x: 1px;
+  background-position-y: -400px;
 }
 
 .card {
-    background-image: url("/images/cards.png");
-    width: 69px;
-    height: 100px;
-    position: absolute;
+  background-image: url("/images/cards.png");
+  width: 69px;
+  height: 100px;
+  position: absolute;
 }
 
-.bottom-player{
-    background-image: url("/images/cards.png");
-    width: 69px;
-    height: 100px;
-    top: 480px;
-    position: absolute;
-    transition-duration: 100ms;
+.bottom-player {
+  background-image: url("/images/cards.png");
+  width: 69px;
+  height: 100px;
+  top: 480px;
+  position: absolute;
+  transition-duration: 100ms;
 }
 
-.bottom-player:hover{
-    -ms-transform: translateY(-5px);
-    -webkit-transform: translateY(-5px);
-    -moz-transform: translateY(-5px);
-    transform: translateY(-5px);
-
+.bottom-player:hover {
+  -ms-transform: translateY(-5px);
+  -webkit-transform: translateY(-5px);
+  -moz-transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
-.bottom-player-to-mid{
-    left: 290px;
-    top: 330px;
+.bottom-player-to-mid {
+  left: 290px;
+  top: 330px;
 }
 
-.top-player-to-mid{
-    left: 290px;
-    top: 200px;
+.top-player-to-mid {
+  left: 290px;
+  top: 200px;
 }
 
-.left-player-to-mid{
-    left: 210px;
-    top: 265px;
+.left-player-to-mid {
+  left: 210px;
+  top: 265px;
 }
 
-.right-player-to-mid{
-    left: 370px;
-    top: 265px;
+.right-player-to-mid {
+  left: 370px;
+  top: 265px;
 }
