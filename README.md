@@ -11,12 +11,13 @@ This is a real-time, multiplayer, online application to play the popular card ga
 - Registration (with encrypted passwords)
 - Login / Logout (with sessions)
 - Lobby page: contains a lobby chat, list of current games, options to create a game, join an already made game that is not full, observe a game, and rejoin a game.
-- One player can be in multiple simultaneous games at a time and there are an unlimited number of observers.
+- The application supports an arbitrary (infinite) number of concurrent games, and a given player can participate in multiple games (in different tabs).
 - Game rooms have their own dedicated game chats.
+- Game rooms also allow users to join in as observers to just watch the ongoing game.
+- Game rooms also contain a nudge button that ends the game on a 30 second timer if no action is taken by an opposing player.
 - Game state is persisted in the database. If a user closes a tab, and reconnects to the game, the game will be reloaded for that user.
-- Game state is updated in real time in response to user events and interaction with the game using websockets.
+- Game state is updated in real time in response to user events and interaction with the game using Socket.IO
 - All the logic of the standard hearts game has been implemented and tested.
-- Game rooms also contain a nudge button that will end the game on a 30 second timer if no action is taken by an opposing player.
 
 ## How to compile and run
 
@@ -29,8 +30,8 @@ This is a real-time, multiplayer, online application to play the popular card ga
 ### Clone repo
 
 ```
-$ git clone https://github.com/sfsu-csc-667-fall-2018/term-project-hearts-game.git
-$ cd term-project-hearts-game
+$ git clone https://github.com/rohan8594/Hearts-Game.git
+$ cd Hearts-Game
 ```
 
 ### Create a .env file
