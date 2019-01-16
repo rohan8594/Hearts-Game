@@ -1,326 +1,328 @@
-
 /*General*/
 
-
-.general-body{
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background-color: #086305;
-    color: whitesmoke;
+.general-body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #086305;
+  color: whitesmoke;
 }
 
-.align-center{
-    text-align: center;
+.align-center {
+  text-align: center;
 }
 
-.align-center-padded{
-    text-align: center;
-    padding: 5px;
+.align-center-padded {
+  text-align: center;
+  padding: 5px;
 }
 
-.align-left{
-    text-align: left;
-    width: 40%;
+.align-left {
+  text-align: left;
+  width: 40%;
 }
 
-.align-right{
-    text-align: right;
-    padding-right: 10px;
-    width: 40%;
+.align-right {
+  text-align: right;
+  padding-right: 10px;
+  width: 40%;
 }
 
-.vertical-padding{
-    padding-top: 25px;
+.vertical-padding {
+  padding-top: 25px;
 }
 
-.padding-right{
-    padding-right:10px;
+.padding-right {
+  padding-right: 10px;
 }
 
-.button-division{
-    color:black;
-    background-color:#00ccff
+.button-division {
+  color: black;
+  background-color: #00ccff;
 }
 
-.no-vertical-padding{
-    margin-top: 0;
+.no-vertical-padding {
+  margin-top: 0;
 }
 
-.vertical-padding-50{
-    padding-top: 50px;
+.vertical-padding-50 {
+  padding-top: 50px;
 }
 
 .shadow {
-    -moz-box-shadow:    inset 0 0 10px #000000;
-    -webkit-box-shadow: inset 0 0 10px #000000;
-    box-shadow:         inset 0 0 10px #000000;
+  -moz-box-shadow: inset 0 0 10px #000000;
+  -webkit-box-shadow: inset 0 0 10px #000000;
+  box-shadow: inset 0 0 10px #000000;
 }
 
 /*Top banner*/
 
-.banner{
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top:10px;
-    width: 100%;
-    height: 60px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+.banner {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 10px;
+  width: 100%;
+  height: 60px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 
-.banner-align-left{
-    display:inline;
+.banner-align-left {
+  display: inline;
 }
 
-.banner-align-right{
-    margin-top: 15px;
-    color: #e9eb89;
-    float:right;
+.banner-align-right {
+  margin-top: 15px;
+  color: #e9eb89;
+  float: right;
 }
 
-.banner-align-right:hover{
-    color: whitesmoke;
+.banner-align-right:hover {
+  color: whitesmoke;
 }
 
 /*Login/register specific*/
 
 .login-body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background-color: #086305;
-    color: whitesmoke;
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #086305;
+  color: whitesmoke;
 }
 
 .center-box {
-    width: 400px;
-    height: 350px;
-    margin-left: auto;
-    margin-right: auto;
+  width: 400px;
+  height: 350px;
+  margin-left: auto;
+  margin-right: auto;
 
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 
-    background-color: #e9eb89;
-    color: rgb(0, 0, 0);
+  background-color: #e9eb89;
+  color: rgb(0, 0, 0);
 }
 
 /*Lobby*/
 
-.lobby-container{
-    min-width: 765px;
+.lobby-container {
+  min-width: 765px;
 }
 
-.chat-box{
-    width: 30%;
-    min-width:200px;
-    margin-right: 5%;
-    margin-top: 5%;
-    margin-bottom: 5%;
-    height: 70vh;
-    min-height: 485px;
-    padding: 20px;
-    display:inline-block;
-    float:right;
+.chat-box {
+  width: 30%;
+  min-width: 200px;
+  margin-right: 5%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  height: 70vh;
+  min-height: 485px;
+  padding: 20px;
+  display: inline-block;
+  float: right;
 
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 
-    background-color: #e9eb89;
-    color: rgb(0, 0, 0);
+  background-color: #e9eb89;
+  color: rgb(0, 0, 0);
 }
 
-.lobby-box{
-    width: 55%;
-    min-width: 415px;
-    height: 70vh;
-    margin: 5% 5%;
-    min-height: 485px;
-    display:inline-block;
-    padding: 20px;
-    overflow:auto;
-    float:left;
+.lobby-box {
+  width: 55%;
+  min-width: 415px;
+  height: 70vh;
+  margin: 5% 5%;
+  min-height: 485px;
+  display: inline-block;
+  padding: 20px;
+  overflow: auto;
+  float: left;
 
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 
-    background-color: #e9eb89;
-    color: rgb(0, 0, 0);
+  background-color: #e9eb89;
+  color: rgb(0, 0, 0);
 }
 
-.games-list-box{
-    overflow:auto;
-    height: 40vh;
-    min-height: 275px;
-    min-width: 375px;
-    background-color: #b6d7d1;
+.games-list-box {
+  overflow: auto;
+  height: 40vh;
+  min-height: 275px;
+  min-width: 375px;
+  background-color: #b6d7d1;
 }
 
-.games-list-left{
-    display:inline-block;
-    width: 40%;
-    min-width: 50px;
-    padding: 5px;
+.games-list-left {
+  display: inline-block;
+  width: 40%;
+  min-width: 50px;
+  padding: 5px;
 }
 
-.games-list-center{
-    display:inline-block;
-    text-align: center;
-    padding: 5px;
+.games-list-center {
+  display: inline-block;
+  text-align: center;
+  padding: 5px;
 }
 
-.games-list-right{
-    display:inline-block;
-    min-width: 30px;
-    padding: 5px;
+.games-list-right {
+  display: inline-block;
+  min-width: 30px;
+  padding: 5px;
 }
 
-.num-players{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-    align: left;
+.num-players {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  align: left;
 }
 
-.num-players-left{
-    display: inline;
-    padding-left: 0px;
-    padding-right: 5px;
-    padding-top: 15px;
-    float: left
+.num-players-left {
+  display: inline;
+  padding-left: 0px;
+  padding-right: 5px;
+  padding-top: 15px;
+  float: left;
 }
 
-.num-players-right{
-    display: inline;
-    margin-top: 15px;
-    align:right;
+.num-players-right {
+  display: inline;
+  margin-top: 15px;
+  align: right;
 }
 
-.create-button{
-    display: inline;
-    margin-top: 10px;
-    float: right;
+.create-button {
+  display: inline;
+  margin-top: 10px;
+  float: right;
 }
 
-.create-game{
-    margin-top: 10px;
-    text-align: center;
+.create-game {
+  margin-top: 10px;
+  text-align: center;
 }
 
 /*Game specific*/
 
-.game-container{
-    min-width: 1250px;
-    overflow: auto;
+.game-container {
+  min-width: 1250px;
+  overflow: auto;
 }
 
-.game-box{
-    width: 650px;
-    margin: 30px 5%;
-    height: 630px;
-    display:inline-block;
-    padding: 0px;
-    float:left;
+.game-box {
+  width: 650px;
+  margin: 30px 5%;
+  height: 630px;
+  display: inline-block;
+  padding: 0px;
+  float: left;
 
-    position: relative;
+  position: relative;
 }
 
-.game-chat-box{
-    width: 30%;
-    min-width:400px;
-    margin-right: 5%;
-    margin-top: 5%;
-    margin-bottom: 5%;
-    height: 70vh;
-    min-height: 485px;
-    padding: 20px;
-    display:inline-block;
-    float:right;
+.game-chat-box {
+  width: 30%;
+  min-width: 400px;
+  margin-right: 5%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  height: 70vh;
+  min-height: 485px;
+  padding: 20px;
+  display: inline-block;
+  float: right;
 
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 
-    background-color: #e9eb89;
-    color: rgb(0, 0, 0);
+  background-color: #e9eb89;
+  color: rgb(0, 0, 0);
 }
 
-.player-info{
-    left: 170px;
-    top: 590px;
-    width: 310px;
-    height: 50px;
-    position: absolute;
+.player-info {
+  left: 170px;
+  top: 590px;
+  width: 310px;
+  height: 50px;
+  position: absolute;
 }
 
-.left-player-info{
-    left: -155px;
-    top: 295px;
-    width: 310px;
-    height: 50px;
-    transform: rotate(90deg);
-    position: absolute;
+.left-player-info {
+  left: -155px;
+  top: 295px;
+  width: 310px;
+  height: 50px;
+  transform: rotate(90deg);
+  position: absolute;
 }
 
-.right-player-info{
-    left: 485px;
-    top: 295px;
-    width: 310px;
-    height: 50px;
-    transform: rotate(270deg);
-    position: absolute;
+.right-player-info {
+  left: 485px;
+  top: 295px;
+  width: 310px;
+  height: 50px;
+  transform: rotate(270deg);
+  position: absolute;
 }
 
-.top-player-info{
-    left: 170px;
-    top: 0px;
-    width: 310px;
-    height: 50px;
-    position: absolute;
+.top-player-info {
+  left: 170px;
+  top: 0px;
+  width: 310px;
+  height: 50px;
+  position: absolute;
 }
 
-.player-score-box{
-    width:310px;
+.player-score-box {
+  width: 310px;
 }
 
-.player-round-score{
-    width:155px;
-    display:inline-block;
-    float:left;
+.player-round-score {
+  width: 155px;
+  display: inline-block;
+  float: left;
 }
 
-.player-total-score{
-    width:155px;
-    text-align:right;
-    display:inline-block;
-    float:right;
+.player-total-score {
+  width: 155px;
+  text-align: right;
+  display: inline-block;
+  float: right;
 }
 
-.game-button{
-    position:absolute;
-    left: 505px;
-    top: 590px;
+.game-button {
+  position: absolute;
+  left: 505px;
+  top: 590px;
 }
 
-.waiting-box{
-    position:absolute;
-    top:300px;
-    left:150px;
-    width:350px;
-    text-align: center;
-    font-size: 24px;
+.waiting-box {
+  position: absolute;
+  top: 300px;
+  left: 150px;
+  width: 350px;
+  text-align: center;
+  font-size: 24px;
 }
 
-.alert-box{
-    position:absolute;
-    width: 310px;
-    left: 170px;
-    top: 160px;
-    text-align: center;
+.alert-box {
+  position: absolute;
+  width: 310px;
+  left: 170px;
+  top: 160px;
+  text-align: center;
 }
 
-#nudge_output p{
-    color: #aaa;
-    padding: 14px 0px;
-    margin: 0 20px;
+#nudge_output p {
+  color: #aaa;
+  padding: 14px 0px;
+  margin: 0 20px;
 }
 
-.blocker{ z-index: 100 !important;}
+.blocker {
+  z-index: 100 !important;
+}
 
-.close-modal {display: none !important;}
+.close-modal {
+  display: none !important;
+}

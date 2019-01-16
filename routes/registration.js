@@ -1,42 +1,47 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const User = require('../db/user');
+const bcrypt = require("bcrypt");
+const User = require("../db/user");
 
 const validateFields = (req, password) => {
   // Field validation
-  req.checkBody('username_input', 'Username cannot be empty').notEmpty();
-  req.checkBody('password_input', 'Password cannot be empty').notEmpty();
-  req.checkBody('password_verify', 'Password verify cannot be empty').notEmpty();
-  req.checkBody('password_verify', 'Passwords do not match').equals(password);
+  req.checkBody("username_input", "Username cannot be empty").notEmpty();
+  req.checkBody("password_input", "Password cannot be empty").notEmpty();
+  req
+    .checkBody("password_verify", "Password verify cannot be empty")
+    .notEmpty();
+  req.checkBody("password_verify", "Passwords do not match").equals(password);
 
   return req.validationErrors();
 };
 
-router.get('/', function(req, res, next){
-  res.render('registration')
+router.get("/", function(req, res, next) {
+  res.render("registration");
 });
 
-router.post('/', (req, res) => {
-  const {username_input: username, password_input: password} = req.body;
+router.post("/", (req, res) => {
+  const { username_input: username, password_input: password } = req.body;
   const errors = validateFields(req, password);
 
   if (errors) {
-    res.render('registration', {errors: errors});
+    res.render("registration", { errors: errors });
   } else {
-    bcrypt.hash(password, 10)
-      .then((hash) => {
-        User.createUser(username, hash)
-          .then(() => {
-            res.render('login');
-          })
-          .catch((error) => {
-            const { detail } = error;
-            res.render('registration', { errors: [{
+    bcrypt.hash(password, 10).then(hash => {
+      User.createUser(username, hash)
+        .then(() => {
+          res.render("login");
+        })
+        .catch(error => {
+          const { detail } = error;
+          res.render("registration", {
+            errors: [
+              {
                 msg: detail
-              }]});
-          })
-      })
+              }
+            ]
+          });
+        });
+    });
   }
 });
 

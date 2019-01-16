@@ -1,7 +1,9 @@
 # Hearts Game
+
 Rohan Patel, Jake Carter, Richard Robinson, Guanming Pan
 
 ## Introduction
+
 This is a real-time, multiplayer, online application to play the popular card game of Hearts. The game supports 2 and 4 player game rooms.
 
 ## Features
@@ -25,18 +27,21 @@ This is a real-time, multiplayer, online application to play the popular card ga
 - In Postgres, create a database `DATABASE_NAME`
 
 ### Clone repo
+
 ```
 $ git clone https://github.com/sfsu-csc-667-fall-2018/term-project-hearts-game.git
 $ cd term-project-hearts-game
 ```
 
 ### Create a .env file
+
 ```
 $ touch .env
 $ echo DATABASE_URL=postgres://`whoami`@localhost:5432/DATABASE_NAME >> .env
 ```
 
 ### Command line instructions
+
 ```
 $ npm install
 $ npm run db:migrate
