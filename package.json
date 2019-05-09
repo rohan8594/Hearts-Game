@@ -30,7 +30,7 @@
     "passport-local": "^1.0.0",
     "pg-promise": "^8.5.0",
     "pug": "2.0.0-beta11",
-    "sequelize": "^4.44.0",
+    "sequelize": "^5.8.5",
     "sequelize-cli": "^5.0.1",
     "socket.io": "^2.1.1"
   },
