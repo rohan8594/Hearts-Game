@@ -17,6 +17,7 @@
   "dependencies": {
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
+    "clean-css": "^4.2.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^6.1.0",
@@ -30,8 +31,10 @@
     "passport-local": "^1.0.0",
     "pg-promise": "^8.5.0",
     "pug": "2.0.0-beta11",
+    "save": "^2.4.0",
     "sequelize": "^5.8.5",
-    "sequelize-cli": "^5.0.1",
+    "sequelize-cli": "^5.5.1",
+    "set-value": "^3.0.1",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
