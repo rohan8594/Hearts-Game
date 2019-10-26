@@ -1,5 +1,5 @@
 # Hearts Game
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 
 Rohan Patel, Jake Carter, Richard Robinson, Guanming Pan
 
@@ -68,6 +68,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="http://rohanpatel.xyz"><img src="https://avatars1.githubusercontent.com/u/23509745?v=4" width="100px;" alt="Rohan Patel"/><br /><sub><b>Rohan Patel</b></sub></a><br /><a href="https://github.com/rohan8594/Hearts-Game/commits?author=rohan8594" title="Code">💻</a> <a href="#maintenance-rohan8594" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/JakeCarter2012"><img src="https://avatars3.githubusercontent.com/u/34175792?v=4" width="100px;" alt="JakeCarter2012"/><br /><sub><b>JakeCarter2012</b></sub></a><br /><a href="https://github.com/rohan8594/Hearts-Game/commits?author=JakeCarter2012" title="Code">💻</a></td>
   </tr>
 </table>
 
