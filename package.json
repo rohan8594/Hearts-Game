@@ -15,7 +15,7 @@
     "db:seed:undo": "sequelize db:seed:undo:all"
   },
   "dependencies": {
-    "bcrypt": "^3.0.2",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "clean-css": "^4.2.1",
     "cookie-parser": "~1.4.3",
